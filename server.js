@@ -3,7 +3,11 @@ const app = express()
 const port = 3000
 
 app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+app.get('/ip', (req, res) => {
   res.send('requestIP: ' + req.ip)
+  console.log('new user')
 })
 
 app.listen(port, () => {
