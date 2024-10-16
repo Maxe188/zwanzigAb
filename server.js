@@ -2,16 +2,18 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+app.set('trust proxy', true)
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 app.get('/a', (req, res) => {
-  res.send('Hello Amenée!')
+  res.send('Hello Amenee!')
 })
 app.get('/ip', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress)
-  console.log('new user' + ip)
+  res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress + " - " + req.ip + " - " + req.ips)
+  console.log('new user: ' + ip.split(',')[0])
 })
 
 app.listen(port, () => {
