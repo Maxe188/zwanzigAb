@@ -9,8 +9,9 @@ app.get('/a', (req, res) => {
   res.send('Hello Amenée!')
 })
 app.get('/ip', (req, res) => {
-  res.send('requestIP: ' + req.ip)
-  console.log('new user')
+  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  res.send('requestIP: ' + ip)
+  console.log('new user' + ip)
 })
 
 app.listen(port, () => {
