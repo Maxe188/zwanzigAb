@@ -18,6 +18,9 @@ app.get('/ip', (req, res) => {
 app.get('/header', (req, res) => {
   res.send('header: ' + req.header.toString())
 })
+app.get('/header', (req, res) => {
+  res.send('header: ' + req.route + " - " + req.socket.localAddress)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
