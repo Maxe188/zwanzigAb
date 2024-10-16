@@ -10,7 +10,7 @@ app.get('/a', (req, res) => {
 })
 app.get('/ip', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  res.send('requestIP: ' + ip)
+  res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress)
   console.log('new user' + ip)
 })
 
