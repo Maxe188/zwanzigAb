@@ -15,6 +15,9 @@ app.get('/ip', (req, res) => {
   res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress + " - " + req.ip + " - " + req.ips)
   console.log('new user: ' + ip.split(',')[0])
 })
+app.get('/jeader', (req, res) => {
+  res.send('header: ' + req.header)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
