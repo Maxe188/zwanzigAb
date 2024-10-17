@@ -18,7 +18,7 @@ app.get('/ip', (req, res) => {
 app.get('/header', (req, res) => {
   res.send('header: ' + req.header.toString())
 })
-app.get('/header', (req, res) => {
+app.get('/header2', (req, res) => {
   res.send('header: ' + req.route + " - " + req.socket.localAddress)
 })
 
