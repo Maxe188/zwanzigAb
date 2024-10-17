@@ -19,7 +19,7 @@ app.get('/header', (req, res) => {
   res.send('header: ' + req.header.toString())
 })
 app.get('/header2', (req, res) => {
-  res.send('header: ' + req.route + " - " + req.socket.localAddress)
+  res.send('header: ' + req.route[0] + " - " + req.socket.localAddress)
 })
 
 app.listen(port, () => {
