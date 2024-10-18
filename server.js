@@ -8,6 +8,7 @@ const server = createServer(app);
 const io = new Server(server);
 const port = process.env.PORT || 3000;
 
+// make the public folder public for files to refrerence eachother
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
@@ -20,10 +21,11 @@ io.on('connection', (socket) => {
   });
   socket.on('chat message', (msg) => {
     console.log('message: ' + msg);
-    socket.broadcast.emit('chat message', msg);
+    io.emit('chat message', msg);
   });
 });
 
+// IP feature
 app.set('trust proxy', true);
 app.get('/ip', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -31,6 +33,7 @@ app.get('/ip', (req, res) => {
   console.log('new user: ' + ip.split(',')[0]);
 });
 
+// server listening on Port 10000(default)
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
