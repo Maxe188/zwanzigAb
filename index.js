@@ -3,7 +3,7 @@ const { createServer } = require('node:http')
 
 const app = express()
 const server = createServer(app)
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.set('trust proxy', true)
 
@@ -17,12 +17,6 @@ app.get('/ip', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress + " - " + req.ip + " - " + req.ips)
   console.log('new user: ' + ip.split(',')[0])
-})
-app.get('/header', (req, res) => {
-  res.send('header: ' + req.header.toString())
-})
-app.get('/header2', (req, res) => {
-  res.send('header: ' + req.route[0] + " - " + req.socket.localAddress)
 })
 
 server.listen(port, () => {
