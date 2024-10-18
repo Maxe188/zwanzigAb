@@ -1,5 +1,8 @@
 const express = require('express')
+const { createServer } = require('node:http')
+
 const app = express()
+const server = createServer(app)
 const port = 3000
 
 app.set('trust proxy', true)
@@ -22,6 +25,6 @@ app.get('/header2', (req, res) => {
   res.send('header: ' + req.route[0] + " - " + req.socket.localAddress)
 })
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
