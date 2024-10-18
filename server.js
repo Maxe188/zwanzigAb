@@ -37,7 +37,7 @@ app.get('/ip', (req, res) => {
   console.log('new user: ' + ip.split(',')[0]);
 });
 
-// server listening on Port 10000(default)
+// server listening on Port 3000(default set in environment variables)
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
