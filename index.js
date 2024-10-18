@@ -1,5 +1,6 @@
 const express = require('express')
 const { createServer } = require('node:http')
+const { join } = require('node:path')
 
 const app = express()
 const server = createServer(app)
@@ -8,8 +9,9 @@ const port = process.env.PORT || 3000
 app.set('trust proxy', true)
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.sendFile(join(__dirname, 'index.html'));
 })
+
 app.get('/a', (req, res) => {
   res.send('Hello Amenee!')
 })
