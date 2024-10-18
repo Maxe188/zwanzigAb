@@ -1,23 +1,24 @@
 const express = require('express')
 const { createServer } = require('node:http')
 const { join } = require('node:path')
+const { Server } = require('socket.io')
 
 const app = express()
 const server = createServer(app)
+const io = new Server(server)
 const port = process.env.PORT || 3000
-
-app.set('trust proxy', true)
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 })
-
-app.get('/a', (req, res) => {
-  res.send('Hello Amenee!')
+io.on('connection', (socket) => {
+  console.log('a user connected');
 })
+
+app.set('trust proxy', true)
 app.get('/ip', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  res.send('requestIP: ' + req.headers['x-forwarded-for'] + " - " + req.socket.remoteAddress + " - " + req.ip + " - " + req.ips)
+  res.send('requestIP: ' + req.ips)
   console.log('new user: ' + ip.split(',')[0])
 })
 
