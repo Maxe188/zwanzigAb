@@ -16,6 +16,9 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+  });
 });
 
 app.set('trust proxy', true);
