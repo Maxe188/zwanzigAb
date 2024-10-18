@@ -17,8 +17,8 @@ app.get('/', (req, res) => {
 });
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on('disconnect', (reason) => {
+    console.log('user disconnected because of: ' + reason);
   });
 
   /* future chat feature
