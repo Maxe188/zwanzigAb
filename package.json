@@ -6,7 +6,6 @@
   "repository": "https://github.com/Maxe188/zwanzigAb",
   "author": "Mattis",
   "license": "MIT",
-  "private": false,
   "type": "commonjs",
   "scripts": {
     "start": "node server.js"
