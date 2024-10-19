@@ -20,7 +20,7 @@ const players = {};
 
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
-  players[socket.id] = { name: '' };
+  players[socket.id] = {};
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
