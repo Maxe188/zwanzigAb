@@ -19,12 +19,13 @@ app.get('/', (req, res) => {
 const players = {};
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { name: '' };
 
   socket.on('set name', (recivedName) => {
-    players[socket.id] = { name: recivedName};
-    console.log('user '+socket.id+' set name to: ' + recivedName);
+    players[socket.id] = { name: recivedName };
+    console.log('user ' + socket.id + ' set name to: ' + recivedName);
+    console.log(players);
   });
 
   socket.on('disconnect', (reason) => {
