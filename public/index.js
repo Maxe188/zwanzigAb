@@ -1,12 +1,13 @@
 const socket = io();
 
-const nameForm = document.getElementById('nameForm');
+const startDiv = document.getElementById('startDiv');
+const nameSubmitBtn = document.getElementById('nameSubmitBtn');
 const nameInput = document.getElementById('nameInput');
 
-nameForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+nameSubmitBtn.addEventListener('click', () => {
     if (nameInput.value) {
-    socket.emit('set name', nameInput.value);
+        socket.emit('set name', nameInput.value);
+        startDiv.style.display = 'none';
     }
 });
 
@@ -22,7 +23,7 @@ form.addEventListener('submit', (e) => {
     input.value = '';
     }
 });
-    socket.on('chat message', (msg) => {
+socket.on('chat message', (msg) => {
     const item = document.createElement('li');
     item.textContent = msg;
     messages.appendChild(item);
