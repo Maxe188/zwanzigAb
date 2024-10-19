@@ -15,9 +15,20 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
+
+const players = {};
+
 io.on('connection', (socket) => {
   console.log('a user connected');
+  players[socket.id] = { name: '' };
+
+  socket.on('set name', (recivedName) => {
+    players[socket.id] = { name: recivedName};
+    console.log('user '+socket.id+' set name to: ' + recivedName);
+  });
+
   socket.on('disconnect', (reason) => {
+    delete players[socket.id];
     console.log('user disconnected because of: ' + reason);
   });
 

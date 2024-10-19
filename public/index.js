@@ -1,6 +1,14 @@
 const socket = io();
 
+const nameForm = document.getElementById('nameForm');
+const nameInput = document.getElementById('nameInput');
 
+nameForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (nameInput.value) {
+    socket.emit('set name', nameInput.value);
+    }
+});
 
 /* future chat feature
 const form = document.getElementById('form');
