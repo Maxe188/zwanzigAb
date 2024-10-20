@@ -1,6 +1,6 @@
 const socket = io();
 
-const nameDiv = document.getElementsByClassName('nameDiv')[0];
+const nameDiv = document.getElementById('nameDiv');
 
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -8,6 +8,17 @@ document.getElementById('formName').addEventListener('submit', function (event) 
     socket.emit('set name', username);
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
     nameDiv.style.display = 'none';
+});
+
+const readyDiv = document.getElementById('readyDiv');
+const playerList = document.getElementById('readyList');
+
+socket.on('update players', (players) => {
+    players.forEach(player => {
+        const item = document.createElement('li');
+        item.textContent = player.name;
+        playerList.appendChild(item);
+    });
 });
 
 /* future chat feature

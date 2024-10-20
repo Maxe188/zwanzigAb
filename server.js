@@ -24,6 +24,7 @@ io.on('connection', (socket) => {
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
+    io.emit('update players', players);
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
     console.log(players);
   });

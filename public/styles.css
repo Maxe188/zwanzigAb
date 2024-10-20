@@ -13,30 +13,30 @@ body {
   margin: 0;
 }
 
-.nameDiv {
+.menu {
   background-color: white;
-  background-image: url('pictures/red_logo.png');
-  background-size: cover;
-  background-repeat: no-repeat;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
 }
 
+.name {
+  background-image: url('pictures/red_logo.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 .nameH1 {
   color: white;
   margin-bottom: 170px;
   margin-top: 5px;
 }
-
 .nameForm {
   display: flex;
   justify-content: center;
   padding: 0;
   margin: 0;
 }
-
 .nameInput {
   padding: 10px;
   width: 60%;
@@ -47,7 +47,6 @@ body {
   margin: 5px;
   margin-right: 0;
 }
-
 .nameButton {
   padding: 10px 10px;
   background-color: #007BFF;
@@ -60,7 +59,14 @@ body {
   margin: 5px;
   margin-left: 0;
 }
-
 .nameButton:hover {
   background-color: #0056b3;
 }
+
+.ready {
+  display: none;
+  width: 200px;
+}
+#readyList { list-style-type: none; margin: 0; padding: 0; }
+#readyList > li { padding: 0.5rem 1rem; }
+#readyList > li:nth-child(odd) { background: #efefef; }
