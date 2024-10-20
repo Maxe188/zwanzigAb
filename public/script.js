@@ -15,6 +15,7 @@ document.getElementById('formName').addEventListener('submit', function (event) 
 });
 
 socket.on('update players', (players) => {
+    console.log(players);
     players.forEach(player => {
         const item = document.createElement('li');
         item.textContent = player.name;
