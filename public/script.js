@@ -16,11 +16,13 @@ document.getElementById('formName').addEventListener('submit', function (event) 
 
 socket.on('update players', (players) => {
     console.log(players);
-    players.forEach(player => {
+    playerList.innerHTML = "";
+    for(const id in players) {
+        const player = players[id];
         const item = document.createElement('li');
         item.textContent = player.name;
         playerList.appendChild(item);
-    });
+    }
 });
 
 /* future chat feature
