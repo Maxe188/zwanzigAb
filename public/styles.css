@@ -1,8 +1,66 @@
-body{
-    background-color: rgb(77, 94, 3);
-    background-image: url('pictures/vector-game-background.svg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    /*box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;*/
+body {
+  font-family: Arial, sans-serif;
+  background-color: rgb(77, 94, 3);
+  background-image: url('pictures/vector-game-background.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3) inset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.nameDiv {
+  background-color: white;
+  background-image: url('https://assets.onecompiler.app/42vmchasx/42vmb6dsx/292d64534fd34bc9834f4263a3885b18-free.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.nameH1 {
+  color: white;
+  margin-bottom: 170px;
+  margin-top: 5px;
+}
+
+.nameForm {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.nameInput {
+  padding: 10px;
+  width: 60%;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  margin: 5px;
+  margin-right: 0;
+}
+
+.nameButton {
+  padding: 10px 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  -webkit-border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  cursor: pointer;
+  margin: 5px;
+  margin-left: 0;
+}
+
+.nameButton:hover {
+  background-color: #0056b3;
 }

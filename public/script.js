@@ -1,14 +1,13 @@
 const socket = io();
 
-const startDiv = document.getElementById('startDiv');
-const nameSubmitBtn = document.getElementById('nameSubmitBtn');
-const nameInput = document.getElementById('nameInput');
+const nameDiv = document.getElementById('nameDiv');
 
-nameSubmitBtn.addEventListener('click', () => {
-    if (nameInput.value) {
-        socket.emit('set name', nameInput.value);
-        startDiv.style.display = 'none';
-    }
+document.getElementById('formName').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    socket.emit('set name', username);
+    console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
+    nameDiv.style.display = 'none';
 });
 
 /* future chat feature
