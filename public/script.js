@@ -2,16 +2,17 @@ const socket = io();
 
 const nameDiv = document.getElementById('nameDiv');
 
+const readyDiv = document.getElementById('readyDiv');
+const playerList = document.getElementById('readyList');
+
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     const username = document.getElementById('username').value;
     socket.emit('set name', username);
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
     nameDiv.style.display = 'none';
+    readyDiv.style.display = 'block';
 });
-
-const readyDiv = document.getElementById('readyDiv');
-const playerList = document.getElementById('readyList');
 
 socket.on('update players', (players) => {
     players.forEach(player => {
