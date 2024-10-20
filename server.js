@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', (reason) => {
     delete players[socket.id];
+    io.emit('update players', players);
     console.log('user disconnected because of: ' + reason);
   });
 
