@@ -5,6 +5,8 @@ const nameDiv = document.getElementById('nameDiv');
 const readyDiv = document.getElementById('readyDiv');
 const playerList = document.getElementById('readyList');
 
+const gameDiv = document.getElementById('gameDiv');
+
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     const username = document.getElementById('username').value;
@@ -23,6 +25,13 @@ socket.on('update players', (players) => {
         item.textContent = player.name;
         playerList.appendChild(item);
     }
+});
+document.getElementById('formStart').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    socket.emit('start game');
+    readyDiv.style.display = 'none';
+    gameDiv.style.display = 'block';
 });
 
 /* future chat feature

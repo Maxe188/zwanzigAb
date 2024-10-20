@@ -74,3 +74,16 @@ body {
 #readyList { list-style-type: none; margin: 0; padding: 0; }
 #readyList > li { padding: 0.5rem 1rem; }
 #readyList > li:nth-child(odd) { background: #efefef; }
+
+.game {
+  display: none;
+}
+
+.ablagestapel {
+  background-color: whitesmoke;
+  width: 300px;
+  height: 100px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
