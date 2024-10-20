@@ -1,6 +1,6 @@
 const socket = io();
 
-const nameDiv = document.getElementById('nameDiv');
+const nameDiv = document.getElementsByClassName('nameDiv')[0];
 
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
