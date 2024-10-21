@@ -3,7 +3,7 @@ const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
-import {Card, FARBE, WERT} from 'moudules/card-modules.js';
+import {Card, FARBE, WERT} from 'card-modules.js';
 
 const app = express();
 const server = createServer(app);
