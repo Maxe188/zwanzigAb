@@ -7,7 +7,7 @@ const playerList = document.getElementById('readyList');
 
 const gameDiv = document.getElementById('gameDiv');
 
-const players = {};
+var players = {};
 
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
