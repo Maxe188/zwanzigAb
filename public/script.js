@@ -22,8 +22,8 @@ socket.on('update players', (backendPlayers) => {
     console.log(backendPlayers);
     players = backendPlayers;
     playerList.innerHTML = "";
-    for(const id in players) {
-        const player = players[id];
+    for(const id in backendPlayers) {
+        const player = backendPlayers[id];
         const item = document.createElement('li');
         item.textContent = player.name;
         playerList.appendChild(item);
@@ -31,7 +31,6 @@ socket.on('update players', (backendPlayers) => {
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
-    const username = document.getElementById('username').value;
     socket.emit('start game');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
