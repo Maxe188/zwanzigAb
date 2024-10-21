@@ -43,6 +43,7 @@ button:hover {
   height: 136.5px;
   border-radius: 7.5px;
   background-color: black;
+  color: whitesmoke;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
