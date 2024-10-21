@@ -3,6 +3,8 @@ const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
+import {Card, FARBE, WERT} from 'card-modules.js';
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -27,6 +29,9 @@ io.on('connection', (socket) => {
     io.emit('update players', players);
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
     console.log(players);
+  });
+  socket.on('get Card', () => {
+    socket.emit('recive Card', new Card(FARBE.EICHEL,WERT.KOENIG));
   });
 
   socket.on('disconnect', (reason) => {
@@ -55,3 +60,4 @@ app.get('/ip', (req, res) => {
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+

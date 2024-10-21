@@ -1,5 +1,7 @@
 const socket = io();
 
+import {Card, FARBE, WERT} from 'card-modules.js';
+
 const nameDiv = document.getElementById('nameDiv');
 
 const readyDiv = document.getElementById('readyDiv');
@@ -33,8 +35,10 @@ document.getElementById('formStart').addEventListener('submit', function (event)
     event.preventDefault();
     console.log('game started');
     socket.emit('start game');
+
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
+
     const leaderbord = document.getElementById('leaderbordTable');
     leaderbord.innerHTML = "";
     const row = document.createElement('tr');
@@ -45,6 +49,15 @@ document.getElementById('formStart').addEventListener('submit', function (event)
         item.textContent = player.name;
         row.appendChild(item);
     }
+});
+
+document.getElementById('getCard').addEventListener('click', function () {
+    console.log('clicked');
+    socket.emit('get Card');
+});
+socket.on('recive Card', (card) => {
+    console.log(card.toString());
+    document.getElementById('getCard').innerHTML = card.toString();
 });
 
 /* future chat feature
