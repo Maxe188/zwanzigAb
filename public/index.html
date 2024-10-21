@@ -26,7 +26,7 @@
   <div class="menu name" id="nameDiv">
     <h1 class="nameH1">Willkommen</h1>
     <form class="nameForm" id="formName">
-      <input class="nameInput" type="text" id="username" name="username" placeholder="Name" required autofocus>
+      <input class="nameInput" type="text" id="username" name="username" placeholder="Name" value="test Name" required autofocus>
       <button class="nameButton" type="submit">Beitreten</button>
     </form>
   </div>
@@ -39,7 +39,28 @@
     </form>
   </div>
   <div class="game" id="gameDiv">
-    <div class="ablagestapel"></div>
+    <div class="table">
+      <div class="leaderbord">
+        <table class="noBorder">
+          <tr>
+            <th>Name1</th>
+            <th>Name2</th>
+          </tr>
+          <tr>
+            <td>Score 1</td>
+            <td>Score 2</td>
+          </tr>
+        </table>
+      </div>
+      <div class="mitte">
+        <div class="stapel ablage">
+          <div class="card"></div>
+        </div>
+        <div class="stapel nachzieh">
+          <div class="card"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- future chat feature
   <ul id="messages"></ul>

@@ -21,13 +21,39 @@ body {
   text-align: center;
 }
 
+button {
+  padding: 10px 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  margin: 2px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+.card {
+  /*
+  original card mesurement: 59mm * 91mm radius 5mm
+  scaled by: 1.5
+  */
+  width: 88.5px;
+  height: 136.5px;
+  border-radius: 7.5px;
+  background-color: black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
 .name {
+  display: none;
   background-image: url('pictures/red_logo.png');
   background-size: cover;
   background-repeat: no-repeat;
 }
 .nameH1 {
-  color: white;
+  color: whitesmoke;
   margin-bottom: 170px;
   margin-top: 5px;
 }
@@ -50,21 +76,11 @@ body {
   margin-right: 0;
 }
 .nameButton {
-  padding: 10px 10px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 7px;
   border-top-left-radius: 0;
   -webkit-border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   -webkit-border-bottom-left-radius: 0;
-  cursor: pointer;
-  margin: 2px;
   margin-left: 0;
-}
-.nameButton:hover {
-  background-color: #0056b3;
 }
 
 .ready {
@@ -74,15 +90,53 @@ body {
 #readyList { list-style-type: none; margin: 0; padding: 0; }
 #readyList > li { padding: 0.5rem 1rem; }
 #readyList > li:nth-child(odd) { background: #efefef; }
-
-.game {
-  display: none;
+.startButton {
+  width: 80%;
 }
 
-.ablagestapel {
+.game {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 10px;
+}
+
+.table {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leaderbord {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white;
+}
+.noBorder {
+  border-collapse: collapse;
+  border: none;
+}
+.noBorder td {border: 1px solid black;}
+.noBorder tr:first-child td {border-top: none;}
+.noBorder tr:last-child td {border-bottom: none;}
+.noBorder tr td:first-child {border-left: none;}
+.noBorder tr td:last-child {border-right: none;}
+
+.mitte {
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stapel {
   background-color: whitesmoke;
-  width: 300px;
-  height: 100px;
+  padding: 8px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
