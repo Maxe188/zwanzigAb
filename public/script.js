@@ -7,6 +7,8 @@ const playerList = document.getElementById('readyList');
 
 const gameDiv = document.getElementById('gameDiv');
 
+const players = {};
+
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     const username = document.getElementById('username').value;
@@ -16,8 +18,9 @@ document.getElementById('formName').addEventListener('submit', function (event) 
     readyDiv.style.display = 'block';
 });
 
-socket.on('update players', (players) => {
-    console.log(players);
+socket.on('update players', (backendPlayers) => {
+    console.log(backendPlayers);
+    players = backendPlayers;
     playerList.innerHTML = "";
     for(const id in players) {
         const player = players[id];
@@ -32,6 +35,16 @@ document.getElementById('formStart').addEventListener('submit', function (event)
     socket.emit('start game');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
+    const leaderbord = document.getElementById('leaderbordTable');
+    leaderbord.innerHTML = "";
+    const row = document.createElement('tr');
+    leaderbord.appendChild(row);
+    for(const id in players) {
+        const player = players[id];
+        const item = document.createElement('th');
+        item.textContent = player.name;
+        row.appendChild(item);
+    }
 });
 
 /* future chat feature
