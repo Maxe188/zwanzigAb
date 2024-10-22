@@ -2,7 +2,7 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
-const { Card } = require('./public/js/Card');
+const { Card,FARBE,WERT } = require('./public/js/Card');
 
 const app = express();
 const server = createServer(app);
@@ -28,6 +28,9 @@ io.on('connection', (socket) => {
     io.emit('update players', players);
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
     console.log(players);
+  });
+  socket.on('start game', () => {
+    console.log('game started');
   });
   socket.on('get Card', () => {
     socket.emit('recive Card', new Card(FARBE.EICHEL,WERT.KOENIG));
