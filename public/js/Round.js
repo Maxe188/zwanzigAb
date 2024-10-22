@@ -4,7 +4,6 @@ class Round {
     constructor(superiorColor) {
         this.superiorColor = superiorColor;
     }
-
     SetDominantColor(color){
         this.dominantColor = color;
     }
@@ -13,9 +12,9 @@ class Round {
     }
 
     NextTurn(){
-        this.turn++;
+        turn++;
     }
-    get GetTurn(){
+    get Turn(){
         return this.turn;
     }
 }
