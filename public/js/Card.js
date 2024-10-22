@@ -1,4 +1,4 @@
-class Card {
+module.exports = class Card {
     constructor(number, color) {
         this.number = number;
         this.color = color;
@@ -77,13 +77,13 @@ class Card {
         }
     }
 }
-const FARBE = {
+module.exports =  FARBE = {
     EICHEL: 1,
     SCHIPP: 2,
     HERZ: 3,
     SCHELLEN: 4
 };
-const WERT = {
+module.exports =  WERT = {
     SIEBEN: 1,
     UNTER: 2,
     OBER: 3,
