@@ -8,10 +8,10 @@ class Card {
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
     */
-    toAscii() {
+    static toAscii(card) {
         switch (this.color) {
             case 1:
-                switch (this.number) {
+                switch (card.number) {
                     case 1:
                         return "🃗";
                     case 2:
@@ -27,7 +27,7 @@ class Card {
                 }
                 break;
             case 2:
-                switch (this.number) {
+                switch (card.number) {
                     case 1:
                         return "🂧";
                     case 2:
@@ -43,7 +43,7 @@ class Card {
                 }
                 break;
             case 3:
-                switch (this.number) {
+                switch (card.number) {
                     case 1:
                         return "🂷";
                     case 2:
@@ -59,7 +59,7 @@ class Card {
                 }
                 break;
             case 4:
-                switch (this.number) {
+                switch (card.number) {
                     case 1:
                         return "🃇";
                     case 2:

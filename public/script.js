@@ -54,7 +54,7 @@ document.getElementById('getCard').addEventListener('click', function () {
     socket.emit('get Card');
 });
 socket.on('recive Card', (card) => {
-    console.log(card.toAscii());
+    console.log(Card.toAscii(card));
     document.getElementById('getCard').innerHTML = card.toAscii();
 });
 
