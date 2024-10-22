@@ -1,7 +1,5 @@
 const socket = io();
 
-import {Card, FARBE, WERT} from 'card-modules.js';
-
 const nameDiv = document.getElementById('nameDiv');
 
 const readyDiv = document.getElementById('readyDiv');
