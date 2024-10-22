@@ -54,7 +54,7 @@ document.getElementById('getCard').addEventListener('click', function () {
     socket.emit('get Card');
 });
 socket.on('recive Card', (card) => {
-    console.log(card.toString());
+    console.log((card(Card)).toString());
     document.getElementById('getCard').innerHTML = card.toString();
 });
 

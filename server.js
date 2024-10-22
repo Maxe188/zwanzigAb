@@ -32,7 +32,8 @@ io.on('connection', (socket) => {
     console.log('game started');
   });
   socket.on('get Card', () => {
-    socket.emit('recive Card', new Card(FARBE.EICHEL,WERT.KOENIG));
+    const card = new Card(FARBE.EICHEL,WERT.KOENIG);
+    socket.emit('recive Card', card);
   });
 
   socket.on('disconnect', (reason) => {
