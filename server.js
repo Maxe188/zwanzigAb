@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     console.log('game started');
   });
   socket.on('get Card', () => {
-    const card = new Card(FARBE.EICHEL,WERT.KOENIG);
+    const card = new Card(WERT.KOENIG, FARBE.EICHEL);
     socket.emit('recive Card', card);
   });
 
