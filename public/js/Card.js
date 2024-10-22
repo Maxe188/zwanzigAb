@@ -9,7 +9,7 @@ class Card {
     }
     */
     static toAscii(card) {
-        switch (this.color) {
+        switch (card.color) {
             case 1:
                 switch (card.number) {
                     case 1:
