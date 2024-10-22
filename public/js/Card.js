@@ -8,7 +8,7 @@ class Card {
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
     */
-    toString() {
+    toAscii() {
         switch (this.color) {
             case 1:
                 switch (this.number) {

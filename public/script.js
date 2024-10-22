@@ -53,9 +53,9 @@ document.getElementById('getCard').addEventListener('click', function () {
     console.log('clicked');
     socket.emit('get Card');
 });
-socket.on('recive Card', (recivedCard) => {
-    console.log((new Card(recivedCard)).toString());
-    document.getElementById('getCard').innerHTML = card.toString();
+socket.on('recive Card', (card) => {
+    console.log(card.toAscii());
+    document.getElementById('getCard').innerHTML = card.toAscii();
 });
 
 /* future chat feature
