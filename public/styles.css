@@ -130,6 +130,7 @@ button:hover {
 .noBorder tr td:first-child {border-left: none;}
 .noBorder tr td:last-child {border-right: none;}
 
+.noBorder th {border: 1px solid black;}
 .noBorder tr:first-child th {border-top: none;}
 .noBorder tr:last-child th {border-bottom: none;}
 .noBorder tr th:first-child {border-left: none;}

@@ -91,5 +91,3 @@ const WERT = {
     ZEHN: 5,
     ASS: 6
 };
-
-export {Card, FARBE, WERT};
