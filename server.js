@@ -14,7 +14,7 @@ const io = new Server(server);
 const port = process.env.PORT || 3000;
 
 // make the public folder public for files to refrerence eachother
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 // handle get request
 app.get('/', (req, res) => {
