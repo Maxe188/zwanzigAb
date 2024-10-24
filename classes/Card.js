@@ -21,3 +21,7 @@ const WERT = {
     ZEHN: 5,
     ASS: 6
 };
+module.exports += {
+    FARBE,
+    WERT
+}
