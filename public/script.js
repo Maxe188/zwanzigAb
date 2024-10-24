@@ -54,8 +54,8 @@ document.getElementById('getCard').addEventListener('click', function () {
     socket.emit('get Card');
 });
 socket.on('recive Card', (card) => {
-    console.log(Card.toAscii(card));
-    document.getElementById('getCard').innerHTML = Card.toAscii(card);
+    console.log(FrontendCard.toAscii(card));
+    document.getElementById('getCard').innerHTML = FrontendCard.toAscii(card);
 });
 
 /* future chat feature
