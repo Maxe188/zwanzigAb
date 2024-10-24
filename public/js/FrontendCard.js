@@ -8,6 +8,81 @@ class FrontendCard {
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
     */
+
+    static toImgUrl(card){
+        let path = "/pictures/";
+        switch (card.color) {
+            case 1:
+                switch (card.number) {
+                    case 1:
+                        path += "error";
+                    case 2:
+                        path += "error";
+                    case 3:
+                        path += "error";
+                    case 4:
+                        path += "error";
+                    case 5:
+                        path += "error";
+                    case 6:
+                        path += "error";
+                }
+                break;
+            case 2:
+                switch (card.number) {
+                    case 1:
+                        path += "error";
+                    case 2:
+                        path += "error";
+                    case 3:
+                        path += "error";
+                    case 4:
+                        path += "error";
+                    case 5:
+                        path += "error";
+                    case 6:
+                        path += "error";
+                }
+                break;
+            case 3:
+                switch (card.number) {
+                    case 1:
+                        path += "error";
+                    case 2:
+                        path += "error";
+                    case 3:
+                        path += "error";
+                    case 4:
+                        path += "error";
+                    case 5:
+                        path += "error";
+                    case 6:
+                        path += "Herz-Ass";
+                }
+                break;
+            case 4:
+                switch (card.number) {
+                    case 1:
+                        path += "error";
+                    case 2:
+                        path += "error";
+                    case 3:
+                        path += "error";
+                    case 4:
+                        path += "error";
+                    case 5:
+                        path += "error";
+                    case 6:
+                        path += "error";
+                }
+                break;
+            default:
+                return "not valid";
+        }
+        path += ".webp";
+        return path;
+    }
+
     static toAscii(card) {
         switch (card.color) {
             case 1:
@@ -74,6 +149,8 @@ class FrontendCard {
                         return "🃁";
                 }
                 break;
+            default:
+                return "not valid";
         }
     }
 }

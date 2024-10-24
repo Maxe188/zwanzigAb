@@ -4,7 +4,9 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 
 const {Card, FARBE, WERT} = require('./classes/Card.js');
+const {Game, createDeck} = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
+const Round = require('./classes/Round.js');
 
 const app = express();
 const server = createServer(app);
@@ -35,7 +37,7 @@ io.on('connection', (socket) => {
     console.log('game started');
   });
   socket.on('get Card', () => {
-    const card = new Card(WERT.KOENIG, FARBE.EICHEL);
+    const card = new Card(WERT.ASS, FARBE.HERZ);
     console.log(players[socket.id].name + 'recived Card: ' + card.toString())
     socket.emit('recive Card', card);
   });
