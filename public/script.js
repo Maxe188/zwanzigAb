@@ -55,7 +55,7 @@ document.getElementById('getCard').addEventListener('click', function () {
 });
 socket.on('recive Card', (card) => {
     console.log(FrontendCard.toAscii(card));
-    document.getElementById('ablageStapel').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(card) + ')';
+    document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(card) + ')';
     document.getElementById('getCard').innerHTML = FrontendCard.toAscii(card);
 });
 
