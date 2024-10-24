@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
   });
   socket.on('get Card', () => {
     const card = new Card(WERT.KOENIG, FARBE.EICHEL);
+    console.log(players[socket.id].name + 'recived Card: ' + card.toString())
     socket.emit('recive Card', card);
   });
 

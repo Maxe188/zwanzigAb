@@ -1,4 +1,4 @@
-class Player {
+module.exports = class Player {
     constructor(nickname, hand = []) {
         this.nickname = nickname;
         this.hand = hand; // list max 5

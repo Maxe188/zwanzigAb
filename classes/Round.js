@@ -1,4 +1,4 @@
-class Round {
+module.exports = class Round {
     turn = 1;
     dominantColor;
     constructor(superiorColor) {

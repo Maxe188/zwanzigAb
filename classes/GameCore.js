@@ -1,4 +1,4 @@
-class Game {
+const Game  = class {
     constructor(players, deck, used, center, currentRound, currentPlayer) {
         this.players = players;
         this.deck = deck; // list
@@ -59,4 +59,9 @@ function createDeck() {
         }
     }
     return tempDeck;
+}
+
+module.exports = {
+    Game,
+    createDeck
 }
