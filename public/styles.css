@@ -45,6 +45,8 @@ button:hover {
   background-color: black;
   color: whitesmoke;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .name {
@@ -148,10 +150,7 @@ button:hover {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
-
 .player {
   position: absolute;
   bottom: 0;
