@@ -3,7 +3,7 @@ const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
-const Card = require('./classes/Card.js');
+const {Card, FARBE, WERT} = require('./classes/Card.js');
 const Player = require('./classes/Player.js');
 
 const app = express();
