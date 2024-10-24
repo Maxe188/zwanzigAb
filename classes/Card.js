@@ -13,6 +13,7 @@ const FARBE = {
     HERZ: 3,
     SCHELLEN: 4
 };
+
 const WERT = {
     SIEBEN: 1,
     UNTER: 2,
@@ -21,7 +22,7 @@ const WERT = {
     ZEHN: 5,
     ASS: 6
 };
-module.exports += {
+module.exports = {
     FARBE,
     WERT
 }
