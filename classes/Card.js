@@ -7,6 +7,18 @@ const Card = class {
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
 }
+function createDeck() {
+    tempDeck = [];
+    for (i = 0; i < 2; i++) {
+        for (c = 1; c <= 4; c++) {
+            for (n = 1; n <= 6; n++) {
+                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c);
+            }
+        }
+    }
+    return tempDeck;
+}
+
 const FARBE = {
     EICHEL: 1,
     SCHIPP: 2,
@@ -26,6 +38,7 @@ const WERT = {
 };
 module.exports = {
     Card,
+    createDeck,
     FARBE,
     WERT
 }

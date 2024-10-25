@@ -1,4 +1,4 @@
-const Game = class {
+module.exports = class Game {
     running = false;
     currentPlayer = 0;
     constructor(players, deck, used, center, currentRound) {
@@ -49,21 +49,4 @@ const Game = class {
             [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
         }
     }
-}
-
-function createDeck() {
-    tempDeck = [];
-    for (i = 0; i < 2; i++) {
-        for (c = 1; c <= 4; c++) {
-            for (n = 1; n <= 6; n++) {
-                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c);
-            }
-        }
-    }
-    return tempDeck;
-}
-
-module.exports = {
-    Game,
-    createDeck
 }

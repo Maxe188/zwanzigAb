@@ -3,8 +3,8 @@ const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
-const {Card, FARBE, WERT} = require('./classes/Card.js');
-const {Game, createDeck} = require('./classes/GameCore.js');
+const {Card, createDeck, FARBE, WERT} = require('./classes/Card.js');
+const Game = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
 
