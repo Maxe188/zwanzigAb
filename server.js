@@ -35,14 +35,14 @@ io.on('connection', (socket) => {
   });
   socket.on('start game', () => {
     console.log('game started');
-    game.running = true;
+    game.Start();
     let i = 0;
     for(const id in players){
       const player = players[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
-    // send update leaderbord to all
+    io.emit('update leaderboard', game.leaderboard);
     // send austeilenDrei to player[0]
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
 });
 
 //Game
-var game = new Game({},createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
+var game = new Game([],createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
 
 // IP feature
 app.set('trust proxy', true);

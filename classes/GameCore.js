@@ -1,15 +1,29 @@
 module.exports = class Game {
     running = false;
     currentPlayer = 0;
+    leaderboard = {};
+    round = 1;
     constructor(players, deck, used, center, currentRound) {
         this.players = players; // list of Player obj
         this.deck = deck; // list of Card obj
         this.used = used; // list "
         this.center = center; // list order matters "
         this.currentRound = currentRound; // Round obj
+    }
 
-        if (deck == null) {
-            createDeck(deck);
+    Start(){
+        this.running = true;
+        this.updateLeaderboard();
+    }
+
+    updateLeaderboard(){
+        for (let rowIndex = 0; rowIndex < this.round; rowIndex++) {
+            let row = [];
+            for (let index = 0; index < this.players.length; index++) {
+                const playerScore = this.players[index];
+                row[index] = playerScore;
+            }
+            this.leaderboard[rowIndex] = row;
         }
     }
 
@@ -41,7 +55,6 @@ module.exports = class Game {
         }
         this.nextPlayer();
     }
-
 
     shuffleDeck() {
         for (let i = this.deck.length - 1; i > 0; i--) {
