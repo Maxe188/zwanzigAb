@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
 });
 
 //Game
-var game = new Game({},createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT)));
+var game = new Game({},createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
 
 // IP feature
 app.set('trust proxy', true);
