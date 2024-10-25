@@ -11,7 +11,8 @@ const FARBE = {
     EICHEL: 1,
     SCHIPP: 2,
     HERZ: 3,
-    SCHELLEN: 4
+    SCHELLEN: 4,
+    UNDEFINIERT: 5
 };
 
 const WERT = {
@@ -20,7 +21,8 @@ const WERT = {
     OBER: 3,
     KOENIG: 4,
     ZEHN: 5,
-    ASS: 6
+    ASS: 6,
+    UNDEFINIERT: 7
 };
 module.exports = {
     Card,

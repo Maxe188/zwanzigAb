@@ -1,7 +1,9 @@
 module.exports = class Player {
-    constructor(nickname, hand = []) {
+    hand = [];
+    score = 20;
+    constructor(id, nickname) {
+        this.id = id;
         this.nickname = nickname;
-        this.hand = hand; // list max 5
     }
 
     playCard(card) {

@@ -1,11 +1,12 @@
-const Game  = class {
-    constructor(players, deck, used, center, currentRound, currentPlayer) {
-        this.players = players;
-        this.deck = deck; // list
-        this.used = used; // list
-        this.center = center; // list order matters
-        this.currentRound = currentRound;
-        this.currentPlayer = players[0];
+const Game = class {
+    running = false;
+    currentPlayer = 0;
+    constructor(players, deck, used, center, currentRound) {
+        this.players = players; // list of Player obj
+        this.deck = deck; // list of Card obj
+        this.used = used; // list "
+        this.center = center; // list order matters "
+        this.currentRound = currentRound; // Round obj
 
         if (deck == null) {
             createDeck(deck);
@@ -13,9 +14,8 @@ const Game  = class {
     }
 
     nextPlayer() {
-        this.players.unshift(this.players.pop());
-
-        this.currentPlayer = this.players[0];
+        this.currentRound.NextTurn()
+        this.currentPlayer = this.players[this.currentRound.turn - 1];
     }
 
     isValidCard(card) {
@@ -41,7 +41,7 @@ const Game  = class {
         }
         this.nextPlayer();
     }
-    
+
 
     shuffleDeck() {
         for (let i = this.deck.length - 1; i > 0; i--) {
@@ -53,9 +53,11 @@ const Game  = class {
 
 function createDeck() {
     tempDeck = [];
-    for (c = 1; c <= 4; c++) {
-        for (n = 1; n <= 6; n++) {
-            tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c);
+    for (i = 0; i < 2; i++) {
+        for (c = 1; c <= 4; c++) {
+            for (n = 1; n <= 6; n++) {
+                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c);
+            }
         }
     }
     return tempDeck;

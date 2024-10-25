@@ -1,14 +1,8 @@
 module.exports = class Round {
     turn = 1;
-    dominantColor;
-    constructor(superiorColor) {
-        this.superiorColor = superiorColor;
-    }
-    SetDominantColor(color){
-        this.dominantColor = color;
-    }
-    get DominantColor(){
-        return this.dominantColor;
+    constructor(trumpf,farbeZumAngeben) {
+        this.trumpf = trumpf;
+        this.farbeZumAngeben = farbeZumAngeben;
     }
 
     NextTurn(){

@@ -4,7 +4,7 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 
 const {Card, FARBE, WERT} = require('./classes/Card.js');
-const {Game, createDeck} = require('./classes/GameCore.js');
+const {Game, createDeck, Game} = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
 
@@ -35,7 +35,19 @@ io.on('connection', (socket) => {
   });
   socket.on('start game', () => {
     console.log('game started');
+    game.running = true;
+    let i = 0;
+    for(const id in players){
+      const player = players[id];
+      game.players[i] = new Player(id, player.name);
+      i++;
+    }
+    // send update leaderbord to all
+    // send austeilenDrei to player[0]
   });
+  // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
+  // on trumpf bestimmt; send austeilenZwei to player 0
+  ///...
   socket.on('get Card', () => {
     const card = new Card(WERT.ASS, FARBE.HERZ);
     console.log(players[socket.id].name + 'recived Card: ' + card.toString())
@@ -46,6 +58,9 @@ io.on('connection', (socket) => {
     delete players[socket.id];
     io.emit('update players', players);
     console.log('user disconnected because of: ' + reason);
+    if(game.running){
+      // end game
+    }
   });
 
   /* future chat feature
@@ -55,6 +70,9 @@ io.on('connection', (socket) => {
   });
   */
 });
+
+//Game
+var game = new Game({},createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT)));
 
 // IP feature
 app.set('trust proxy', true);
