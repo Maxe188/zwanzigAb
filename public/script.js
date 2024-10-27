@@ -4,6 +4,7 @@ const nameDiv = document.getElementById('nameDiv');
 
 const readyDiv = document.getElementById('readyDiv');
 const playerList = document.getElementById('readyList');
+const leaderbordTable = document.getElementById('leaderbordTable');
 
 const gameDiv = document.getElementById('gameDiv');
 
@@ -22,7 +23,7 @@ socket.on('update players', (backendPlayers) => {
     console.log(backendPlayers);
     players = backendPlayers;
     playerList.innerHTML = "";
-    for(const id in players) {
+    for (const id in players) {
         const player = players[id];
         const item = document.createElement('li');
         item.textContent = player.name;
@@ -36,16 +37,27 @@ document.getElementById('formStart').addEventListener('submit', function (event)
 
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
-
-    const leaderbord = document.getElementById('leaderbordTable');
-    leaderbord.innerHTML = "";
-    const row = document.createElement('tr');
-    leaderbord.appendChild(row);
-    for(const id in players) {
-        const player = players[id];
-        const item = document.createElement('th');
-        item.textContent = player.name;
-        row.appendChild(item);
+});
+socket.on('update leaderboard', (leaderBoard) => {
+    leaderbordTable.innerHTML = "";
+    for (let rowIndex = 0; rowIndex < leaderBoard.length; rowIndex++) {
+        const rowScores = leaderBoard[rowIndex];
+        const tableRow = document.createElement('tr');
+        leaderbordTable.appendChild(tableRow);
+        if (rowIndex == 0) {
+            for (const id in players) {
+                const player = players[id];
+                const tableHead = document.createElement('th');
+                tableHead.textContent = player.name;
+                tableRow.appendChild(tableHead);
+            }
+        } else {
+            for (const score in rowScores) {
+                const tableData = document.createElement('td');
+                tableData.textContent = score;
+                tableRow.appendChild(tableData);
+            }
+        }
     }
 });
 
