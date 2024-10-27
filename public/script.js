@@ -39,6 +39,7 @@ document.getElementById('formStart').addEventListener('submit', function (event)
     gameDiv.style.display = 'block';
 });
 socket.on('update leaderboard', (leaderBoard) => {
+    console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
     for (let rowIndex = 0; rowIndex < leaderBoard.length; rowIndex++) {
         const rowScores = leaderBoard[rowIndex];
@@ -52,9 +53,9 @@ socket.on('update leaderboard', (leaderBoard) => {
                 tableRow.appendChild(tableHead);
             }
         } else {
-            for (const score in rowScores) {
+            for (let scoreIndex = 0; scoreIndex < rowScores.length; scoreIndex++) {
                 const tableData = document.createElement('td');
-                tableData.textContent = score;
+                tableData.textContent = rowScores[scoreIndex];
                 tableRow.appendChild(tableData);
             }
         }
