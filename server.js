@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     delete players[socket.id];
     io.emit('update players', players);
     console.log('user disconnected because of: ' + reason);
-    if(game.running){
+    if(!(game.running)){
       // end game
     }
   });
