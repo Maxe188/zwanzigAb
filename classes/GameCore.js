@@ -20,7 +20,7 @@ module.exports = class Game {
         for (let rowIndex = 0; rowIndex < this.round; rowIndex++) {
             let row = [];
             for (let index = 0; index < this.players.length; index++) {
-                const playerScore = this.players[index];
+                const playerScore = (this.players[index]).score;
                 row[index] = playerScore;
             }
             this.leaderboard[rowIndex] = row;
