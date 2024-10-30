@@ -43,6 +43,7 @@ socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
     for (let rowIndex = 0; rowIndex < leaderBoard.length; rowIndex++) {
+        console.log(leaderBoard.length);
         const rowScores = leaderBoard[rowIndex];
         const tableRow = document.createElement('tr');
         leaderbordTable.appendChild(tableRow);
