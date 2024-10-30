@@ -42,11 +42,10 @@ socket.on('start game', () => {
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
-    for (let rowIndex = 0; rowIndex < leaderBoard.length; rowIndex++) {
+    for (let rowIndex = 0; rowIndex <= leaderBoard.length; rowIndex++) {
         console.log(leaderBoard.length);
         const rowScores = leaderBoard[rowIndex];
         const tableRow = document.createElement('tr');
-        leaderbordTable.appendChild(tableRow);
         if (rowIndex == 0) {
             for (const id in players) {
                 const player = players[id];
@@ -61,6 +60,7 @@ socket.on('update leaderboard', (leaderBoard) => {
                 tableRow.appendChild(tableData);
             }
         }
+        leaderbordTable.appendChild(tableRow);
     }
 });
 
