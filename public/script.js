@@ -32,9 +32,10 @@ socket.on('update players', (backendPlayers) => {
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
+    socket.emit('starting game');
+});
+socket.on('start game', () => {
     console.log('game started');
-    socket.emit('start game');
-
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
 });

@@ -36,7 +36,8 @@ io.on('connection', (socket) => {
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
     console.log(players);
   });
-  socket.on('start game', () => {
+  socket.on('starting game', () => {
+    io.emit('start game');
     console.log('game started');
     game.Start();
     let i = 0;
