@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
       game.players[i] = new Player(id, player.name);
       i++;
     }
+    console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
     // send austeilenDrei to player[0]
   });
