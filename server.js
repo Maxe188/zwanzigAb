@@ -39,13 +39,13 @@ io.on('connection', (socket) => {
   socket.on('starting game', () => {
     io.emit('start game');
     console.log('game started');
-    game.Start();
     let i = 0;
     for(const id in players){
       const player = players[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
+    game.Start();
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
     // send austeilenDrei to player[0]
