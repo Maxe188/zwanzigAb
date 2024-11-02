@@ -70,9 +70,9 @@ io.on('connection', (socket) => {
 
   function updatePlayers(){
     playersWithNames = {};
-    for (let playerIndex = 0; playerIndex < Object.keys(players).length; playerIndex++) {
-      const player = players[playerIndex];
-      if('name' in player) playersWithNames[Object.keys(players)[playerIndex]] = player;
+    for(const id in players){
+      const player = players[id];
+      if(player.hasOwnProperty('name')) playersWithNames[id] = player;
     }
     io.emit('update players', playersWithNames);
   }
