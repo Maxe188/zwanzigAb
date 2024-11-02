@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
-    io.emit('update players', players);
+    updatePlayers();
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
     console.log(players);
   });
@@ -61,12 +61,21 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', (reason) => {
     delete players[socket.id];
-    io.emit('update players', players);
+    updatePlayers();
     console.log('user disconnected because of: ' + reason);
     if(!(game.running)){
       // end game
     }
   });
+
+  function updatePlayers(){
+    playersWithNames = {};
+    for (let playerIndex = 0; playerIndex < Object.keys(players).length; playerIndex++) {
+      const player = players[playerIndex];
+      if(player.hasOwnProperty('name')) playersWithNames[Object.keys(players)[playerIndex]] = player;
+    }
+    io.emit('update players', playersWithNames);
+  }
 
   /* future chat feature
   socket.on('chat message', (msg) => {

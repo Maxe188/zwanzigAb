@@ -1,8 +1,10 @@
 module.exports = class Game {
     running = false;
     currentPlayer = 0;
-    leaderboard = {};
+    leaderboard = {}; // leaderboard: row == round  column == data
     round = 1;
+
+    currentRound = null;
     constructor(players, deck, used, center, currentRound) {
         this.players = players; // list of Player obj
         this.deck = deck; // list of Card obj
