@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
     game.Start();
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
-    // send austeilenDrei to player[0]
+    game.austeilenDrei() // returns to the player it has to be send to
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
   // on trumpf bestimmt; send austeilenZwei to player 0
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
     playersWithNames = {};
     for (let playerIndex = 0; playerIndex < Object.keys(players).length; playerIndex++) {
       const player = players[playerIndex];
-      if(player.hasOwnProperty('name')) playersWithNames[Object.keys(players)[playerIndex]] = player;
+      if('name' in player) playersWithNames[Object.keys(players)[playerIndex]] = player;
     }
     io.emit('update players', playersWithNames);
   }

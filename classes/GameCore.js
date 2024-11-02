@@ -4,6 +4,8 @@ module.exports = class Game {
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1;
 
+    state = 0;
+
     currentRound = null;
     constructor(players, deck, used, center, currentRound) {
         this.players = players; // list of Player obj
@@ -16,6 +18,11 @@ module.exports = class Game {
     Start(){
         this.running = true;
         this.updateLeaderboard();
+    }
+
+    austeilenDrei(){
+        state = STATES.DEAL_THREE;
+        return 0;
     }
 
     updateLeaderboard(){
@@ -65,3 +72,10 @@ module.exports = class Game {
         }
     }
 }
+ const STATES = {
+    DEAL_THREE: 1,
+    SET_TRUMPF: 2,
+    DEAL_TWO: 3,
+    TRADE_CARDS: 4,
+    PLAY: 5
+};
