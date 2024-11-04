@@ -1,5 +1,6 @@
 module.exports = class Player {
     hand = [];
+    stiche = 0;
     score = 20;
     constructor(id, nickname) {
         this.id = id;

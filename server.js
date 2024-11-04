@@ -101,6 +101,16 @@ io.on('connection', (socket) => {
 
   function updateGameState(){
     // socket.emit their game state !!
+    /*
+    {
+      eigene hand
+      mitte
+      andereSpieler {
+        player 1  { anzahl hand    anzahl stiche }
+        player 2   ...
+      }
+    }
+    */
   }
 
   function getSocket(recivingId) {
