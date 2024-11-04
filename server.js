@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
   });
   socket.on('start dealing three', () => {
     if(!(socket.id === game.dealingPlayer.id)) return;
-    console.log('current player' + dealingPlayer.name + ' answered dealing three request');
+    console.log('current player' + game.dealingPlayer.name + ' answered dealing three request');
     //game.dealThree();
     updateGameState();
   });
