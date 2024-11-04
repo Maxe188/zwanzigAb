@@ -49,7 +49,7 @@ socket.on('update leaderboard', (leaderBoard) => {
             for (const id in players) {
                 const player = players[id];
                 const tableHead = document.createElement('th');
-                tableHead.textContent = player.name;
+                tableHead.textContent = ' ' + player.name + ' ';
                 tableRow.appendChild(tableHead);
             }
         } else {

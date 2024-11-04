@@ -28,7 +28,7 @@ module.exports = class Game {
     }
 
     dealThree() {
-        this.state = this.STATES.DEAL;
+        this.state = STATES.DEAL;
         this.players.forEach(player => {
             this.dealCards(player, 3);
         });
@@ -82,11 +82,11 @@ module.exports = class Game {
             [cardsToShuffle[i], cardsToShuffle[j]] = [cardsToShuffle[j], cardsToShuffle[i]];
         }
     }
-    
-    STATES = {
-        DEAL: 1,
-        SET_TRUMPF: 2,
-        TRADE_CARDS: 3,
-        PLAY: 4
-    };
+
 }
+const STATES = {
+    DEAL: 1,
+    SET_TRUMPF: 2,
+    TRADE_CARDS: 3,
+    PLAY: 4
+};
