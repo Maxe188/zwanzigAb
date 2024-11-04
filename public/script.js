@@ -70,6 +70,10 @@ socket.on('update leaderboard', (leaderBoard) => {
     }
 });
 
+socket.on('deal three', () => {
+    console.log('deal btn');
+});
+
 document.getElementById('getCard').addEventListener('click', function () {
     console.log('clicked');
     socket.emit('get Card');
