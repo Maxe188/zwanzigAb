@@ -35,12 +35,7 @@ io.on('connection', (socket) => {
     updatePlayers();
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
 
-    tempPlayers = players;
-    tempPlayers.forEach(player => {
-      const { socket, ...tempPlayer } = player;
-      player = tempPlayer;
-    });
-    console.log(tempPlayers);
+    console.log(players);
   });
   socket.on('starting game', () => {
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
