@@ -27,13 +27,13 @@ module.exports = class Game {
     }
 
     dealThree() {
+        state = STATES.DEAL;
         this.players.forEach(player => {
             this.dealCards(player, 3);
         });
     }
 
     dealCards(recivingPlayer, numberOfCards) {
-        state = STATES.DEAL;
         for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());
     }
 
@@ -81,10 +81,11 @@ module.exports = class Game {
             [cardsToShuffle[i], cardsToShuffle[j]] = [cardsToShuffle[j], cardsToShuffle[i]];
         }
     }
+    
+    STATES = {
+        DEAL: 1,
+        SET_TRUMPF: 2,
+        TRADE_CARDS: 3,
+        PLAY: 4
+    };
 }
-const STATES = {
-    DEAL: 1,
-    SET_TRUMPF: 2,
-    TRADE_CARDS: 3,
-    PLAY: 4
-};
