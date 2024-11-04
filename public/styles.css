@@ -112,6 +112,9 @@ button:hover {
   justify-content: center;
   align-items: center;
 }
+td {
+  text-align: center;
+}
 
 .leaderbord {
   position: absolute;

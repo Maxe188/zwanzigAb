@@ -67,8 +67,9 @@ io.on('connection', (socket) => {
     updatePlayers();
     console.log('user disconnected because of: ' + reason);
     if(!(game.running)){
-      io.emit('game ended'); // implement front
+      game.Stop();
       game = null;
+      io.emit('game ended'); // implement front
     }
   });
 

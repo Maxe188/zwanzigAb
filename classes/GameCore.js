@@ -21,6 +21,9 @@ module.exports = class Game {
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
     }
+    Stop() {
+        this.running = false;
+    }
 
     dealThree() {
         this.players.forEach(player => {
