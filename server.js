@@ -50,12 +50,14 @@ io.on('connection', (socket) => {
   });
   socket.on('starting game', () => {
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
+    // adding players to game obj   move to GameCore!!
     let i = 0;
     for (const id in players) {
       const player = players[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
+
     io.emit('start game');
     console.log('game started');
     game.Start();
@@ -63,9 +65,14 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
-    console.log('deal three to the current player');
+    console.log('send deal three to the current player');
     getSocket(game.dealingPlayer.id).emit('deal three');
+  });
+  socket.on('start dealing three', () => {
+    if(!(socket.id === game.dealingPlayer.id)) return;
+    console.log('current player' + dealingPlayer.name + ' answered dealing three request');
     //game.dealThree();
+    updateGameState();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
   // on trumpf bestimmt; send austeilenZwei to player 0
@@ -86,6 +93,10 @@ io.on('connection', (socket) => {
       io.emit('game ended'); // implement front
     }
   });
+
+  function updateGameState(){
+    // socket.emit their game state !!
+  }
 
   function getSocket(recivingId) {
     return players[recivingId].savedSocket;

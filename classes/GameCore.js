@@ -53,13 +53,13 @@ module.exports = class Game {
 
     nextPlayer() {
         this.currentRound.NextTurn()
-        this.currentPlayer = players[this.currentRound.turn];
+        this.currentPlayer = this.players[this.currentRound.turn];
     }
     nextRound() {
         this.round++;
         if (this.dealingPlayerIndex < this.players.length) {
             this.dealingPlayerIndex++;
-            this.dealingPlayer = this.players[dealingPlayerIndex];
+            this.dealingPlayer = this.players[this.dealingPlayerIndex];
         } else {
             this.dealingPlayerIndex = 0;
         }
