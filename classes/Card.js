@@ -13,7 +13,7 @@ function createDeck() {
     for (i = 0; i < 2; i++) {
         for (c = 1; c <= 4; c++) {
             for (n = 1; n <= 6; n++) {
-                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c, false);
+                tempDeck[(c - 1) * 6 + (n - 1) + i * 24] = new Card(n, c, false);
             }
         }
     }

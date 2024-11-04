@@ -2,9 +2,9 @@ module.exports = class Player {
     hand = [];
     stiche = 0;
     score = 20;
-    constructor(id, nickname) {
+    constructor(id, name) {
         this.id = id;
-        this.nickname = nickname;
+        this.name = name;
     }
 
     playCard(card) {
@@ -20,6 +20,6 @@ module.exports = class Player {
     trade(cards) { } //max 5 check if there are enouth and cap it if nessecery
 
     toString() {
-        return this.nickname + ": " + this.hand.toString();
+        return this.name + ": " + this.hand.toString();
     }
 }
