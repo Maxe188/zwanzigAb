@@ -22,6 +22,8 @@ app.get('/', (req, res) => {
 });
 
 const players = {};
+const maxPlayers = 6;
+const nameSuggestions = ['first', 'second', 'third', 'forth', 'fifth', 'sixth'];
 
 //Game
 var game = new Game([], [], [], [], null);
@@ -29,6 +31,9 @@ var game = new Game([], [], [], [], null);
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
+  const playerCount = Object.keys(players).length;
+  if (playerCount > maxPlayers) { console.log('too many players!!!!!!!'); return; }
+  socket.emit('name suggestion', nameSuggestions[playerCount]);
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
@@ -38,7 +43,7 @@ io.on('connection', (socket) => {
     console.log('all players: {');
     for (const id in players) {
       const player = players[id];
-      console.log(player.name);
+      console.log(' ' + player.name);
     }
     console.log('}');
   });

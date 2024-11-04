@@ -5,14 +5,19 @@ const nameDiv = document.getElementById('nameDiv');
 const readyDiv = document.getElementById('readyDiv');
 const playerList = document.getElementById('readyList');
 const leaderbordTable = document.getElementById('leaderbordTable');
+const usernameInput = document.getElementById('username');
 
 const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
 
+socket.on('name suggestion', (suggestedName) => {
+    usernameInput.textContent = suggestedName;
+});
+
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
-    const username = document.getElementById('username').value;
+    const username = usernameInput.value;
     socket.emit('set name', username);
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
     nameDiv.style.display = 'none';
