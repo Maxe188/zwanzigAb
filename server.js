@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
     if (game.running) {
       game.Stop();
       game = new Game([], [], [], [], null);
-      io.emit('game ended'); // implement front
+      io.emit('game ended');
     }
   });
 
