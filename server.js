@@ -63,9 +63,8 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
-    console.log(players[game.currentPlayer.id].savedSocket);
-    (players[game.currentPlayer.id].savedSocket).emit('deal three');
-    //getSocket(game.currentPlayer.id).emit('deal three');
+    console.log('deal three to the current player');
+    getSocket(game.dealingPlayer.id).emit('deal three');
     //game.dealThree();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1

@@ -1,6 +1,7 @@
 module.exports = class Game {
     running = false;
-    dealingPlayer = 0;
+    dealingPlayerIndex = 0;
+    dealingPlayer = null;
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
@@ -22,6 +23,7 @@ module.exports = class Game {
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
         this.currentPlayer = this.players[0];
+        this.dealingPlayer = this.players[dealingPlayerIndex];
     }
     Stop() {
         this.running = false;
@@ -55,10 +57,11 @@ module.exports = class Game {
     }
     nextRound() {
         this.round++;
-        if (this.dealingPlayer < this.players.length) {
-            this.dealingPlayer++;
+        if (this.dealingPlayerIndex < this.players.length) {
+            this.dealingPlayerIndex++;
+            this.dealingPlayer = this.players[dealingPlayerIndex];
         } else {
-            this.dealingPlayer = 0;
+            this.dealingPlayerIndex = 0;
         }
     }
 
