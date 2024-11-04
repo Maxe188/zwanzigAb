@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
     io.emit('update leaderboard', game.leaderboard);
 
     console.log(game.currentPlayer.id);
-    (players[recivingId].savedSocket).emit('deal three');
+    (players[game.currentPlayer.id].savedSocket).emit('deal three');
     //getSocket(game.currentPlayer.id).emit('deal three');
     //game.dealThree();
   });
