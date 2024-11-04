@@ -28,7 +28,7 @@ var game;
 
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
-  players[socket.id] = {};
+  players[socket.id] = { savedSocket: socket };
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
-    if(socket.id == game.currentPlayer.id)
+    getSocket(game.currentPlayer.id).emit('deal');
     game.dealThree();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
     delete players[socket.id];
     updatePlayers();
     console.log('user disconnected because of: ' + reason);
-    if(!(game.running)){
+    if(game.running){
       game.Stop();
       game = null;
       io.emit('game ended'); // implement front
@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
   });
 
   function getSocket(recivingId){
-    
+    return players[recivingId].savedSocket;
   }
 
   function updatePlayers(){
