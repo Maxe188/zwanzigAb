@@ -29,7 +29,7 @@ const nameSuggestions = ['first', 'second', 'third', 'forth', 'fifth', 'sixth'];
 var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
-  console.log(socket);
+  //console.log(socket);
   console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
   const playerCount = Object.keys(players).length;
@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
   else socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
 
   socket.on('set name', (recivedName) => {
-    players[socket.id] = { name: recivedName };
+    players[socket.id].name = recivedName;
     updatePlayers();
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
 

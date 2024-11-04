@@ -63,7 +63,7 @@ module.exports = class Game {
     }
 
     PlayCard(player, card) {
-        if (player == this.currentPlayer) {
+        if (player === this.currentPlayer) {
             if (this.isValidCard(card)) {
                 this.currentPlayer.play(card);
                 this.center.push(card);
