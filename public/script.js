@@ -12,7 +12,8 @@ const gameDiv = document.getElementById('gameDiv');
 var players = {};
 
 socket.on('name suggestion', (suggestedName) => {
-    usernameInput.textContent = suggestedName;
+    console.log('name suggestion: ' + suggestedName);
+    usernameInput.value = suggestedName;
 });
 
 document.getElementById('formName').addEventListener('submit', function (event) {

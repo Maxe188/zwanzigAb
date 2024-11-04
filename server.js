@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
   players[socket.id] = { savedSocket: socket };
   const playerCount = Object.keys(players).length;
   if (playerCount > maxPlayers) { console.log('too many players!!!!!!!'); return; }
-  socket.emit('name suggestion', nameSuggestions[playerCount]);
+  socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
 
   socket.on('set name', (recivedName) => {
     players[socket.id] = { name: recivedName };
