@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
     players[socket.id] = { name: recivedName };
     updatePlayers();
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
-    
+
     tempPlayers = players;
     tempPlayers.forEach(player => {
       const { socket, ...tempPlayer } = player;
@@ -57,7 +57,8 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
-    getSocket(game.currentPlayer.id).emit('deal');
+    console.log(game.currentPlayer.id);
+    //getSocket(game.currentPlayer.id).emit('deal');
     game.dealThree();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
