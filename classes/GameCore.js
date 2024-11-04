@@ -20,6 +20,7 @@ module.exports = class Game {
         this.running = true;
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
+        this.currentPlayer = this.players[0];
     }
     Stop() {
         this.running = false;
