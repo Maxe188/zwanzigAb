@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 const players = {};
 
 //Game
-var game;
+var game = new Game([],[],[],[],null);
 
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
@@ -38,15 +38,16 @@ io.on('connection', (socket) => {
   });
   socket.on('starting game', () => {
     game = new Game([],createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
-    io.emit('start game');
-    console.log('game started');
     let i = 0;
     for(const id in players){
       const player = players[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
+    io.emit('start game');
+    console.log('game started');
     game.Start();
+
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
