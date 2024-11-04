@@ -23,7 +23,7 @@ module.exports = class Game {
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
         this.currentPlayer = this.players[0];
-        this.dealingPlayer = this.players[dealingPlayerIndex];
+        this.dealingPlayer = this.players[this.dealingPlayerIndex];
     }
     Stop() {
         this.running = false;
