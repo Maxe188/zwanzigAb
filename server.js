@@ -74,10 +74,10 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal three');
   });
   socket.on('start dealing three', () => {
-    if(!(socket.id === game.dealingPlayer.id)) return;
+    if (!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
-    updateGameState();
+    updateGameStates();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
   // on trumpf bestimmt; send austeilenZwei to player 0
@@ -99,11 +99,28 @@ io.on('connection', (socket) => {
     }
   });
 
-  function updateGameState(){
+  function updateGameStates() {
     console.log('Deck: ' + game.deck.toString());
     game.players.forEach(player => {
       console.log(player.name + '\'s hand: ' + player.hand.toString() + ' stiche: ' + player.stiche);
     });
+
+    for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
+      let gameState = {};
+      gameState.ownHand = game.players[playerIndex].hand;
+      gameState.center = game.center;
+      let tempOtherPlayers = {};
+      for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
+        if (otherPlayer == playerIndex) continue;
+        tempOtherPlayers[game.players[otherPlayer].name] = {
+          handCount: game.players[otherPlayer].hand.length,
+          stichCount: game.players[otherPlayer].stiche
+        }
+      }
+      gameState.otherPlayers = tempOtherPlayers;
+      getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
+    }
+
 
     // socket.emit their game state !!
     /*

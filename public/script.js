@@ -71,8 +71,13 @@ socket.on('update leaderboard', (leaderBoard) => {
 });
 
 socket.on('deal three', () => {
-    console.log('deal btn');
+    console.log('simulate deal btn pressed');
+    // popup button for dealing three. If button pressed ->
     socket.emit('start dealing three');
+});
+
+socket.on('update gameState', (gameState) => {
+    console.log(gameState);
 });
 
 document.getElementById('getCard').addEventListener('click', function () {
