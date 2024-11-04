@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
   //name suggestion
   const playerCount = Object.keys(players).length;
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
-  else if(players.hasOwnProperty(socket.id)) socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
+  else if(!(players.hasOwnProperty(socket.id))) socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
 
   //console.log(socket);
   console.log('a user ' + socket.id + ' connected');
