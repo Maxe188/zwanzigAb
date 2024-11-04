@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 const players = {};
 
 //Game
-var game = new Game([],createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
+var game;
 
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
@@ -37,6 +37,7 @@ io.on('connection', (socket) => {
     console.log(players);
   });
   socket.on('starting game', () => {
+    game = new Game([],createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     io.emit('start game');
     console.log('game started');
     let i = 0;
@@ -48,7 +49,9 @@ io.on('connection', (socket) => {
     game.Start();
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
-    game.austeilenDrei() // returns to the player it has to be send to
+
+    if(socket.id == game.currentPlayer.id)
+    game.dealThree();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
   // on trumpf bestimmt; send austeilenZwei to player 0
@@ -64,9 +67,14 @@ io.on('connection', (socket) => {
     updatePlayers();
     console.log('user disconnected because of: ' + reason);
     if(!(game.running)){
-      // end game
+      io.emit('game ended'); // implement front
+      game = null;
     }
   });
+
+  function getSocket(recivingId){
+    
+  }
 
   function updatePlayers(){
     playersWithNames = {};

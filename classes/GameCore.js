@@ -1,10 +1,11 @@
 module.exports = class Game {
     running = false;
-    currentPlayer = 0;
+    dealingPlayer = 0;
+    currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
-    round = 1;
+    round = 1; // game round
 
-    state = 0;
+    state = 0; // STATES at the end of file
 
     currentRound = null;
     constructor(players, deck, used, center, currentRound) {
@@ -15,17 +16,24 @@ module.exports = class Game {
         this.currentRound = currentRound; // Round obj
     }
 
-    Start(){
+    Start() {
         this.running = true;
         this.updateLeaderboard();
+        this.shuffleCards(this.deck);
     }
 
-    austeilenDrei(){
-        state = STATES.DEAL_THREE;
-        return 0;
+    dealThree() {
+        this.players.forEach(player => {
+            player.dealCards(3);
+        });
     }
 
-    updateLeaderboard(){
+    dealCards(numberOfCards) {
+        state = STATES.DEAL;
+        for (let i = 0; i < numberOfCards; i++) this.currentPlayer.getCard(this.deck.pop());
+    }
+
+    updateLeaderboard() {
         for (let rowIndex = 0; rowIndex < this.round; rowIndex++) {
             let row = {};
             for (let index = 0; index < this.players.length; index++) {
@@ -38,11 +46,15 @@ module.exports = class Game {
 
     nextPlayer() {
         this.currentRound.NextTurn()
-        this.currentPlayer = this.players[this.currentRound.turn - 1];
+        this.currentPlayer = players[this.currentRound.turn];
     }
-
-    isValidCard(card) {
-        return (true);                  //...
+    nextRound() {
+        this.round++;
+        if (this.dealingPlayer < this.players.length) {
+            this.dealingPlayer++;
+        } else {
+            this.dealingPlayer = 0;
+        }
     }
 
     PlayCard(player, card) {
@@ -58,24 +70,17 @@ module.exports = class Game {
             console.log("wrong player");
         }
     }
-    GiveThree() {
-        for (let i = 0; i < 3; i++) {
-            this.currentPlayer.getCard(this.deck.pop());
-        }
-        this.nextPlayer();
-    }
 
-    shuffleDeck() {
-        for (let i = this.deck.length - 1; i > 0; i--) {
+    shuffleCards(cardsToShuffle) {
+        for (let i = cardsToShuffle.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+            [cardsToShuffle[i], cardsToShuffle[j]] = [cardsToShuffle[j], cardsToShuffle[i]];
         }
     }
 }
- const STATES = {
-    DEAL_THREE: 1,
+const STATES = {
+    DEAL: 1,
     SET_TRUMPF: 2,
-    DEAL_TWO: 3,
-    TRADE_CARDS: 4,
-    PLAY: 5
+    TRADE_CARDS: 3,
+    PLAY: 4
 };

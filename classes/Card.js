@@ -1,7 +1,8 @@
 const Card = class {
-    constructor(number, color) {
+    constructor(number, color, visible) {
         this.number = number;
         this.color = color;
+        this.visible = visible;
     }
     toString(){
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
@@ -12,7 +13,7 @@ function createDeck() {
     for (i = 0; i < 2; i++) {
         for (c = 1; c <= 4; c++) {
             for (n = 1; n <= 6; n++) {
-                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c);
+                tempDeck[(c - 1) * 6 + (n - 1)] = new Card(n, c, false);
             }
         }
     }

@@ -39,6 +39,7 @@ socket.on('start game', () => {
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
 });
+//game ended
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
