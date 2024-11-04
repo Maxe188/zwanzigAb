@@ -28,13 +28,13 @@ module.exports = class Game {
 
     dealThree() {
         this.players.forEach(player => {
-            player.dealCards(3);
+            dealCards(player, 3);
         });
     }
 
-    dealCards(numberOfCards) {
+    dealCards(recivingPlayer, numberOfCards) {
         state = STATES.DEAL;
-        for (let i = 0; i < numberOfCards; i++) this.currentPlayer.getCard(this.deck.pop());
+        for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());
     }
 
     updateLeaderboard() {
