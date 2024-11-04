@@ -23,20 +23,23 @@ app.get('/', (req, res) => {
 
 const players = {};
 const maxPlayers = 6;
-const nameSuggestions = ['first', 'second', 'third', 'forth', 'fifth', 'sixth'];
+const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard'];
 
 //Game
 var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
-  //name suggestion
-  const playerCount = Object.keys(players).length;
-  if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
-  else if(!(players.hasOwnProperty(socket.id))) socket.emit('name suggestion', nameSuggestions[playerCount]);
-
   //console.log(socket);
   console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
+
+  const playerCount = Object.keys(players).length;
+  if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
+
+  // Returns a random integer from 0 to 9:
+  let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
+  //name suggestion
+  socket.emit('name suggestion', nameSuggestions[randomIndex]);
 
   socket.on('set name', (recivedName) => {
     players[socket.id].name = recivedName;
