@@ -3,7 +3,7 @@ const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
-const {Card, createDeck, FARBE, WERT} = require('./classes/Card.js');
+const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
 const Game = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 const players = {};
 
 //Game
-var game = new Game([],[],[],[],null);
+var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
   console.log('a user ' + socket.id + ' connected');
@@ -37,9 +37,9 @@ io.on('connection', (socket) => {
     console.log(players);
   });
   socket.on('starting game', () => {
-    game = new Game([],createDeck(),[],[],new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
+    game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     let i = 0;
-    for(const id in players){
+    for (const id in players) {
       const player = players[id];
       game.players[i] = new Player(id, player.name);
       i++;
@@ -67,22 +67,22 @@ io.on('connection', (socket) => {
     delete players[socket.id];
     updatePlayers();
     console.log('user disconnected because of: ' + reason);
-    if(game.running){
+    if (game.running) {
       game.Stop();
       game = null;
       io.emit('game ended'); // implement front
     }
   });
 
-  function getSocket(recivingId){
+  function getSocket(recivingId) {
     return players[recivingId].savedSocket;
   }
 
-  function updatePlayers(){
+  function updatePlayers() {
     playersWithNames = {};
-    for(const id in players){
+    for (const id in players) {
       const player = players[id];
-      if(player.hasOwnProperty('name')) playersWithNames[id] = player;
+      if (player.hasOwnProperty('name')) playersWithNames[id] = { name: player.name };
     }
     io.emit('update players', playersWithNames);
   }
