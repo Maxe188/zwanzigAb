@@ -8,13 +8,6 @@ module.exports = class Game {
     state = 0; // STATES at the end of file
 
     currentRound = null;
-    
-    STATES = {
-        DEAL: 1,
-        SET_TRUMPF: 2,
-        TRADE_CARDS: 3,
-        PLAY: 4
-    };
 
     constructor(players, deck, used, center, currentRound) {
         this.players = players; // list of Player obj
@@ -89,4 +82,11 @@ module.exports = class Game {
             [cardsToShuffle[i], cardsToShuffle[j]] = [cardsToShuffle[j], cardsToShuffle[i]];
         }
     }
+    
+    STATES = {
+        DEAL: 1,
+        SET_TRUMPF: 2,
+        TRADE_CARDS: 3,
+        PLAY: 4
+    };
 }
