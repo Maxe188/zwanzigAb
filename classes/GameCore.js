@@ -28,7 +28,7 @@ module.exports = class Game {
 
     dealThree() {
         this.players.forEach(player => {
-            dealCards(player, 3);
+            this.dealCards(player, 3);
         });
     }
 
