@@ -30,7 +30,7 @@ var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
   //console.log(socket);
-  console.log('a user ' + socket.id + ' connected');
+  console.log('O a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
 
   const playerCount = Object.keys(players).length;
@@ -84,14 +84,14 @@ io.on('connection', (socket) => {
   ///...
   socket.on('get Card', () => {
     const card = new Card(WERT.ASS, FARBE.HERZ);
-    console.log(players[socket.id].name + 'recived Card: ' + card.toString())
+    console.log(players[socket.id].name + ' recived Card: ' + card.toString())
     socket.emit('recive Card', card);
   });
 
   socket.on('disconnect', (reason) => {
     delete players[socket.id];
     updatePlayers();
-    console.log('user disconnected because of: ' + reason);
+    console.log('X user disconnected because of: ' + reason);
     if (game.running) {
       game.Stop();
       game = new Game([], [], [], [], null);
@@ -100,6 +100,11 @@ io.on('connection', (socket) => {
   });
 
   function updateGameState(){
+    console.log('Deck: ' + game.deck.toString());
+    game.players.forEach(player => {
+      console.log(player.name + '\'s hand: ' + player.hand.toString() + ' stiche: ' + player.stiche);
+    });
+
     // socket.emit their game state !!
     /*
     {
