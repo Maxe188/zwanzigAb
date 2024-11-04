@@ -29,12 +29,14 @@ const nameSuggestions = ['first', 'second', 'third', 'forth', 'fifth', 'sixth'];
 var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
+  //name suggestion
+  const playerCount = Object.keys(players).length;
+  if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
+  else if(players.hasOwnProperty(socket.id)) socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
+
   //console.log(socket);
   console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
-  const playerCount = Object.keys(players).length;
-  if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
-  else socket.emit('name suggestion', nameSuggestions[playerCount - 1]);
 
   socket.on('set name', (recivedName) => {
     players[socket.id].name = recivedName;
