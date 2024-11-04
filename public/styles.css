@@ -115,6 +115,9 @@ button:hover {
 td {
   text-align: center;
 }
+th {
+  padding: 3px;
+}
 
 .leaderbord {
   position: absolute;

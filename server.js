@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
   socket.on('start dealing three', () => {
     if(!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player' + game.dealingPlayer.name + ' answered dealing three request');
-    //game.dealThree();
+    game.dealThree();
     updateGameState();
   });
   // on ausgeteilt; give each player 3 cards; send trumpf bestimmen to player 1
