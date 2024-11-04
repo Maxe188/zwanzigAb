@@ -29,6 +29,7 @@ const nameSuggestions = ['first', 'second', 'third', 'forth', 'fifth', 'sixth'];
 var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
+  console.log(socket);
   console.log('a user ' + socket.id + ' connected');
   players[socket.id] = { savedSocket: socket };
   const playerCount = Object.keys(players).length;
@@ -62,7 +63,7 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
-    console.log(game.currentPlayer.id);
+    console.log(players[game.currentPlayer.id].savedSocket);
     (players[game.currentPlayer.id].savedSocket).emit('deal three');
     //getSocket(game.currentPlayer.id).emit('deal three');
     //game.dealThree();
