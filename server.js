@@ -34,7 +34,13 @@ io.on('connection', (socket) => {
     players[socket.id] = { name: recivedName };
     updatePlayers();
     console.log('user ' + socket.id + ' set name to: ' + recivedName);
-    console.log(players);
+    
+    tempPlayers = players;
+    tempPlayers.forEach(player => {
+      const { socket, ...tempPlayer } = player;
+      player = tempPlayer;
+    });
+    console.log(tempPlayers);
   });
   socket.on('starting game', () => {
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
@@ -69,7 +75,7 @@ io.on('connection', (socket) => {
     console.log('user disconnected because of: ' + reason);
     if (game.running) {
       game.Stop();
-      game = null;
+      game = new Game([], [], [], [], null);
       io.emit('game ended'); // implement front
     }
   });
