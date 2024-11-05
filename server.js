@@ -58,8 +58,8 @@ io.on('connection', (socket) => {
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     // adding players to game obj   move to GameCore!!
     let i = 0;
-    for (const id in players) {
-      const player = players[id];
+    for (const id in playersWithNames()) {
+      const player = playersWithNames()[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
@@ -141,7 +141,7 @@ io.on('connection', (socket) => {
   }
 
   function updatePlayers() {
-    io.emit('update players', players);
+    io.emit('update players', playersWithNames());
   }
 
   function playersWithNames() {
