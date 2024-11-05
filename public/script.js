@@ -93,7 +93,7 @@ function createOwnHand(gameState){
         card.className = 'card hand';
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
         card.style.rotate = (degOfTilt / (numOfCards - 1) * index - (degOfTilt/2)).toString() + 'deg';
-        hand += card.toString();
+        hand += card.outerHTML;
     }
     return hand;
 }
