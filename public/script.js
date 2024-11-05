@@ -85,7 +85,7 @@ socket.on('update gameState', (gameState) => {
     ownHandDiv.innerHTML = createOwnHand(gameState);
 });
 function createOwnHand(gameState){
-    hand;
+    hand = "";
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 30;
     for (let index = 0; index < numOfCards; index++) {
@@ -93,7 +93,7 @@ function createOwnHand(gameState){
         card.className = 'card hand';
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
         card.style.rotate = (degOfTilt / (numOfCards - 1) * index - (degOfTilt/2)).toString() + 'deg';
-        hand += card;
+        hand += card.toString();
     }
     return hand;
 }
