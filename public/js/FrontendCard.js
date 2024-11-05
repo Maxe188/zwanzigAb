@@ -3,11 +3,10 @@ class FrontendCard {
         this.number = number;
         this.color = color;
     }
-    /*
-    toString(){
-        return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
+    
+    toCardString(card){
+        return "[" + (Object.keys(WERT)).at(card.number - 1) + " " + Object.keys(FARBE).at(card.color - 1) + "]";
     }
-    */
 
     static toImgUrl(card){
         let path = "/pictures/";

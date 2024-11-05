@@ -11,6 +11,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
+  overflow: hidden;
 }
 
 .menu {
@@ -47,6 +48,7 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   background-size: cover;
   background-repeat: no-repeat;
+  text-align: center;
 }
 
 .name {
@@ -159,5 +161,17 @@ th {
 }
 .player {
   position: absolute;
-  bottom: 0;
+  bottom: -50px;
+  background-color: darkgray;
+  width: 500px;
+  height: 220px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hand {
+  text-align: center;
+  transform-origin: center;
+  transform: rotate(0deg); /* change with js */
 }

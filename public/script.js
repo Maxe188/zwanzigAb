@@ -6,6 +6,7 @@ const readyDiv = document.getElementById('readyDiv');
 const playerList = document.getElementById('readyList');
 const leaderbordTable = document.getElementById('leaderbordTable');
 const usernameInput = document.getElementById('username');
+const ownHandDiv = document.getElementById('myself');
 
 const gameDiv = document.getElementById('gameDiv');
 
@@ -81,7 +82,18 @@ socket.on('deal three', () => {
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
+    ownHandDiv.appendChild(createOwnHand());
 });
+function createOwnHand(gameState){
+    hand = "";
+    const numOfCards = gameState.ownHand.length;
+    for (let index = 0; index < numOfCards; index++) {
+        let card = document.createElement('div');
+        card.className = 'card hand';
+        card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
+    }
+    return hand;
+}
 
 document.getElementById('getCard').addEventListener('click', function () {
     console.log('clicked');
