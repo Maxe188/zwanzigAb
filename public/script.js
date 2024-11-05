@@ -87,6 +87,7 @@ socket.on('update gameState', (gameState) => {
 function createOwnHand(gameState){
     hand = "";
     const numOfCards = gameState.ownHand.length;
+    const degOfTilt = 30;
     for (let index = 0; index < numOfCards; index++) {
         let card = document.createElement('div');
         card.className = 'card hand';

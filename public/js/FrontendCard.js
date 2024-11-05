@@ -4,7 +4,7 @@ class FrontendCard {
         this.color = color;
     }
     
-    toCardString(card){
+    static toCardString(card){
         return "[" + (Object.keys(WERT)).at(card.number - 1) + " " + Object.keys(FARBE).at(card.color - 1) + "]";
     }
 
