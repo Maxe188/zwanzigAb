@@ -175,3 +175,6 @@ th {
   transform-origin: center;
   transform: rotate(0deg); /* change with js */
 }
+.hand:hover {
+  transform: translate(0px, 30px);
+}

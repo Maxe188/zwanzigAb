@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 const players = {};
 const maxPlayers = 6;
-const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold'];
+const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde'];
 
 //Game
 var game = new Game([], [], [], [], null);
@@ -54,6 +54,7 @@ io.on('connection', (socket) => {
     console.log('}');
   });
   socket.on('starting game', () => {
+    // check players >= 2
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     // adding players to game obj   move to GameCore!!
     let i = 0;
