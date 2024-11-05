@@ -33,7 +33,8 @@ socket.on('update players', (backendPlayers) => {
     for (const id in players) {
         const player = players[id];
         const item = document.createElement('li');
-        item.textContent = player.name;
+        if(player.hasOwnProperty('name')) item.textContent = player.name;
+        else item.textContent = 'nameing ...';
         playerList.appendChild(item);
     }
 });

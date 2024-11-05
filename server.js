@@ -141,12 +141,16 @@ io.on('connection', (socket) => {
   }
 
   function updatePlayers() {
-    playersWithNames = {};
+    io.emit('update players', players);
+  }
+
+  function playersWithNames() {
+    let tempPlayers = {};
     for (const id in players) {
       const player = players[id];
-      if (player.hasOwnProperty('name')) playersWithNames[id] = { name: player.name };
+      if (player.hasOwnProperty('name')) tempPlayers[id] = { name: player.name };
     }
-    io.emit('update players', playersWithNames);
+    return tempPlayers;
   }
 
   /* future chat feature
