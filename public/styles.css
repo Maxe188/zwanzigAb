@@ -160,6 +160,18 @@ th {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.message {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background-color: rgba(245, 245, 245, 0.5);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
 .player {
   position: absolute;
   bottom: -1020px;

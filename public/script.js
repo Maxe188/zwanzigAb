@@ -13,6 +13,9 @@ const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
 
+var awaitDealing = false;
+var choosingTrumpf = false;
+
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
     usernameInput.value = suggestedName;
@@ -77,9 +80,22 @@ socket.on('update leaderboard', (leaderBoard) => {
 
 socket.on('deal three', () => {
     console.log('simulate deal btn pressed');
+    awaitDealing = true;
     // popup button for dealing three. If button pressed ->
     socket.emit('start dealing three');
 });
+socket.on('choose trumpf', () => {
+    console.log('choose trumpf');
+    choosingTrumpf = true;
+    document.getElementById('trumpfMessage').style.display = 'flex';
+});
+function cardClicked(clickedCard){
+    if(choosingTrumpf) {
+        choosingTrumpf = false;
+        document.getElementById('trumpfMessage').style.display = 'none';
+        socket.emit('set trumpf', 1); // index of clickedCard
+    }
+}
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
