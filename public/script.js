@@ -120,7 +120,7 @@ function createOtherPlayers(gameState){
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
         const otherPlayer = gameState.otherPlayers[playerName];
         const numOfCards = otherPlayer.handCount;
-        const numOfStiche = otherPlayer.stiche;
+        const numOfStiche = otherPlayer.stichCount;
         // first layer: playerDiv
         let playerDiv = document.createElement('div');
         playerDiv.className = 'otherPlayer';
