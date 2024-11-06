@@ -157,24 +157,33 @@ th {
   padding: 8px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  text-align: center;
 }
 .player {
   position: absolute;
-  bottom: -50px;
-  background-color: darkgray;
-  width: 500px;
-  height: 220px;
-  border-radius: 50px;
+  bottom: -1030px;
+  background-color: rgba(100, 100, 100, 0.5);
+  width: 1200px;
+  height: 1200px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.hand {
-  text-align: center;
+.rotatingContainer {
+  position: absolute;
   transform-origin: center;
-  transform: rotate(0deg); /* change with js */
+  pointer-events: none;
 }
-.hand:hover {
+.hoverAndRotateFix {
+  transform-origin: center;
+  transform: translate(-530px) rotate(-90deg);
+  pointer-events: all;
+}
+.hoverAndRotateFix:hover .hand{
   transform: translate(0px, -30px);
+}
+.hand {
+  background-color: transparent;
+  pointer-events: none;
+  transition: transform 0.4s ease;
 }
