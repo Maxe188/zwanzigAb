@@ -7,6 +7,7 @@ const playerList = document.getElementById('readyList');
 const leaderbordTable = document.getElementById('leaderbordTable');
 const usernameInput = document.getElementById('username');
 const ownHandDiv = document.getElementById('myself');
+const othersDiv = document.getElementById('others');
 
 const gameDiv = document.getElementById('gameDiv');
 
@@ -56,7 +57,7 @@ socket.on('update leaderboard', (leaderBoard) => {
     for (let rowIndex = 0; rowIndex <= Object.keys(leaderBoard).length; rowIndex++) {
         const tableRow = document.createElement('tr');
         if (rowIndex == 0) {
-            for (const id in players) {
+            for (const id in players) { // for in is unorderd
                 const player = players[id];
                 const tableHead = document.createElement('th');
                 tableHead.textContent = player.name;
@@ -83,6 +84,7 @@ socket.on('deal three', () => {
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
     ownHandDiv.innerHTML = createOwnHand(gameState);
+    othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(gameState){
     hand = "";
@@ -109,6 +111,56 @@ function createOwnHand(gameState){
         hand += container.outerHTML;
     }
     return hand;
+}
+function createOtherPlayers(gameState){
+    playerContainer = "";
+    const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
+    const degOfRotation = 360 / (numOfOtherPlayers + 1);
+    for (let playerI = 0; playerI < numOfCards; playerI++) {
+        const playerName = Object.keys(gameState.otherPlayers)[playerI];
+        const otherPlayer = gameState.otherPlayers[playerName];
+        const numOfCards = otherPlayer.handCount;
+        const numOfStiche = otherPlayer.stiche;
+        // first layer: playerDiv
+        let playerDiv = document.createElement('div');
+        playerDiv.className = 'otherPlayer';
+        const rotation = degOfRotation * (playerI + 1);
+        playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
+        // second layer: playerHead
+        let head = document.createElement('div');
+        let playerNameH3 = document.createElement('h3');
+        playerNameH3.innerText = playerName + ' ' + numOfStiche.toString();
+        head.appendChild(playerNameH3);
+        // second layer: otherHand
+        let otherHand = document.createElement('div');
+        otherHand.className = 'otherHand';
+
+        const degOfTilt = 10;
+        for (let index = 0; index < numOfCards; index++) {
+            // first layer: rotatingContainer
+            let container = document.createElement('div');
+            container.className = 'rotatingContainer';
+            const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) /2) + 90;
+            container.style = 'transform: rotate(' + (tilt.toString()) + 'deg);';
+            // second layer: rotateFix
+            let fix = document.createElement('div');
+            fix.className = 'rotateFix';
+            // third layer: card
+            let card = document.createElement('div');
+            card.className = 'card';
+
+
+            fix.appendChild(card);
+            container.appendChild(fix);
+            otherHand.appendChild(container);
+        }
+
+        playerDiv.appendChild(head);
+        playerDiv.appendChild(otherHand);
+        
+        playerContainer += playerDiv.outerHTML;
+    }
+    return playerContainer.outerHTML;
 }
 
 document.getElementById('getCard').addEventListener('click', function () {
