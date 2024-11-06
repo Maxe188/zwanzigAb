@@ -161,7 +161,8 @@ th {
 .player {
   position: absolute;
   bottom: -1030px;
-  background-color: rgba(100, 100, 100, 0.5);
+  background-color: rgba(50, 50, 50, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   width: 1200px;
   height: 1200px;
   border-radius: 50%;
