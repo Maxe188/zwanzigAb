@@ -82,7 +82,7 @@ socket.on('deal three', () => {
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
-    ownHandDiv.innerHTML = createOwnHand(gameState);
+    //ownHandDiv.innerHTML = createOwnHand(gameState);
 });
 function createOwnHand(gameState){
     hand = "";
