@@ -46,6 +46,7 @@ document.getElementById('formStart').addEventListener('submit', function (event)
     socket.emit('starting game');
 });
 socket.on('start game', () => {
+    if(!(Object.keys(players).length >= 2)) return;
     console.log('game started');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
