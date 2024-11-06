@@ -92,7 +92,7 @@ function createOwnHand(gameState){
         // first layer: rotatingContainer
         let container = document.createElement('div');
         container.className = 'rotatingContainer';
-        const tilt = degOfTilt * index - (degOfTilt * numOfCards /2) + 90;
+        const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) /2) + 90;
         container.style = 'transform: rotate(' + (tilt.toString()) + 'deg);';
         // second layer: hoverAndRotateFix
         let fix = document.createElement('div');
