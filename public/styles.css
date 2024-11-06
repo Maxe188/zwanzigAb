@@ -180,7 +180,7 @@ th {
   transform: translate(-530px) rotate(-90deg);
   pointer-events: all;
 }
-.hoverAndRotateFix:hover .hand{
+.hoverAndRotateFix:hover .handCard{
   transform: translate(0px, -30px);
 }
 .handCard {
