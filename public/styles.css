@@ -43,7 +43,7 @@ button:hover {
   width: 88.5px;
   height: 136.5px;
   border-radius: 7.5px;
-  background-color: black;
+  background-color: darkgray;
   color: whitesmoke;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   background-size: cover;
@@ -147,7 +147,8 @@ th {
 .noBorder tr th:last-child {border-right: none;}
 
 .mitte {
-  width: 250px;
+  position: absolute;
+  width: 270px;
   display: flex;
   justify-content: space-between;
 }
@@ -158,6 +159,7 @@ th {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
 .player {
   position: absolute;
   bottom: -1020px;
@@ -172,19 +174,48 @@ th {
 }
 .rotatingContainer {
   position: absolute;
-  transform-origin: center;
   pointer-events: none;
 }
 .hoverAndRotateFix {
-  transform-origin: center;
   transform: translate(-530px) rotate(-90deg);
   pointer-events: all;
 }
-.hoverAndRotateFix:hover .handCard{
-  transform: translate(0px, -30px) scale(1.1);
+.hoverAndRotateFix:hover .handCard {
+  transform: translate(0, -30px) scale(1.3);
 }
 .handCard {
   background-color: transparent;
   pointer-events: none;
   transition: transform 0.4s ease;
+}
+
+.otherPlayersContainer {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(90deg);
+}
+.otherPlayer {
+  position: absolute;
+  width: 400px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+.otherHand {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  bottom: -250px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+.rotateFix {
+  transform: translate(-300px) rotate(-90deg);
 }
