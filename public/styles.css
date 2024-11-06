@@ -160,7 +160,7 @@ th {
 }
 .player {
   position: absolute;
-  bottom: -1030px;
+  bottom: -1020px;
   background-color: rgba(50, 50, 50, 0.1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   width: 1200px;
@@ -181,7 +181,7 @@ th {
   pointer-events: all;
 }
 .hoverAndRotateFix:hover .handCard{
-  transform: translate(0px, -30px);
+  transform: translate(0px, -30px) scale(1.1);
 }
 .handCard {
   background-color: transparent;
