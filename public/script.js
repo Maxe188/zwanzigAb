@@ -43,10 +43,10 @@ socket.on('update players', (backendPlayers) => {
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
+    if(!(Object.keys(players).length >= 2)) return;
     socket.emit('starting game');
 });
 socket.on('start game', () => {
-    if(!(Object.keys(players).length >= 2)) return;
     console.log('game started');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
@@ -119,6 +119,7 @@ function createOwnHand(gameState){
         // third layer: card hand
         let card = document.createElement('div');
         card.className = 'card handCard';
+        card.addEventListener("click", cardClicked(1));
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
 
 
