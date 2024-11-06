@@ -120,7 +120,7 @@ function createOwnHand(gameState){
         // third layer: card hand
         let card = document.createElement('div');
         card.className = 'card handCard';
-        card.addEventListener("click", );
+        card.addEventListener("click", cardClicked);
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
 
 
