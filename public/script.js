@@ -176,7 +176,7 @@ function createOtherPlayers(gameState){
         
         playerContainer += playerDiv.outerHTML;
     }
-    return playerContainer.outerHTML;
+    return playerContainer;
 }
 
 document.getElementById('getCard').addEventListener('click', function () {
