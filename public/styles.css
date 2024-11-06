@@ -183,7 +183,7 @@ th {
 .hoverAndRotateFix:hover .hand{
   transform: translate(0px, -30px);
 }
-.hand {
+.handCard {
   background-color: transparent;
   pointer-events: none;
   transition: transform 0.4s ease;

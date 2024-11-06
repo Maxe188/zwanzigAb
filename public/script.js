@@ -82,18 +82,31 @@ socket.on('deal three', () => {
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
-    //ownHandDiv.innerHTML = createOwnHand(gameState);
+    ownHandDiv.innerHTML = createOwnHand(gameState);
 });
 function createOwnHand(gameState){
     hand = "";
     const numOfCards = gameState.ownHand.length;
-    const degOfTilt = 30;
+    const degOfTilt = 8.5;
     for (let index = 0; index < numOfCards; index++) {
+        // first layer: rotatingContainer
+        let container = document.createElement('div');
+        container.className = 'rotatingContainer';
+        const tilt = degOfTilt * index - (degOfTilt * numOfCards /2) + 90;
+        container.style = 'transform: rotate(' + (tilt.toString()) + 'deg);';
+        // second layer: hoverAndRotateFix
+        let fix = document.createElement('div');
+        fix.className = 'hoverAndRotateFix';
+        // third layer: card hand
         let card = document.createElement('div');
-        card.className = 'card hand';
+        card.className = 'card handCard';
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
-        card.style.rotate = (degOfTilt / (numOfCards - 1) * index - (degOfTilt/2)).toString() + 'deg';
-        hand += card.outerHTML;
+
+
+        fix.appendChild(card);
+        container.appendChild(fix);
+        
+        hand += container.outerHTML;
     }
     return hand;
 }
