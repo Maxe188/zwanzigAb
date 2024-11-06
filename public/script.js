@@ -116,7 +116,7 @@ function createOtherPlayers(gameState){
     playerContainer = "";
     const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
     const degOfRotation = 360 / (numOfOtherPlayers + 1);
-    for (let playerI = 0; playerI < numOfCards; playerI++) {
+    for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
         const otherPlayer = gameState.otherPlayers[playerName];
         const numOfCards = otherPlayer.handCount;
