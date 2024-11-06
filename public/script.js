@@ -93,6 +93,7 @@ socket.on('choose trumpf', () => {
 function cardClicked(clickedCard){
     if(choosingTrumpf) {
         choosingTrumpf = false;
+        console.log(clickedCard);
         document.getElementById('trumpfMessage').style.display = 'none';
         socket.emit('set trumpf', 1); // index of clickedCard
     }
