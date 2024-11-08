@@ -90,11 +90,12 @@ socket.on('choose trumpf', () => {
     choosingTrumpf = true;
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
-function cardClicked(clickedCard){
+function cardClicked(element){
     console.log('clicked');
     if(choosingTrumpf) {
         //choosingTrumpf = false;
-        console.log(clickedCard);
+        console.log(element);
+        console.log(parseInt(element.classList[0]));
         document.getElementById('trumpfMessage').style.display = 'none';
         socket.emit('set trumpf', 1); // index of clickedCard
     }
@@ -103,6 +104,7 @@ function cardClicked(clickedCard){
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
+    ownHandDiv.classList
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
@@ -120,8 +122,8 @@ function createOwnHand(hand, gameState){
         fix.className = 'hoverAndRotateFix';
         // third layer: card hand
         let card = document.createElement('div');
-        card.className = 'card handCard';
-        card.onclick = () => {cardClicked(2);};
+        card.className = index.toString() + ' card handCard';
+        card.onclick = (event) => cardClicked(event.target);
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
 
 
