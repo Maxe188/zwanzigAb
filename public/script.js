@@ -91,6 +91,7 @@ socket.on('choose trumpf', () => {
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
 function cardClicked(clickedCard){
+    console.log('clicked');
     if(choosingTrumpf) {
         //choosingTrumpf = false;
         console.log(clickedCard);
