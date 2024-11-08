@@ -106,6 +106,7 @@ socket.on('update gameState', (gameState) => {
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
+    hand.innerHTML = "";
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 8.5;
     for (let index = 0; index < numOfCards; index++) {
