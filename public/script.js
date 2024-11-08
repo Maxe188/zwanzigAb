@@ -92,7 +92,7 @@ socket.on('choose trumpf', () => {
 });
 function cardClicked(clickedCard){
     if(choosingTrumpf) {
-        choosingTrumpf = false;
+        //choosingTrumpf = false;
         console.log(clickedCard);
         document.getElementById('trumpfMessage').style.display = 'none';
         socket.emit('set trumpf', 1); // index of clickedCard
@@ -120,7 +120,7 @@ function createOwnHand(gameState){
         // third layer: card hand
         let card = document.createElement('div');
         card.className = 'card handCard';
-        card.onclick = () => cardClicked(2);
+        card.addEventListener('click', () => {cardClicked(2)});
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
 
 
