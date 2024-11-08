@@ -102,11 +102,10 @@ function cardClicked(clickedCard){
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
-    ownHandDiv.innerHTML = createOwnHand(gameState);
+    createOwnHand(ownHandDiv, gameState);
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
-function createOwnHand(gameState){
-    hand = "";
+function createOwnHand(hand, gameState){
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 8.5;
     for (let index = 0; index < numOfCards; index++) {
@@ -128,9 +127,8 @@ function createOwnHand(gameState){
         fix.appendChild(card);
         container.appendChild(fix);
         
-        hand += container.outerHTML;
+        hand.appendChild(container);
     }
-    return hand;
 }
 function createOtherPlayers(gameState){
     playerContainer = "";
