@@ -70,9 +70,9 @@ io.on('connection', (socket) => {
       i++;
     }
 
-    io.emit('start debug game');
+    startAsDebug ? io.emit('start debug game') : io.emit('start game');
+    startAsDebug ? game.Start(true) : game.Start();
     console.log('game started');
-    game.Start();
 
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
