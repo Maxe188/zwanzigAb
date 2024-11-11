@@ -169,6 +169,7 @@ th {
 
 .message {
   display: none;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: absolute;
@@ -177,6 +178,9 @@ th {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
+}
+.message > h2 {
+  margin: 0;
 }
 
 .player {
