@@ -111,8 +111,11 @@ document.getElementById('dealThreeButton').onclick = () => {
     document.getElementById('dealThreeMessage').style.display = 'none';
 }
 socket.on('choose trumpf', () => {
-    // add debug
     console.log('choose trumpf');
+    if(debugGame) {
+        socket.emit('set trumpf', Math.floor(Math.random() * 3));
+        return;
+    }
     choosingTrumpf = true;
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
@@ -128,7 +131,7 @@ function cardClicked(element){
 socket.on('deal two', () => {
     if(debugGame) {
         console.log('simulate deal btn pressed');
-        socket.emit('start dealing three');
+        socket.emit('start dealing two');
         return;
     }
     document.getElementById('dealThreeMessage').style.display = 'flex';
