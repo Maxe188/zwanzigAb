@@ -99,6 +99,12 @@ function cardClicked(element){
         socket.emit('set trumpf', parseInt(element.classList[0]));
     }
 }
+socket.on('deal two', () => {
+    console.log('simulate deal btn pressed');
+    awaitDealing = true;
+    // popup button for dealing two. If button pressed ->
+    socket.emit('start dealing two');
+});
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);

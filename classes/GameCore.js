@@ -37,6 +37,16 @@ module.exports = class Game {
             this.dealCards(player, 3);
         });
     }
+    setTrumpf(color){
+        this.state = STATES.DEAL;
+        this.currentRound.trumpf = color;
+    }
+    dealTwo() {
+        this.state = STATES.DEAL;
+        this.players.forEach(player => {
+            this.dealCards(player, 2);
+        });
+    }
 
     dealCards(recivingPlayer, numberOfCards) {
         for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());

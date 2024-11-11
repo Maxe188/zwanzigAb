@@ -85,12 +85,17 @@ io.on('connection', (socket) => {
   });
   socket.on('set trumpf', (cardIndex) => {
     if (!(socket.id === game.trumpfPlayer.id)) return;
-    let trumpf = game.trumpfPlayer.hand[cardIndex].color;
+    let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpf - 1]);
-    //set trumpf
-    //game.dealTwo();
+    game.setTrumpf(trumpfColor);
+    
+    console.log('send deal two to the current player');
+    getSocket(game.dealingPlayer.id).emit('deal two');
   });
-  // on trumpf bestimmt; send austeilenZwei to player 0
+  socket.on('start dealing two', () => {
+    game.dealTwo();
+    updateGameStates();
+  });
   ///...
   socket.on('get Card', () => {
     const card = new Card(WERT.ASS, FARBE.HERZ);
