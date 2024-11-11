@@ -80,6 +80,7 @@ socket.on('update leaderboard', (leaderBoard) => {
             for (const id in players) { // for-in is unorderd
                 const player = players[id];
                 const tableHead = document.createElement('th');
+                console.log(socket.id);
                 if(id === socket.id) tableHead.style.backgroundColor = 'rgba(200,80,80,1);';
                 tableHead.textContent = player.name;
                 tableRow.appendChild(tableHead);

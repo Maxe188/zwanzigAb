@@ -79,15 +79,15 @@ io.on('connection', (socket) => {
 
     console.log('send deal three to the current player');
     getSocket(game.dealingPlayer.id).emit('deal three');
-
-    console.log('send choose trumpf to next player');
-    getSocket(game.trumpfPlayer.id).emit('choose trumpf');
   }
   socket.on('start dealing three', () => {
     if (!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
     updateGameStates();
+
+    console.log('send choose trumpf to next player');
+    getSocket(game.trumpfPlayer.id).emit('choose trumpf');
   });
   socket.on('set trumpf', (cardIndex) => {
     if (!(socket.id === game.trumpfPlayer.id)) return;
