@@ -77,6 +77,7 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
+    updateGameStates();
     console.log('send deal three to the current player');
     getSocket(game.dealingPlayer.id).emit('deal three');
   }
