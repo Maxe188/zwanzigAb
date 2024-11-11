@@ -53,6 +53,7 @@ document.getElementById('formDebugStart').addEventListener('submit', function (e
 });
 
 socket.on('start game', () => {
+    if(nameDiv.style.display == 'block') alert('game ')
     console.log('game started');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
