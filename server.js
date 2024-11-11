@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
   socket.on('set trumpf', (cardIndex) => {
     if (!(socket.id === game.trumpfPlayer.id)) return;
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
-    console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpf - 1]);
+    console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
     
     console.log('send deal two to the current player');
