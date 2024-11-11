@@ -91,13 +91,12 @@ socket.on('choose trumpf', () => {
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
 function cardClicked(element){
-    console.log('clicked');
+    console.log('clicked on card');
     if(choosingTrumpf) {
-        //choosingTrumpf = false;
-        console.log(element);
-        console.log(parseInt(element.classList[0]));
+        choosingTrumpf = false;
+        console.log('index of clicked card: ' + element.classList[0]);
         document.getElementById('trumpfMessage').style.display = 'none';
-        socket.emit('set trumpf', 1); // index of clickedCard
+        socket.emit('set trumpf', parseInt(element.classList[0]));
     }
 }
 

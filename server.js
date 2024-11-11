@@ -83,12 +83,12 @@ io.on('connection', (socket) => {
     game.dealThree();
     updateGameStates();
   });
-  socket.on('set trumpf', () => {
+  socket.on('set trumpf', (cardIndex) => {
     if (!(socket.id === game.trumpfPlayer.id)) return;
-    console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: '); // set trumpf and print
+    let trumpf = game.trumpfPlayer.hand[cardIndex].color;
+    console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpf - 1]);
     //set trumpf
     //game.dealTwo();
-    updateGameStates();
   });
   // on trumpf bestimmt; send austeilenZwei to player 0
   ///...
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (reason) => {
     delete players[socket.id];
     updatePlayers();
-    console.log('X user disconnected because of: ' + reason);
+    console.log('X a user ' + socket.id + ' disconnected because of: ' + reason);
     if (game.running) {
       game.Stop();
       game = new Game([], [], [], [], null);
