@@ -1,3 +1,5 @@
+// future impruvements: not using id, creating rooms
+
 const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
@@ -102,8 +104,12 @@ io.on('connection', (socket) => {
   socket.on('start dealing two', () => {
     game.dealTwo();
     updateGameStates();
+    io.emit('trade');
   });
+
   ///...
+
+
   socket.on('get Card', () => {
     const card = new Card(WERT.ASS, FARBE.HERZ);
     console.log(players[socket.id].name + ' recived Card: ' + card.toString())

@@ -14,6 +14,7 @@ const gameDiv = document.getElementById('gameDiv');
 var players = {};
 
 var choosingTrumpf = false;
+var tradeing = false;
 var debugGame = false;
 
 socket.on('name suggestion', (suggestedName) => {
@@ -126,6 +127,8 @@ function cardClicked(element){
         console.log('index of clicked card: ' + element.classList[0]);
         document.getElementById('trumpfMessage').style.display = 'none';
         socket.emit('set trumpf', parseInt(element.classList[0]));
+    } else if (tradeing) {
+
     }
 }
 socket.on('deal two', () => {
@@ -134,11 +137,24 @@ socket.on('deal two', () => {
         socket.emit('start dealing two');
         return;
     }
-    document.getElementById('dealThreeMessage').style.display = 'flex';
+    document.getElementById('dealTwoMessage').style.display = 'flex';
 });
 document.getElementById('dealTwoButton').onclick = () => {
     socket.emit('start dealing two');
-    document.getElementById('dealThreeMessage').style.display = 'none';
+    document.getElementById('dealTwoMessage').style.display = 'none';
+}
+socket.on('trade', () => {
+    tradeing = true;
+    if(debugGame) {
+        console.log('simulate no trading');
+        socket.emit('enterTrade', indices);
+        return;
+    }
+    document.getElementById('tradeMessage').style.display = 'flex';
+});
+document.getElementById('tradeButton').onclick = () => {
+    socket.emit('enterTrade', indices);
+    document.getElementById('tradeMessage').style.display = 'none';
 }
 
 socket.on('update gameState', (gameState) => {
