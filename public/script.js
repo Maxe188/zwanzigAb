@@ -13,7 +13,6 @@ const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
 
-var awaitDealing = false;  // not finished
 var choosingTrumpf = false;
 var debugGame = false;
 
@@ -81,6 +80,7 @@ socket.on('update leaderboard', (leaderBoard) => {
             for (const id in players) { // for-in is unorderd
                 const player = players[id];
                 const tableHead = document.createElement('th');
+                console.log(socket.id);
                 if(id === socket.id) tableHead.style.backgroundColor = 'background-color: rgba(200,80,80,1);';
                 tableHead.textContent = player.name;
                 tableRow.appendChild(tableHead);
@@ -103,10 +103,12 @@ socket.on('deal three', () => {
         socket.emit('start dealing three');
         return;
     }
-    awaitDealing = true;
-    // popup button for dealing three. If button pressed ->
-    socket.emit('start dealing three');
+    document.getElementById('dealThreeMessage').style.display = 'flex';
 });
+document.getElementById('dealThreeButton').onclick = () => {
+    socket.emit('start dealing three');
+    document.getElementById('dealThreeMessage').style.display = 'none';
+}
 socket.on('choose trumpf', () => {
     // add debug
     console.log('choose trumpf');
@@ -123,11 +125,17 @@ function cardClicked(element){
     }
 }
 socket.on('deal two', () => {
-    console.log('simulate deal btn pressed');
-    awaitDealing = true;
-    // popup button for dealing two. If button pressed ->
-    socket.emit('start dealing two');
+    if(debugGame) {
+        console.log('simulate deal btn pressed');
+        socket.emit('start dealing three');
+        return;
+    }
+    document.getElementById('dealThreeMessage').style.display = 'flex';
 });
+document.getElementById('dealTwoButton').onclick = () => {
+    socket.emit('start dealing two');
+    document.getElementById('dealThreeMessage').style.display = 'none';
+}
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
