@@ -13,8 +13,9 @@ const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
 
-var awaitDealing = false;
+var awaitDealing = false;  // not finished
 var choosingTrumpf = false;
+var debugGame = false;
 
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
@@ -46,14 +47,29 @@ document.getElementById('formStart').addEventListener('submit', function (event)
     if(!(Object.keys(players).length >= 2)) return;
     socket.emit('starting game');
 });
+document.getElementById('formDebugStart').addEventListener('submit', function (event) {
+    event.preventDefault();
+    socket.emit('starting debug game');
+});
+
 socket.on('start game', () => {
     console.log('game started');
+    readyDiv.style.display = 'none';
+    gameDiv.style.display = 'block';
+});
+socket.on('start debug game', () => {
+    debugGame = true;
+    console.log('debug game started');
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
 });
 socket.on('game ended', () => {
     console.log('game stoped');
     gameDiv.style.display = 'none';
+    socket.disconnect();
+    socket.connect();
+    // reset
+    nameDiv.style.display = 'block';
 });
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
@@ -80,12 +96,17 @@ socket.on('update leaderboard', (leaderBoard) => {
 });
 
 socket.on('deal three', () => {
-    console.log('simulate deal btn pressed');
+    if(debugGame) {
+        console.log('simulate deal btn pressed');
+        socket.emit('start dealing three');
+        return;
+    }
     awaitDealing = true;
     // popup button for dealing three. If button pressed ->
     socket.emit('start dealing three');
 });
 socket.on('choose trumpf', () => {
+    // add debug
     console.log('choose trumpf');
     choosingTrumpf = true;
     document.getElementById('trumpfMessage').style.display = 'flex';

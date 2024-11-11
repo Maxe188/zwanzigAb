@@ -54,7 +54,13 @@ io.on('connection', (socket) => {
     console.log('}');
   });
   socket.on('starting game', () => {
-    // check players >= 2
+    startGame(false);
+  });
+  socket.on('starting debug game', () => {
+    startGame(true);
+  });
+  function startGame(startAsDebug){
+    // check players >= 2    do not if debug
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     // adding players to game obj   move to GameCore!!
     let i = 0;
@@ -64,7 +70,7 @@ io.on('connection', (socket) => {
       i++;
     }
 
-    io.emit('start game');
+    io.emit('start debug game');
     console.log('game started');
     game.Start();
 
@@ -76,7 +82,7 @@ io.on('connection', (socket) => {
 
     console.log('send choose trumpf to next player');
     getSocket(game.trumpfPlayer.id).emit('choose trumpf');
-  });
+  }
   socket.on('start dealing three', () => {
     if (!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
