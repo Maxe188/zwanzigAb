@@ -1,4 +1,4 @@
-// future impruvements: not using id, creating rooms
+// future impruvements: not using id, creating rooms, beautify css (use rem)
 
 const express = require('express');
 const { createServer } = require('node:http');
@@ -106,7 +106,9 @@ io.on('connection', (socket) => {
     updateGameStates();
     io.emit('trade');
   });
-
+  socket.on('enterTrade', (indices) => {
+    game.players.findIndex((player) => {return player.id === socket.id}).trade(indices);
+  });
   ///...
 
 

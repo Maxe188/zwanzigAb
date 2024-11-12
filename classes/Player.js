@@ -17,7 +17,7 @@ module.exports = class Player {
         if (this.hand.push(card) > 5) { console.log("too many cards on your hand") };
     }
 
-    trade(cards) { } //max 5 check if there are enouth and cap it if nessecery
+    trade(cards) { console.log(cards); } //max 5 check if there are enouth and cap it if nessecery
 
     toString() {
         return this.name + ": " + this.hand.toString();

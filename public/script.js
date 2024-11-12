@@ -17,6 +17,8 @@ var choosingTrumpf = false;
 var tradeing = false;
 var debugGame = false;
 
+var selectedTradingCards = [];
+
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
     usernameInput.value = suggestedName;
@@ -122,13 +124,15 @@ socket.on('choose trumpf', () => {
 });
 function cardClicked(element){
     console.log('clicked on card');
+    let clickedIndex = parseInt(element.classList[0]);
     if(choosingTrumpf) {
         choosingTrumpf = false;
-        console.log('index of clicked card: ' + element.classList[0]);
+        console.log('index of clicked card: ' + clickedIndex);
         document.getElementById('trumpfMessage').style.display = 'none';
-        socket.emit('set trumpf', parseInt(element.classList[0]));
+        socket.emit('set trumpf', clickedIndex);
     } else if (tradeing) {
-
+        element.classList.toggle('selected');
+        selectedTradingCards.push(clickedIndex);
     }
 }
 socket.on('deal two', () => {
@@ -145,22 +149,22 @@ document.getElementById('dealTwoButton').onclick = () => {
 }
 socket.on('trade', () => {
     tradeing = true;
+    selectedTradingCards = [];
     if(debugGame) {
         console.log('simulate no trading');
-        socket.emit('enterTrade', indices);
+        socket.emit('enterTrade', [0,2,4]);
         return;
     }
     document.getElementById('tradeMessage').style.display = 'flex';
 });
 document.getElementById('tradeButton').onclick = () => {
-    socket.emit('enterTrade', indices);
     document.getElementById('tradeMessage').style.display = 'none';
+    socket.emit('enterTrade', selectedTradingCards);
 }
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
-    ownHandDiv.classList
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
