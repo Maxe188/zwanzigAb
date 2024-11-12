@@ -149,6 +149,7 @@ io.on('connection', (socket) => {
         }
       }
       gameState.otherPlayers = tempOtherPlayers;
+      gameState.trumpfColor = game.currentRound.trumpf;
       getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
     }
 

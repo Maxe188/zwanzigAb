@@ -168,6 +168,7 @@ socket.on('update gameState', (gameState) => {
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
     othersDiv.innerHTML = createOtherPlayers(gameState);
+    document.getElementById(trumpfText).textContent = gameState.trumpfColor;
 });
 function createOwnHand(hand, gameState){
     hand.innerHTML = "";
