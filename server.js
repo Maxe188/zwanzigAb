@@ -107,7 +107,8 @@ io.on('connection', (socket) => {
     io.emit('trade');
   });
   socket.on('enterTrade', (indices) => {
-    game.players.findIndex((player) => {return player.id === socket.id}).trade(indices);
+    console.log(indices);
+    //game.players.findIndex((player) => {return player.id === socket.id}).trade(indices);
   });
   ///...
 
