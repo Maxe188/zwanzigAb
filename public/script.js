@@ -148,17 +148,19 @@ document.getElementById('dealTwoButton').onclick = () => {
     document.getElementById('dealTwoMessage').style.display = 'none';
 }
 socket.on('trade', () => {
-    tradeing = true;
     selectedTradingCards = [];
     if(debugGame) {
         console.log('simulate no trading');
         socket.emit('enterTrade', [0,2,4]);
         return;
     }
+    tradeing = true;
     document.getElementById('tradeMessage').style.display = 'flex';
 });
 document.getElementById('tradeButton').onclick = () => {
+    tradeing = false;
     document.getElementById('tradeMessage').style.display = 'none';
+    console.log('trade cards: ' + selectedTradingCards)
     socket.emit('enterTrade', selectedTradingCards);
 }
 
