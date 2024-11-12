@@ -8,6 +8,10 @@ class FrontendCard {
         return "[" + (Object.keys(WERT)).at(card.number - 1) + " " + Object.keys(FARBE).at(card.color - 1) + "]";
     }
 
+    static indexToColorString(index){
+        return Object.keys(FARBE).at(card.color - 1).toString();
+    }
+
     static toImgUrl(card){
         let path = "/pictures/";
         switch (card.color) {
