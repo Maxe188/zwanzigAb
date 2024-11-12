@@ -132,7 +132,7 @@ function cardClicked(element){
         socket.emit('set trumpf', clickedIndex);
     } else if (tradeing) {
         element.classList.toggle('selected');
-        selectedTradingCards.includes(clickedIndex) ? selectedTradingCards.push(clickedIndex) : selectedTradingCards.splice(selectedTradingCards.indexOf(clickedIndex), 1);
+        selectedTradingCards.includes(clickedIndex) ? selectedTradingCards.splice(selectedTradingCards.indexOf(clickedIndex), 1) : selectedTradingCards.push(clickedIndex);
     }
 }
 socket.on('deal two', () => {
