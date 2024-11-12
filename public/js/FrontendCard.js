@@ -9,7 +9,7 @@ class FrontendCard {
     }
 
     static indexToColorString(index){
-        return Object.keys(FARBE).at(card.color - 1).toString();
+        return Object.keys(FARBE).at(index - 1).toString();
     }
 
     static toImgUrl(card){
