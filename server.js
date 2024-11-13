@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 const players = {};
 const maxPlayers = 6;
-const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde'];
+const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
 //Game
 var game = new Game([], [], [], [], null);
@@ -62,9 +62,9 @@ io.on('connection', (socket) => {
     startGame(true);
   });
   function startGame(startAsDebug){
-    // check players >= 2    do not if debug
+    // future: check players >= 2    do not if debug
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
-    // adding players to game obj   move to GameCore!!
+    // future: adding players to game obj   move to GameCore!!
     let i = 0;
     for (const id in playersWithNames()) {
       const player = playersWithNames()[id];
@@ -72,13 +72,16 @@ io.on('connection', (socket) => {
       i++;
     }
 
+    // send clients a start game event
     startAsDebug ? io.emit('start debug game') : io.emit('start game');
     startAsDebug ? game.Start(true) : game.Start();
     console.log('game started');
 
+    // update leaderboard
     console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
 
+    // update clients to show new empty game and sand first action: deal three
     updateGameStates();
     console.log('send deal three to the current player');
     getSocket(game.dealingPlayer.id).emit('deal three');
@@ -107,8 +110,7 @@ io.on('connection', (socket) => {
     io.emit('trade');
   });
   socket.on('enterTrade', (indices) => {
-    console.log(indices);
-    //game.players.findIndex((player) => {return player.id === socket.id}).trade(indices);
+    game.players.find((player) => player.id === socket.id).trade(indices);
   });
   ///...
 

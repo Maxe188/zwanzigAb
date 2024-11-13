@@ -1,3 +1,5 @@
+const Round = require("./Round");
+
 module.exports = class Game {
     running = false;
     debugGame = false;
@@ -12,6 +14,14 @@ module.exports = class Game {
 
     currentRound = null;
 
+    /**
+     * Represents a Game
+     * @param {Player[]} players The list of Player currently playing
+     * @param {Card[]} deck The list of Card not used
+     * @param {Card[]} used The list of Card used
+     * @param {Card[]} center The list of Cards on the table (order matters)
+     * @param {Round} currentRound The current Round
+     */
     constructor(players, deck, used, center, currentRound) {
         this.players = players; // list of Player obj
         this.deck = deck; // list of Card obj

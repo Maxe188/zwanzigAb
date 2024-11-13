@@ -1,3 +1,4 @@
+
 const Card = class {
     constructor(number, color, visible) {
         this.number = number;
@@ -8,6 +9,10 @@ const Card = class {
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
 }
+/**
+ * Creates a deck of 48 cards (two decks with 24 cards)
+ * @returns {Card[]} A list of Card objects
+ */
 function createDeck() {
     tempDeck = [];
     for (i = 0; i < 2; i++) {
