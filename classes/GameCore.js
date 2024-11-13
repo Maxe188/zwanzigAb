@@ -66,14 +66,14 @@ module.exports = class Game {
     }
 
     updateLeaderboard() {
-        for (let rowIndex = 0; rowIndex < this.round; rowIndex++) {
-            let row = {};
-            for (let index = 0; index < this.players.length; index++) {
-                const playerScore = (this.players[index]).score;
-                row[index] = playerScore;
-            }
-            this.leaderboard[rowIndex] = row;
+        let rowIndex = this.round - 1;
+        let row = {};
+        for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+            let player = this.players[playerIndex];
+            const playerScore = player.notParticipating ? '-' : player.score;
+            row[playerIndex] = playerScore;
         }
+        this.leaderboard[rowIndex] = row;
     }
 
     nextPlayer() {

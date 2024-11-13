@@ -68,6 +68,7 @@ module.exports = class Player {
     newRound(){
         this.stiche = 0;
         this.traded = false;
+        this.notParticipating = false;
     }
 
     toString() {

@@ -77,9 +77,7 @@ io.on('connection', (socket) => {
     startAsDebug ? game.Start(true) : game.Start();
     console.log('game started');
 
-    // update leaderboard
-    console.log(game.leaderboard);
-    io.emit('update leaderboard', game.leaderboard);
+    updateLeaderboard();
 
     // update clients to show new empty game and sand first action: deal three
     updateGameStates();
@@ -120,6 +118,7 @@ io.on('connection', (socket) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
     updateOnePlayer(tradingPlayer);
+    updateLeaderboard();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   ///...
@@ -195,6 +194,12 @@ io.on('connection', (socket) => {
     }
     gameState.otherPlayers = tempOtherPlayers;
     getSocket(player.id).emit('update gameState', gameState);
+  }
+
+  // log leaderboard and send update event to all
+  function updateLeaderboard(){
+    console.log('update leaderbord to: ' + game.leaderboard);
+    io.emit('update leaderboard', game.leaderboard);
   }
 
   function getSocket(recivingId) {
