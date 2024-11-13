@@ -9,11 +9,12 @@ module.exports = class Player {
     }
 
     playCard(cardIndex) {
-        // checks if cardIndex is between 0 and hand lenth
-        if (this.hand.length > cardIndex && cardIndex > 0) {
+        // checks if cardIndex is between -1 and hand lenth
+        if (this.hand.length > cardIndex && cardIndex >= 0) {
             this.hand.splice(cardIndex, 1);
             return this.hand[cardIndex];
         }
+        console.log('tried to play card at unvalid index: ' + cardIndex);
         return 'unvalid index';
     }
 
