@@ -82,6 +82,9 @@ module.exports = class Game {
     }
     nextRound() {
         this.round++;
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
+        this.players.forEach((player) => player.newRound());
+
         if (this.dealingPlayerIndex < this.players.length) {
             this.dealingPlayerIndex++;
         } else {

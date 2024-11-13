@@ -1,4 +1,3 @@
-
 const Card = class {
     constructor(number, color, visible) {
         this.number = number;

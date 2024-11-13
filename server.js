@@ -100,6 +100,7 @@ io.on('connection', (socket) => {
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
+    io.emit('update trumpf', game.currentRound.trumpf);
     
     console.log('send deal two to the current player');
     getSocket(game.dealingPlayer.id).emit('deal two');
@@ -110,7 +111,8 @@ io.on('connection', (socket) => {
     io.emit('trade');
   });
   socket.on('enterTrade', (indices) => {
-    game.players.find((player) => player.id === socket.id).trade(indices);
+    game.players.find((player) => player.id === socket.id).trade(indices, game.deck, game.used);
+    updateGameStates(); // temporary
   });
   ///...
 
@@ -151,7 +153,6 @@ io.on('connection', (socket) => {
         }
       }
       gameState.otherPlayers = tempOtherPlayers;
-      gameState.trumpfColor = game.currentRound.trumpf;
       getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
     }
 
