@@ -113,6 +113,7 @@ io.on('connection', (socket) => {
   socket.on('enterTrade', (indices) => {
     game.players.find((player) => player.id === socket.id).trade(indices, game.deck, game.used);
     updateGameStates(); // temporary
+    if(game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   ///...
 

@@ -35,7 +35,7 @@ module.exports = class Player {
      */
     trade(cardIndices, deck, used) {
         // future: max 5 check if there are enouth and cap it if nessecery
-        traded = true;
+        this.traded = true;
         cardIndices.sort(function(a, b){return a - b});
         console.log('player: ' + this.name + ' trades card: ' + cardIndices);
 
