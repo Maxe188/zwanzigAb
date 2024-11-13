@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
   socket.on('starting debug game', () => {
     startGame(true);
   });
-  function startGame(startAsDebug){
+  function startGame(startAsDebug) {
     // future: check players >= 2    do not if debug
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     // future: adding players to game obj   move to GameCore!!
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
     io.emit('update trumpf', game.currentRound.trumpf);
-    
+
     console.log('send deal two to the current player');
     getSocket(game.dealingPlayer.id).emit('deal two');
   });
@@ -111,9 +111,13 @@ io.on('connection', (socket) => {
     io.emit('trade');
   });
   socket.on('enterTrade', (indices) => {
-    game.players.find((player) => player.id === socket.id).trade(indices, game.deck, game.used);
-    updateGameStates(); // temporary
-    if(game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
+    let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    tradingPlayer.trade(indices, game.deck, game.used);
+    updateOnePlayer(tradingPlayer);
+    if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
+  });
+  socket.on('not participating', () => {
+    game.players.find((player) => player.id === socket.id).doNotParticipate(game.used);
   });
   ///...
 
@@ -136,9 +140,11 @@ io.on('connection', (socket) => {
   });
 
   function updateGameStates() {
-    console.log('Deck: ' + game.deck.toString());
+    console.log('Deck length: ' + game.deck.length);
+    console.log('number of used cards: ' + game.used.length);
+    //console.log('Deck: ' + game.deck.toString());
     game.players.forEach(player => {
-      console.log(player.name + '\'s hand: ' + player.hand.toString() + ' stiche: ' + player.stiche);
+      console.log(player.toString() + ' stiche: ' + player.stiche);
     });
 
     for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
@@ -156,8 +162,6 @@ io.on('connection', (socket) => {
       gameState.otherPlayers = tempOtherPlayers;
       getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
     }
-
-
     // socket.emit their game state !!
     /*
     {
@@ -169,6 +173,25 @@ io.on('connection', (socket) => {
       }
     }
     */
+  }
+  function updateOnePlayer(player) {
+    console.log('Deck length: ' + game.deck.length);
+    console.log('number of used cards: ' + game.used.length);
+    console.log(player.toString() + ' stiche: ' + player.stiche);
+
+    let gameState = {};
+    gameState.ownHand = player.hand;
+    gameState.center = game.center;
+    let tempOtherPlayers = {};
+    for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
+      if (game.players[otherPlayer] == player) continue;
+      tempOtherPlayers[game.players[otherPlayer].name] = {
+        handCount: game.players[otherPlayer].hand.length,
+        stichCount: game.players[otherPlayer].stiche
+      }
+    }
+    gameState.otherPlayers = tempOtherPlayers;
+    getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
   }
 
   function getSocket(recivingId) {

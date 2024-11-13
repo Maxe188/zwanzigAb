@@ -1,8 +1,10 @@
 module.exports = class Player {
     hand = [];
-    stiche = 0;
     score = 20;
+    stiche = 0;
     traded = false;
+    notParticipating = false;
+
     constructor(id, name) {
         this.id = id;
         this.name = name;
@@ -49,6 +51,19 @@ module.exports = class Player {
         }
         return playedCards;
     }
+    doNotParticipate(used){
+        this.traded = true;
+        this.notParticipating = true;
+        console.log('player: ' + this.name + ' is out');
+
+        let putAwayCards = [];
+        for(let i = this.hand.length - 1; i >= 0; i--){
+            let playedCard = this.playCard(i);
+            putAwayCards.push(playedCard);
+            used.push(playedCard);
+        }
+        return putAwayCards;
+    }
 
     newRound(){
         this.stiche = 0;
@@ -56,6 +71,6 @@ module.exports = class Player {
     }
 
     toString() {
-        return this.name + ": " + this.hand.toString();
+        return this.name + "\'s hand: " + this.hand.toString();
     }
 }

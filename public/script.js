@@ -164,6 +164,12 @@ document.getElementById('tradeButton').onclick = () => {
     console.log('trade cards: ' + selectedTradingCards)
     socket.emit('enterTrade', selectedTradingCards);
 }
+document.getElementById('outButton').onclick = () => {
+    tradeing = false;
+    document.getElementById('tradeMessage').style.display = 'none';
+    console.log('you\'re out');
+    socket.emit('not participating');
+}
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
