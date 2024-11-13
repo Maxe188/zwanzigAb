@@ -117,7 +117,10 @@ io.on('connection', (socket) => {
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   socket.on('not participating', () => {
-    game.players.find((player) => player.id === socket.id).doNotParticipate(game.used);
+    let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    tradingPlayer.doNotParticipate(game.used);
+    updateOnePlayer(tradingPlayer);
+    if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   ///...
 
@@ -191,7 +194,7 @@ io.on('connection', (socket) => {
       }
     }
     gameState.otherPlayers = tempOtherPlayers;
-    getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
+    getSocket(player.id).emit('update gameState', gameState);
   }
 
   function getSocket(recivingId) {
