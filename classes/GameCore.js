@@ -84,15 +84,12 @@ module.exports = class Game {
 
     nextPlayer() {
         do {
-            if (this.turn < this.players.length - 1) {
+            if (this.turn < this.players.length - 1) { // I dont understand why it works but it does
                 this.turn++;
             } else {
                 // countStiche();
                 this.turn = 0;
             }
-            console.log('index ' + this.dealingPlayerIndex);
-            console.log('turn ' + this.turn);
-            console.log('together ' + this.dealingPlayerIndex + 1 + this.turn);
             this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
         } while(this.currentPlayer.notParticipating);
     }
