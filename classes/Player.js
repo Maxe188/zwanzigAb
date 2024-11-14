@@ -33,7 +33,7 @@ module.exports = class Player {
             console.log('tried to play card at unvalid index: ' + cardIndex);
             return 'unvalid index';
         }
-        return this.hand.splice(cardIndex, 1, [newCard])[0];
+        return this.hand.splice(cardIndex, 1, newCard)[0];
     }
 
     /**
