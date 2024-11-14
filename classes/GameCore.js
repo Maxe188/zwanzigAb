@@ -89,8 +89,8 @@ module.exports = class Game {
             } else {
                 this.turn = 0;
             }
-        } while(this.players[this.turn].notParticipating);
-        this.currentPlayer = this.players[this.turn];
+            this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
+        } while(this.currentPlayer.notParticipating);
     }
     nextRound() {
         this.round++;
