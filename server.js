@@ -198,7 +198,7 @@ io.on('connection', (socket) => {
 
   // log leaderboard and send update event to all
   function updateLeaderboard(){
-    console.log('update leaderbord to: ' + game.leaderboard);
+    console.log('update leaderbord to: ' + game.leaderboard.toString());
     io.emit('update leaderboard', game.leaderboard);
   }
 
