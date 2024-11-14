@@ -100,15 +100,18 @@ io.on('connection', (socket) => {
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
-    io.emit('update trumpf', game.currentRound.trumpf);
+    toPlayingPlayers('update trumpf', game.currentRound.trumpf);
 
     console.log('send deal two to the current player');
     getSocket(game.dealingPlayer.id).emit('deal two');
   });
   socket.on('start dealing two', () => {
+    if (!(socket.id === game.dealingPlayer.id)) return;
+    console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
     updateGameStates();
-    io.emit('trade');
+
+    toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
     console.log(game.players);                            // temp
@@ -142,7 +145,7 @@ io.on('connection', (socket) => {
     if (game.running) {
       game.Stop();
       game = new Game([], [], [], [], null);
-      io.emit('game ended');
+      toPlayingPlayers('game ended');
     }
   });
 
@@ -205,10 +208,18 @@ io.on('connection', (socket) => {
     console.log('*** game state end ***');
   }
 
+  function toPlayingPlayers(eventMessage, optionalData){
+    if(optionalData){
+      game.players.forEach(player => getSocket(player.id).emit(eventMessage, optionalData));
+    } else {
+      game.players.forEach(player => getSocket(player.id).emit(eventMessage));
+    }
+  }
+
   // log leaderboard and send update event to all
   function updateLeaderboard(){
     console.log(game.leaderboard);
-    io.emit('update leaderboard', game.leaderboard);
+    toPlayingPlayers('update leaderboard', game.leaderboard);
   }
 
   function getSocket(recivingId) {
