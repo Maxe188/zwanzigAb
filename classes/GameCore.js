@@ -38,7 +38,7 @@ module.exports = class Game {
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
         this.currentPlayer = this.players[this.turn];
-        this.trumpfPlayer = this.players[0];
+        this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
         if (this.debugGame) {
             this.dealingPlayer = this.players[0];
@@ -90,7 +90,9 @@ module.exports = class Game {
                 // countStiche();
                 this.turn = 0;
             }
-            console.log(this.dealingPlayerIndex + 1 + this.turn);
+            console.log('index ' + this.dealingPlayerIndex);
+            console.log('turn ' + this.turn);
+            console.log('together ' + this.dealingPlayerIndex + 1 + this.turn);
             this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
         } while(this.currentPlayer.notParticipating);
     }
