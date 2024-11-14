@@ -177,7 +177,7 @@ socket.on('update gameState', (gameState) => {
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
-    if(gameState.ownHand === lastHand) return;
+    if(gameState.ownHand == lastHand) return;
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
     const numOfCards = gameState.ownHand.length;
