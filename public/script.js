@@ -177,9 +177,7 @@ socket.on('update gameState', (gameState) => {
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
-    console.log(gameState.ownHand);
-    console.log(lastHand);
-    if(gameState.ownHand == lastHand) return;
+    if(JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand))  return; // cannot simply conpare(==) two arrays because array instances are never the same
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
     const numOfCards = gameState.ownHand.length;
