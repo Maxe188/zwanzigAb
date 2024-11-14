@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     console.log('all players: {');
     for (const id in players) {
       const player = players[id];
-      console.log(' ' + player.name);
+      console.log('  ' + id + ' : ' + player.name);
     }
     console.log('}');
   });
@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
     // future: adding players to game obj   move to GameCore!!
     let i = 0;
     const playersWithNames = getPlayersWithNames();
-    console.log(playersWithNames); // temp
+    console.log(playersWithNames);                                  // temp
     for (const id in playersWithNames) {
       const player = playersWithNames[id];
       game.players[i] = new Player(id, player.name);
@@ -111,10 +111,10 @@ io.on('connection', (socket) => {
     io.emit('trade');
   });
   socket.on('enterTrade', (indices) => {
-    console.log(game.players); // temp
-    console.log(socket.id); //temp
+    console.log(game.players);                            // temp
+    console.log(socket.id);                               //temp
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
-    console.log(tradingPlayer); // temp
+    console.log(tradingPlayer);                           // temp
     tradingPlayer.trade(indices, game.deck, game.used);
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
@@ -147,6 +147,7 @@ io.on('connection', (socket) => {
   });
 
   function updateGameStates() {
+    console.log('*** game state ***');
     console.log('Deck length: ' + game.deck.length);
     console.log('number of used cards: ' + game.used.length);
     //console.log('Deck: ' + game.deck.toString());
@@ -169,6 +170,7 @@ io.on('connection', (socket) => {
       gameState.otherPlayers = tempOtherPlayers;
       getSocket(game.players[playerIndex].id).emit('update gameState', gameState);
     }
+    console.log('*** game state end ***');
     // socket.emit their game state !!
     /*
     {
@@ -182,6 +184,7 @@ io.on('connection', (socket) => {
     */
   }
   function updateOnePlayer(player) {
+    console.log('*** game state ***');
     console.log('Deck length: ' + game.deck.length);
     console.log('number of used cards: ' + game.used.length);
     console.log(player.toString() + ' stiche: ' + player.stiche);
@@ -199,6 +202,7 @@ io.on('connection', (socket) => {
     }
     gameState.otherPlayers = tempOtherPlayers;
     getSocket(player.id).emit('update gameState', gameState);
+    console.log('*** game state end ***');
   }
 
   // log leaderboard and send update event to all
