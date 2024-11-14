@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
     }
 
     // send clients a start game event
-    startAsDebug ? io.emit('start debug game') : io.emit('start game');
+    startAsDebug ? toPlayingPlayers('start debug game') : toPlayingPlayers('start game');
     startAsDebug ? game.Start(true) : game.Start();
     console.log('game started');
 
@@ -114,10 +114,7 @@ io.on('connection', (socket) => {
     toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
-    console.log(game.players);                            // temp
-    console.log(socket.id);                               //temp
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
-    console.log(tradingPlayer);                           // temp
     tradingPlayer.trade(indices, game.deck, game.used);
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
@@ -209,6 +206,7 @@ io.on('connection', (socket) => {
   }
 
   function toPlayingPlayers(eventMessage, optionalData){
+    // can be replaced if players are in a room
     if(optionalData){
       game.players.forEach(player => getSocket(player.id).emit(eventMessage, optionalData));
     } else {
