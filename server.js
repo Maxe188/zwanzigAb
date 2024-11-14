@@ -117,23 +117,27 @@ io.on('connection', (socket) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.trade(indices, game.deck, game.used);
     updateGameStates();
-    if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
+    if (game.players.every((player) => player.traded == true)) console.log('lets gooo!!!!!');
+    toPlayingPlayers('lets go');
   });
   socket.on('not participating', () => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
     updateGameStates();
     sendLeaderboard();
-    if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
+    if (game.players.every((player) => player.traded == true)) console.log('lets gooo!!!!!');
+    toPlayingPlayers('lets go');
+  });
+  socket.on('play card', (cardIndex) => {
+    if (!(socket.id === game.currentPlayer.id)) return;
+    let playingPlayer = game.players.find((player) => player.id === socket.id);
+    console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString());
+    game.checkAndPlayCard(playingPlayer, cardIndex);
+    updateGameStates();
   });
   ///...
 
 
-  socket.on('get Card', () => {
-    const card = new Card(WERT.ASS, FARBE.HERZ);
-    console.log(players[socket.id].name + ' recived Card: ' + card.toString())
-    socket.emit('recive Card', card);
-  });
 
   socket.on('disconnect', (reason) => {
     delete players[socket.id];

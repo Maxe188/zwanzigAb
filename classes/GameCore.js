@@ -77,7 +77,7 @@ module.exports = class Game {
     }
 
     nextPlayer() {
-        this.currentRound.NextTurn()
+        this.currentRound.NextTurn();
         this.currentPlayer = this.players[this.currentRound.turn];
     }
     nextRound() {
@@ -95,18 +95,25 @@ module.exports = class Game {
         this.dealingPlayer = this.players[this.dealingPlayerIndex];
     }
 
-    PlayCard(player, card) {
-        if (player === this.currentPlayer) {
-            if (this.isValidCard(card)) {
-                this.currentPlayer.play(card);
-                this.center.push(card);
-                this.nextPlayer();
-            } else {
-                console.log("not valid card");
-            }
-        } else {
+    checkAndPlayCard(player, card) {
+        if (player !== this.currentPlayer) {
             console.log("wrong player");
+            return;
         }
+        if (!(this.isValidCard(card))) {
+            console.log("not valid card");
+            return;
+        }
+        this.currentPlayer.playCard(card);
+        this.center.push(card);
+        this.nextPlayer();
+    }
+    isValidCard(testingCard){
+        return true; // future: check farbe und ob trumpf
+    }
+
+    checkAllCards(){
+        // future: check total amount of cards and if every card exists and every card only once
     }
 
     shuffleCards(cardsToShuffle) {

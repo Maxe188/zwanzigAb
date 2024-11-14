@@ -8,6 +8,7 @@ const leaderbordTable = document.getElementById('leaderbordTable');
 const usernameInput = document.getElementById('username');
 const ownHandDiv = document.getElementById('myself');
 const othersDiv = document.getElementById('others');
+const centerDiv = document.getElementById('center');
 
 const gameDiv = document.getElementById('gameDiv');
 
@@ -15,6 +16,8 @@ var players = {};
 
 var choosingTrumpf = false;
 var tradeing = false;
+var playing = false;
+
 var debugGame = false;
 
 var selectedTradingCards = [];
@@ -105,10 +108,12 @@ socket.on('update trumpf', (trumpfColor) => {
 socket.on('deal three', () => {
     if(debugGame) {
         console.log('simulate deal btn pressed');
+        document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(new FrontendCard(WERT.ASS, FARBE.HERZ)) + ')';
         socket.emit('start dealing three');
         return;
     }
     document.getElementById('dealThreeMessage').style.display = 'flex';
+    document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(new FrontendCard(WERT.ASS, FARBE.HERZ)) + ')';
 });
 document.getElementById('dealThreeButton').onclick = () => {
     socket.emit('start dealing three');
@@ -134,8 +139,12 @@ function cardClicked(element){
     } else if (tradeing) {
         element.classList.toggle('selected');
         selectedTradingCards.includes(clickedIndex) ? selectedTradingCards.splice(selectedTradingCards.indexOf(clickedIndex), 1) : selectedTradingCards.push(clickedIndex);
+    } else if (playing) {
+        console.log('played card: ' + element.innerHTML);
+        socket.emit('play card', clickedIndex);
     }
 }
+
 socket.on('deal two', () => {
     if(debugGame) {
         console.log('simulate deal btn pressed');
@@ -170,11 +179,20 @@ document.getElementById('outButton').onclick = () => {
     console.log('you\'re out');
     socket.emit('not participating');
 }
+socket.on('lets go', () => {
+    playing = true;
+    const goText = document.createElement('h1');
+    goText.textContent = 'Los gehts!!!';
+    centerDiv.innerHTML = '';
+    centerDiv.appendChild(goText);
+});
+
 
 socket.on('update gameState', (gameState) => {
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
     othersDiv.innerHTML = createOtherPlayers(gameState);
+    createCenter(centerDiv ,gameState);
 });
 function createOwnHand(hand, gameState){
     if(JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand))  return; // cannot simply conpare(==) two arrays because array instances are never the same
@@ -254,16 +272,18 @@ function createOtherPlayers(gameState){
     }
     return playerContainer;
 }
+function createCenter(center, gameState){
+    center.innerHTML = "";
+    const numOfCards = gameState.center.length;
+    for (let index = 0; index < numOfCards; index++) {
+        // create one card
+        let card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = FrontendCard.toCardString(gameState.center[index]);
 
-document.getElementById('getCard').addEventListener('click', function () {
-    console.log('clicked');
-    socket.emit('get Card');
-});
-socket.on('recive Card', (card) => {
-    console.log(FrontendCard.toAscii(card));
-    document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(card) + ')';
-    document.getElementById('getCard').innerHTML = FrontendCard.toAscii(card);
-});
+        center.appendChild(card);
+    }
+}
 
 /* future chat feature
 const form = document.getElementById('form');
