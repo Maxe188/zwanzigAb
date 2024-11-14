@@ -13,8 +13,7 @@ module.exports = class Player {
     playCard(cardIndex) {
         // checks if cardIndex is between -1 and hand lenth
         if (this.hand.length > cardIndex && cardIndex >= 0) {
-            this.hand.splice(cardIndex, 1);
-            return this.hand[cardIndex];
+            return this.hand.splice(cardIndex, 1)[0];
         }
         console.log('tried to play card at unvalid index: ' + cardIndex);
         return 'unvalid index';
@@ -28,6 +27,14 @@ module.exports = class Player {
         this.hand.push(card);
         return true;
     }
+    replaceCard(newCard, cardIndex) {
+        // checks if cardIndex is outside 0 and hand.lenth-1
+        if (cardIndex >= this.hand.length || cardIndex < 0) {
+            console.log('tried to play card at unvalid index: ' + cardIndex);
+            return 'unvalid index';
+        }
+        return this.hand.splice(cardIndex, 1, [newCard])[0];
+    }
 
     /**
      * plays cards and gets new ones
@@ -40,15 +47,15 @@ module.exports = class Player {
         if(this.traded) return;
         // future: max 5 check if there are enouth and cap it if nessecery
         this.traded = true;
-        cardIndices.sort(function(a, b){return a - b});
+        cardIndices.sort(function(a, b){return a - b}); // important in the past, but now only for aesthetic purposes
         console.log('player: ' + this.name + ' trades card: ' + cardIndices);
 
         let playedCards = [];
         for(let i = cardIndices.length - 1; i >= 0; i--){
-            let playedCard = this.playCard(cardIndices[i]);
+            let playedCard = replaceCard(deck.pop(), cardIndices[i]);
+
             playedCards.push(playedCard);
             used.push(playedCard);
-            this.getCard(deck.pop());
         }
         return playedCards;
     }
