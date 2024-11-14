@@ -115,6 +115,7 @@ module.exports = class Game {
                 this.turn = 0;
             }
             this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
+            this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
     }
 
