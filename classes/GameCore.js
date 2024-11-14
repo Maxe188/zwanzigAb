@@ -42,7 +42,7 @@ module.exports = class Game {
         this.#shuffleCards(this.deck);
         this.currentPlayer = this.players[this.turn];
         this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
-        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
         if (this.debugGame) {
             this.dealingPlayer = this.players[0];
         } else {
@@ -120,7 +120,7 @@ module.exports = class Game {
 
     #nextRound() {
         this.round++;
-        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
         this.players.forEach((player) => player.newRound());
 
         if (this.dealingPlayerIndex < this.players.length) {

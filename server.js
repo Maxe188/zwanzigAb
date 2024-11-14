@@ -139,6 +139,7 @@ io.on('connection', (socket) => {
     console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString());
     game.checkAndPlayCard(playingPlayer, cardIndex);
     updateGameStates();
+    sendLeaderboard();
   });
   ///...
 
