@@ -4,9 +4,10 @@ const Round = require("./Round");
 module.exports = class Game {
     running = false;
     debugGame = false;
-    dealingPlayerIndex = 0;
+    dealingPlayerIndex = -1;
     dealingPlayer = null;
     trumpfPlayer = null;
+    turn = 0;
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
@@ -36,11 +37,14 @@ module.exports = class Game {
         this.debugGame = debugging;
         this.updateLeaderboard();
         this.shuffleCards(this.deck);
-        this.currentPlayer = this.players[0];
-        this.dealingPlayer = this.players[this.dealingPlayerIndex];
-        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players.length);
-        if(this.debugGame) this.trumpfPlayer = this.players[this.dealingPlayerIndex];
-        else this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
+        this.currentPlayer = this.players[this.turn];
+        this.trumpfPlayer = this.players[0];
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
+        if (this.debugGame) {
+            this.dealingPlayer = this.players[0];
+        } else {
+            this.dealingPlayer = this.players[this.players.length - 1];
+        }
     }
     Stop() {
         this.running = false;
@@ -52,7 +56,7 @@ module.exports = class Game {
             this.dealCards(player, 3);
         });
     }
-    setTrumpf(color){
+    setTrumpf(color) {
         this.state = STATES.DEAL;
         this.currentRound.trumpf = color;
     }
@@ -79,12 +83,18 @@ module.exports = class Game {
     }
 
     nextPlayer() {
-        this.currentRound.NextTurn();
-        this.currentPlayer = this.players[this.currentRound.turn];
+        do {
+            if (this.turn < this.players.length) {
+                this.turn++;
+            } else {
+                this.turn = 0;
+            }
+        } while(this.players[this.turn].notParticipating);
+        this.currentPlayer = this.players[this.turn];
     }
     nextRound() {
         this.round++;
-        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players.length);
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
         this.players.forEach((player) => player.newRound());
 
         if (this.dealingPlayerIndex < this.players.length) {
@@ -92,8 +102,13 @@ module.exports = class Game {
         } else {
             this.dealingPlayerIndex = 0;
         }
-        if(this.debugGame) this.trumpfPlayer = this.players[(this.dealingPlayerIndex + 1) % this.players.length];
-        else this.trumpfPlayer = this.players[this.dealingPlayerIndex];
+
+        if (this.debugGame) {
+            this.trumpfPlayer = this.players[this.dealingPlayerIndex];
+        } else {
+            // formula to get the player before the dealing player: needed because -1 is out of index and with that formula it gives the last index :)
+            this.trumpfPlayer = this.players[(this.dealingPlayerIndex - 1 + this.players.length) % this.players.length];
+        }
         this.dealingPlayer = this.players[this.dealingPlayerIndex];
     }
 
@@ -111,11 +126,11 @@ module.exports = class Game {
         this.center.push(card);
         this.nextPlayer();
     }
-    isValidCard(testingCard){
+    isValidCard(testingCard) {
         return true; // future: check farbe und ob trumpf
     }
 
-    checkAllCards(){
+    checkAllCards() {
         // future: check total amount of cards and if every card exists and every card only once
     }
 
