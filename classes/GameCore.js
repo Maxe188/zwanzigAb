@@ -84,7 +84,7 @@ module.exports = class Game {
 
     nextPlayer() {
         do {
-            if (this.turn < this.players.length) {
+            if (this.turn < this.players.length - 1) {
                 this.turn++;
             } else {
                 // countStiche();
