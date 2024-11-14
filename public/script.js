@@ -18,7 +18,7 @@ var tradeing = false;
 var debugGame = false;
 
 var selectedTradingCards = [];
-var ownCards = [];
+var lastHand;
 
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
@@ -177,8 +177,8 @@ socket.on('update gameState', (gameState) => {
     othersDiv.innerHTML = createOtherPlayers(gameState);
 });
 function createOwnHand(hand, gameState){
-    if(gameState.ownHand === ownCards) return;
-    ownCards = gameState.ownHand;
+    if(gameState.ownHand === lastHand) return;
+    lastHand = gameState.ownHand;
     hand.innerHTML = "";
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 8.5;
