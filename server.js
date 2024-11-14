@@ -116,17 +116,23 @@ io.on('connection', (socket) => {
   socket.on('enterTrade', (indices) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.trade(indices, game.deck, game.used);
+
     updateGameStates();
-    if (game.players.every((player) => player.traded == true)) console.log('lets gooo!!!!!');
-    toPlayingPlayers('lets go');
+    if (game.players.every((player) => player.traded == true)) {
+      console.log('lets gooo!!!!!');
+      toPlayingPlayers('lets go');
+    }
   });
   socket.on('not participating', () => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
+    
     updateGameStates();
     sendLeaderboard();
-    if (game.players.every((player) => player.traded == true)) console.log('lets gooo!!!!!');
-    toPlayingPlayers('lets go');
+    if (game.players.every((player) => player.traded == true)) {
+      console.log('lets gooo!!!!!');
+      toPlayingPlayers('lets go');
+    }
   });
   socket.on('play card', (cardIndex) => {
     if (!(socket.id === game.currentPlayer.id)) return;

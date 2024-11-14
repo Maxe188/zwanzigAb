@@ -6,7 +6,7 @@ module.exports = class Round {
     }
 
     NextTurn(){
-        turn++;
+        this.turn++;
     }
     get Turn(){
         return this.turn;
