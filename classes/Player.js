@@ -52,7 +52,7 @@ module.exports = class Player {
 
         let playedCards = [];
         for(let i = cardIndices.length - 1; i >= 0; i--){
-            let playedCard = replaceCard(deck.pop(), cardIndices[i]);
+            let playedCard = this.replaceCard(deck.pop(), cardIndices[i]);
 
             playedCards.push(playedCard);
             used.push(playedCard);
