@@ -37,6 +37,7 @@ module.exports = class Player {
      * @returns {Card[]} list of traded cards
      */
     trade(cardIndices, deck, used) {
+        if(this.traded) return;
         // future: max 5 check if there are enouth and cap it if nessecery
         this.traded = true;
         cardIndices.sort(function(a, b){return a - b});
@@ -52,6 +53,7 @@ module.exports = class Player {
         return playedCards;
     }
     doNotParticipate(used){
+        if(this.traded) return;
         this.traded = true;
         this.notParticipating = true;
         console.log('player: ' + this.name + ' is out');

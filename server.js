@@ -66,8 +66,9 @@ io.on('connection', (socket) => {
     game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
     // future: adding players to game obj   move to GameCore!!
     let i = 0;
-    for (const id in playersWithNames()) {
-      const player = playersWithNames()[id];
+    const playersWithNames = getPlayersWithNames();
+    for (const id in playersWithNames) {
+      const player = playersWithNames[id];
       game.players[i] = new Player(id, player.name);
       i++;
     }
@@ -198,7 +199,7 @@ io.on('connection', (socket) => {
 
   // log leaderboard and send update event to all
   function updateLeaderboard(){
-    console.log('update leaderbord to: ' + game.leaderboard.toString());
+    console.log(game.leaderboard);
     io.emit('update leaderboard', game.leaderboard);
   }
 
@@ -207,10 +208,10 @@ io.on('connection', (socket) => {
   }
 
   function updatePlayers() {
-    io.emit('update players', playersWithNames());
+    io.emit('update players', getPlayersWithNames());
   }
 
-  function playersWithNames() {
+  function getPlayersWithNames() {
     let tempPlayers = {};
     for (const id in players) {
       const player = players[id];
