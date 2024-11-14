@@ -97,7 +97,8 @@ module.exports = class Game {
         this.dealingPlayer = this.players[this.dealingPlayerIndex];
     }
 
-    checkAndPlayCard(player, card) {
+    checkAndPlayCard(player, cardIndex) {
+        const card = this.currentPlayer.hand[cardIndex];
         if (player !== this.currentPlayer) {
             console.log("wrong player");
             return;
@@ -106,7 +107,7 @@ module.exports = class Game {
             console.log("not valid card");
             return;
         }
-        this.currentPlayer.playCard(card);
+        this.currentPlayer.playCard(cardIndex);
         this.center.push(card);
         this.nextPlayer();
     }

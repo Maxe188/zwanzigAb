@@ -5,6 +5,7 @@ class FrontendCard {
     }
     
     static toCardString(card){
+        if((card.number <= 0 || card.number > Object.keys(WERT).length) || (card.color <= 0 || card.color > Object.keys(FARBE).length)) return 'not valid card';
         return "[" + (Object.keys(WERT)).at(card.number - 1) + " " + Object.keys(FARBE).at(card.color - 1) + "]";
     }
 
