@@ -87,8 +87,10 @@ module.exports = class Game {
             if (this.turn < this.players.length) {
                 this.turn++;
             } else {
+                // countStiche();
                 this.turn = 0;
             }
+            console.log(this.dealingPlayerIndex + 1 + this.turn);
             this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
         } while(this.currentPlayer.notParticipating);
     }
