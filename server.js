@@ -112,6 +112,7 @@ io.on('connection', (socket) => {
   });
   socket.on('enterTrade', (indices) => {
     console.log(game.players); // temp
+    console.log(socket.id); //temp
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     console.log(tradingPlayer); // temp
     tradingPlayer.trade(indices, game.deck, game.used);
