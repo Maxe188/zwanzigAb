@@ -3,7 +3,7 @@ const Round = require("./Round");
 const Card = class {
     number = WERT.UNDEFINIERT;
     color = FARBE.UNDEFINIERT;
-    owner;
+    ownerId;
     /**
      * Represents a Doppelkopf Karte
      * @param {number} number number to represent the value between 1 - 7

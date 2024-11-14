@@ -102,7 +102,7 @@ module.exports = class Game {
                     }
                 }
                 // add stich to owner of the card and clear center
-                this.center[highestIndex].owner.stiche++;
+                this.players.find(player => player.id = this.center[highestIndex].ownerId).stiche++;
                 for(let card in this.center) this.used.push(card);
                 this.center = [];
                 // check for new round
