@@ -111,13 +111,13 @@ io.on('connection', (socket) => {
   socket.on('enterTrade', (indices) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.trade(indices, game.deck, game.used);
-    updateOnePlayer(tradingPlayer);
+    updateGameStates();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   socket.on('not participating', () => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
-    updateOnePlayer(tradingPlayer);
+    updateGameStates();
     updateLeaderboard();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
