@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
     startAsDebug ? game.Start(true) : game.Start();
     console.log('game started');
 
-    updateLeaderboard();
+    sendLeaderboard();
 
     // update clients to show new empty game and sand first action: deal three
     updateGameStates();
@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
     updateGameStates();
-    updateLeaderboard();
+    sendLeaderboard();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
   });
   ///...
@@ -215,7 +215,8 @@ io.on('connection', (socket) => {
   }
 
   // log leaderboard and send update event to all
-  function updateLeaderboard(){
+  function sendLeaderboard(){
+    game.updateLeaderboard();
     console.log(game.leaderboard);
     toPlayingPlayers('update leaderboard', game.leaderboard);
   }
