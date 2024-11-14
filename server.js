@@ -63,11 +63,10 @@ io.on('connection', (socket) => {
   });
   function startGame(startAsDebug) {
     // future: check players >= 2    do not if debug
-    game = new Game([], createDeck(), [], [], new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT));
+    game = new Game([], createDeck(), [], [], null);
     // future: adding players to game obj   move to GameCore!!
     let i = 0;
     const playersWithNames = getPlayersWithNames();
-    console.log(playersWithNames);                                  // temp
     for (const id in playersWithNames) {
       const player = playersWithNames[id];
       game.players[i] = new Player(id, player.name);
@@ -126,7 +125,7 @@ io.on('connection', (socket) => {
   socket.on('not participating', () => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     tradingPlayer.doNotParticipate(game.used);
-    
+
     updateGameStates();
     sendLeaderboard();
     if (game.players.every((player) => player.traded == true)) {

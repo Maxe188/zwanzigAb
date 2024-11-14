@@ -1,3 +1,4 @@
+const { FARBE } = require("./Card");
 const Round = require("./Round");
 
 module.exports = class Game {
@@ -37,6 +38,7 @@ module.exports = class Game {
         this.shuffleCards(this.deck);
         this.currentPlayer = this.players[0];
         this.dealingPlayer = this.players[this.dealingPlayerIndex];
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players.length);
         if(this.debugGame) this.trumpfPlayer = this.players[this.dealingPlayerIndex];
         else this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
     }
@@ -82,7 +84,7 @@ module.exports = class Game {
     }
     nextRound() {
         this.round++;
-        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
+        this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players.length);
         this.players.forEach((player) => player.newRound());
 
         if (this.dealingPlayerIndex < this.players.length) {

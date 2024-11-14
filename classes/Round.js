@@ -1,8 +1,9 @@
 module.exports = class Round {
     turn = 0; // players turn
-    constructor(trumpf,farbeZumAngeben) {
+    constructor(trumpf,farbeZumAngeben, numberOfPlayers) {
         this.trumpf = trumpf;
         this.farbeZumAngeben = farbeZumAngeben;
+        this.numberOfPlayers = numberOfPlayers;
     }
 
     NextTurn(){
