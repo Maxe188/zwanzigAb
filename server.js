@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
     // future: adding players to game obj   move to GameCore!!
     let i = 0;
     const playersWithNames = getPlayersWithNames();
+    console.log(playersWithNames); // temp
     for (const id in playersWithNames) {
       const player = playersWithNames[id];
       game.players[i] = new Player(id, player.name);
@@ -111,6 +112,7 @@ io.on('connection', (socket) => {
   });
   socket.on('enterTrade', (indices) => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    console.log(tradingPlayer); // temp
     tradingPlayer.trade(indices, game.deck, game.used);
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) console.log('yaaaaay!!!!!');
