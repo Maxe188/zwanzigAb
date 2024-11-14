@@ -24,6 +24,7 @@ module.exports = class Player {
             console.log('too many cards on ' + this.name + '\'s hand');
             return false;
         };
+        card.owner = this;
         this.hand.push(card);
         return true;
     }

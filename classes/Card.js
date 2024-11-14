@@ -1,4 +1,15 @@
+const Round = require("./Round");
+
 const Card = class {
+    number = WERT.UNDEFINIERT;
+    color = FARBE.UNDEFINIERT;
+    owner;
+    /**
+     * Represents a Doppelkopf Karte
+     * @param {number} number number to represent the value between 1 - 7
+     * @param {number} color one of 4 colors 1 - 4
+     * @param {boolean} visible if turnd over
+     */
     constructor(number, color, visible) {
         this.number = number;
         this.color = color;
@@ -7,7 +18,20 @@ const Card = class {
     toString(){
         return "[" + (Object.keys(WERT)).at(this.number - 1) + " " + Object.keys(FARBE).at(this.color - 1) + "]";
     }
+
+    /**
+     * Function to compate cards as numbers
+     * @param {Round} inRound round in which it is played
+     * @returns {number} if trumpf 100-700 else if angegeben 10-70 else 1-7
+     */
+    cardToNum(inRound){
+        let value = this.number;
+        if(this.color == inRound.trumpf) value *= 100;
+        else if(this.color == inRound.farbeZumAngeben) value *= 10;
+        return value;
+    }
 }
+
 /**
  * Creates a deck of 48 cards (two decks with 24 cards)
  * @returns {Card[]} A list of Card objects

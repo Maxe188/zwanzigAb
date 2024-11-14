@@ -1,5 +1,7 @@
-const { FARBE } = require("./Card");
+const { Card, FARBE, WERT  } = require("./Card");
 const Round = require("./Round");
+
+// future: make things private with #
 
 module.exports = class Game {
     running = false;
@@ -8,6 +10,7 @@ module.exports = class Game {
     dealingPlayer = null;
     trumpfPlayer = null;
     turn = 0;
+    lap = 0;
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
@@ -36,7 +39,7 @@ module.exports = class Game {
         this.running = true;
         this.debugGame = debugging;
         this.updateLeaderboard();
-        this.shuffleCards(this.deck);
+        this.#shuffleCards(this.deck);
         this.currentPlayer = this.players[this.turn];
         this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
@@ -53,7 +56,7 @@ module.exports = class Game {
     dealThree() {
         this.state = STATES.DEAL;
         this.players.forEach(player => {
-            this.dealCards(player, 3);
+            this.#dealCards(player, 3);
         });
     }
     setTrumpf(color) {
@@ -63,11 +66,11 @@ module.exports = class Game {
     dealTwo() {
         this.state = STATES.DEAL;
         this.players.forEach(player => {
-            this.dealCards(player, 2);
+            this.#dealCards(player, 2);
         });
     }
 
-    dealCards(recivingPlayer, numberOfCards) {
+    #dealCards(recivingPlayer, numberOfCards) {
         for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());
     }
 
@@ -82,18 +85,40 @@ module.exports = class Game {
         this.leaderboard[rowIndex] = row;
     }
 
-    nextPlayer() {
+    #nextPlayer() {
         do {
             if (this.turn < this.players.length - 1) { // I dont understand why it works but it does
+                if(this.turn == 0) this.round.farbeZumAngeben = this.center[0].color;
                 this.turn++;
             } else {
-                // countStiche();
+                // find highest card
+                let highestIndex = 0;
+                let highest = this.center[0].cardToNum(this.currentRound);
+                for(let i = 0; i < this.center.length; i++) {
+                    const cardAsNum = this.center[i].cardToNum(this.currentRound);
+                    if(cardAsNum > highest) {
+                        highest = cardAsNum;
+                        highestIndex = i;
+                    }
+                }
+                // add stich to owner of the card and clear center
+                this.center[highestIndex].owner.stiche++;
+                for(let card in this.center) this.used.push(card);
+                this.center = [];
+                // check for new round
+                this.lap++;
+                if(this.lap == this.players.length){
+                    this.lap = 0;
+                    this.#nextRound();
+                }
+
                 this.turn = 0;
             }
             this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
         } while(this.currentPlayer.notParticipating);
     }
-    nextRound() {
+
+    #nextRound() {
         this.round++;
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT, this.players);
         this.players.forEach((player) => player.newRound());
@@ -119,15 +144,15 @@ module.exports = class Game {
             console.log("wrong player");
             return;
         }
-        if (!(this.isValidCard(card))) {
+        if (!(this.#isValidCard(card))) {
             console.log("not valid card");
             return;
         }
         this.currentPlayer.playCard(cardIndex);
         this.center.push(card);
-        this.nextPlayer();
+        this.#nextPlayer();
     }
-    isValidCard(testingCard) {
+    #isValidCard(testingCard) {
         return true; // future: check farbe und ob trumpf
     }
 
@@ -135,7 +160,7 @@ module.exports = class Game {
         // future: check total amount of cards and if every card exists and every card only once
     }
 
-    shuffleCards(cardsToShuffle) {
+    #shuffleCards(cardsToShuffle) {
         for (let i = cardsToShuffle.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cardsToShuffle[i], cardsToShuffle[j]] = [cardsToShuffle[j], cardsToShuffle[i]];
