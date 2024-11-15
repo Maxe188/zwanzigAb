@@ -105,6 +105,7 @@ module.exports = class Game {
                 // add stich to owner of the card
                 const ownerIndex = this.players.findIndex(player => player.id = this.center[highestIndex].ownerId);
                 this.offset = ownerIndex;
+                console.log('offset: ' + this.offset)
                 const owner = this.players[ownerIndex];
                 owner.stiche++;
                 // clear center
