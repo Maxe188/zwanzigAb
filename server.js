@@ -138,8 +138,8 @@ io.on('connection', (socket) => {
     let playingPlayer = game.players.find((player) => player.id === socket.id);
     console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString());
     game.checkAndPlayCard(playingPlayer, cardIndex);
-    updateGameStates();
     sendLeaderboard();
+    setTimeout(updateGameStates(), 2000);
   });
   ///...
 

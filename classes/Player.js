@@ -76,6 +76,13 @@ module.exports = class Player {
     }
 
     newRound(){
+        if(!(this.notParticipating)){
+            if(this.stiche == 0){
+                this.score += 5;
+            } else {
+                this.score -= this.stiche;
+            }
+        }
         this.stiche = 0;
         this.traded = false;
         this.notParticipating = false;

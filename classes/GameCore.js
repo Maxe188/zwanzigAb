@@ -107,7 +107,7 @@ module.exports = class Game {
                 this.center = [];
                 // check for new round
                 this.lap++;
-                if(this.lap == this.players.length){
+                if(this.lap == 5){
                     this.lap = 0;
                     this.#nextRound();
                 }
