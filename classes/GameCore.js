@@ -11,6 +11,7 @@ module.exports = class Game {
     trumpfPlayer = null;
     turn = 0;
     lap = 0;
+    offset = 0;
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
@@ -101,8 +102,12 @@ module.exports = class Game {
                         highestIndex = i;
                     }
                 }
-                // add stich to owner of the card and clear center
-                this.players.find(player => player.id = this.center[highestIndex].ownerId).stiche++;
+                // add stich to owner of the card
+                const ownerIndex = this.players.findIndex(player => player.id = this.center[highestIndex].ownerId);
+                offset = ownerIndex;
+                const owner = this.players[ownerIndex];
+                owner.stiche++;
+                // clear center
                 for(let card in this.center) this.used.push(card);
                 this.center = [];
                 // check for new round
@@ -114,7 +119,7 @@ module.exports = class Game {
 
                 this.turn = 0;
             }
-            this.currentPlayer = this.players[this.dealingPlayerIndex + 1 + this.turn];
+            this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
     }
