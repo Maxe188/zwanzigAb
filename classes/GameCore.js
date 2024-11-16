@@ -95,7 +95,7 @@ module.exports = class Game {
                 // find highest card
                 let highestIndex = 0;
                 let highest = this.center[0].cardToNum(this.currentRound);
-                for(let i = 0; i < this.center.length; i++) {
+                for(let i = 1; i < this.center.length; i++) {
                     const cardAsNum = this.center[i].cardToNum(this.currentRound);
                     if(cardAsNum > highest) {
                         highest = cardAsNum;
@@ -103,7 +103,7 @@ module.exports = class Game {
                     }
                 }
                 // add stich to owner of the card
-                const ownerIndex = this.players.findIndex(player => player.id = this.center[highestIndex].ownerId);
+                const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
                 this.offset = ownerIndex;
                 console.log('offset: ' + this.offset)
                 const owner = this.players[ownerIndex];

@@ -136,7 +136,7 @@ io.on('connection', (socket) => {
   socket.on('play card', (cardIndex) => {
     if (!(socket.id === game.currentPlayer.id)) return;
     let playingPlayer = game.players.find((player) => player.id === socket.id);
-    console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString());
+    console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString() + ' with a value of: ' + playingPlayer.hand[cardIndex].cardToNum(game.currentRound));
     game.checkAndPlayCard(playingPlayer, cardIndex);
     sendLeaderboard();
     setTimeout(() => { updateGameStates(); }, 800);
@@ -168,6 +168,7 @@ io.on('connection', (socket) => {
     for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
       let gameState = {};
       gameState.ownHand = game.players[playerIndex].hand;
+      gameState.ownStiche = game.players[playerIndex].stiche;
       gameState.center = game.center;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
