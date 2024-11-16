@@ -189,6 +189,7 @@ socket.on('lets go', () => {
 
 
 socket.on('update gameState', (gameState) => {
+    // future: show ownStiche
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
     othersDiv.innerHTML = createOtherPlayers(gameState);

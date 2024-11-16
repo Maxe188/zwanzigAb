@@ -136,10 +136,25 @@ io.on('connection', (socket) => {
   socket.on('play card', (cardIndex) => {
     if (!(socket.id === game.currentPlayer.id)) return;
     let playingPlayer = game.players.find((player) => player.id === socket.id);
-    console.log('current player (' + game.currentPlayer.name + ') played card: ' + playingPlayer.hand[cardIndex].toString() + ' with a value of: ' + playingPlayer.hand[cardIndex].cardToNum(game.currentRound));
-    game.checkAndPlayCard(playingPlayer, cardIndex);
-    sendLeaderboard();
-    setTimeout(() => { updateGameStates(); }, 800);
+    console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
+    switch(game.checkAndPlayCard(playingPlayer, cardIndex)) {
+      case 'played':
+        updateGameStates();
+        break;
+      case 'not your turn':
+        // send message to socket  never reached because check above
+        break;
+      case 'not valid card':
+        // send message to socket
+        break;
+      case 'new round':
+        sendLeaderboard();
+        setTimeout(() => { updateGameStates(); }, 500);
+        // jump to beginning
+        break;
+      default:
+        console.log('error');
+    }
   });
   ///...
 

@@ -87,6 +87,7 @@ module.exports = class Game {
     }
 
     #nextPlayer() {
+        let isNewRound = false;
         do {
             if (this.turn < this.players.length - 1) { // I dont understand why it works but it does
                 if(this.turn == 0) this.currentRound.farbeZumAngeben = this.center[0].color;
@@ -105,7 +106,7 @@ module.exports = class Game {
                 // add stich to owner of the card
                 const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
                 this.offset = ownerIndex;
-                console.log('offset: ' + this.offset)
+                console.log('offset: ' + this.offset);
                 const owner = this.players[ownerIndex];
                 owner.stiche++;
                 // clear center
@@ -116,6 +117,7 @@ module.exports = class Game {
                 if(this.lap == 5){
                     this.lap = 0;
                     this.#nextRound();
+                    isNewRound = true;
                 }
 
                 this.turn = 0;
@@ -123,6 +125,7 @@ module.exports = class Game {
             this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
+        return isNewRound;
     }
 
     #nextRound() {
@@ -149,15 +152,16 @@ module.exports = class Game {
         const card = this.currentPlayer.hand[cardIndex];
         if (player !== this.currentPlayer) {
             console.log("wrong player");
-            return;
+            return 'not your turn';
         }
         if (!(this.#isValidCard(card))) {
             console.log("not valid card");
-            return;
+            return 'not valid card';
         }
         this.currentPlayer.playCard(cardIndex);
         this.center.push(card);
-        this.#nextPlayer();
+        if(this.#nextPlayer()) return 'new round';
+        return 'played';
     }
     #isValidCard(testingCard) {
         return true; // future: check farbe und ob trumpf
