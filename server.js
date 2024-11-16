@@ -82,6 +82,7 @@ io.on('connection', (socket) => {
 
     // update clients to show new empty game and sand first action: deal three
     updateGameStates();
+
     console.log('send deal three to the current player');
     getSocket(game.dealingPlayer.id).emit('deal three');
   }
@@ -149,8 +150,11 @@ io.on('connection', (socket) => {
         break;
       case 'new round':
         sendLeaderboard();
-        setTimeout(() => { updateGameStates(); }, 500);
-        // jump to beginning
+        setTimeout(() => { 
+          updateGameStates();
+          console.log('send deal three to the current player');
+          getSocket(game.dealingPlayer.id).emit('deal three');
+        }, 500);
         break;
       default:
         console.log('error');
