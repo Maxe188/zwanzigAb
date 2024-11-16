@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
           updateGameStates();
           console.log('send deal three to the current player');
           getSocket(game.dealingPlayer.id).emit('deal three');
-        }, 500);
+        }, 1500);
         break;
       default:
         console.log('error');
