@@ -76,6 +76,10 @@ socket.on('game ended', () => {
     socket.connect();
     // reset
     nameDiv.style.display = 'block';
+    document.getElementById('dealThreeMessage').style.display = 'none';
+    document.getElementById('trumpfMessage').style.display = 'none';
+    document.getElementById('dealTwoMessage').style.display = 'none';
+    document.getElementById('tradeMessage').style.display = 'none';
 });
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
