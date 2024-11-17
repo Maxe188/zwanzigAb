@@ -168,6 +168,7 @@ module.exports = class Game {
     #isValidCard(testingCard) {
         if(this.debugGame) return true;
         // check if player has to play spacific color
+        if(this.turn === 0) return true;
         if(this.currentPlayer.hand.some(card => card.color === this.currentRound.farbeZumAngeben)){
             return (testingCard.color === this.currentRound.farbeZumAngeben);
         } else { // check if player has to otherwise play trumpf
