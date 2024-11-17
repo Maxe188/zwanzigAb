@@ -229,7 +229,7 @@ function createOwnHand(hand, gameState) {
         card.className = index.toString() + ' card handCard';
         card.onclick = (event) => cardClicked(event.target);
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
-        card.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.ownHand[index]) + ')';
+        card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.ownHand[index]) + ')';
 
         fix.appendChild(card);
         container.appendChild(fix);
