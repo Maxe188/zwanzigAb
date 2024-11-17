@@ -114,8 +114,8 @@ io.on('connection', (socket) => {
     toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
-    let tradingPlayer = game.players.find((player) => player.id === socket.id);
-    tradingPlayer.trade(indices, game.deck, game.used);
+    let tradingPlayerIndex = game.players.findIndex((player) => player.id === socket.id);
+    game.playerTrades(tradingPlayerIndex, indices);
 
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) {

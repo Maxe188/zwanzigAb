@@ -68,11 +68,17 @@ module.exports = class Game {
         this.state = STATES.DEAL;
         this.players.forEach(player => {
             this.#dealCards(player, 2);
+            player.hand.sort((a, b) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
         });
     }
 
     #dealCards(recivingPlayer, numberOfCards) {
         for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());
+    }
+
+    playerTrades(playerIndex, indices){
+        this.players[playerIndex].trade(indices, this.deck, this.used);
+        this.players[playerIndex].hand.sort((a, b) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
     }
 
     updateLeaderboard() {
