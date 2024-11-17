@@ -295,7 +295,7 @@ function createCenter(center, gameState) {
         let card = document.createElement('div');
         card.className = 'card';
         card.textContent = FrontendCard.toCardString(gameState.center[index]);
-        card.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.center[index]) + ')';
+        card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.center[index]) + ')';
 
         center.appendChild(card);
     }
