@@ -12,6 +12,28 @@ class FrontendCard {
     static indexToColorString(index){
         return (Object.keys(FARBE).at(index - 1)).toString();
     }
+    
+    static toColorUrl(card){
+        let path = "/pictures/farben";
+        switch (card.color) {
+            case 1:
+                path += "Bay_eichel";
+                break;
+            case 2:
+                path += "Bay_schipp";
+                break;
+            case 3:
+                path += "Bay_herz";
+                break;
+            case 4:
+                path += "Bay_schellen";
+                break;
+            default:
+                return "not valid";
+        }
+        path += ".svg";
+        return path;
+    }
 
     static toImgUrl(card){
         let path = "/pictures/";

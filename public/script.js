@@ -229,7 +229,7 @@ function createOwnHand(hand, gameState) {
         card.className = index.toString() + ' card handCard';
         card.onclick = (event) => cardClicked(event.target);
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
-
+        card.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.ownHand[index]) + ')';
 
         fix.appendChild(card);
         container.appendChild(fix);
@@ -295,6 +295,7 @@ function createCenter(center, gameState) {
         let card = document.createElement('div');
         card.className = 'card';
         card.textContent = FrontendCard.toCardString(gameState.center[index]);
+        card.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.center[index]) + ')';
 
         center.appendChild(card);
     }
