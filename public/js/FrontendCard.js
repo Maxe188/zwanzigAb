@@ -12,9 +12,9 @@ class FrontendCard {
     static indexToColorString(index){
         return (Object.keys(FARBE).at(index - 1)).toString();
     }
-    
+
     static toColorUrl(card){
-        let path = "/pictures/farben";
+        let path = "/pictures/colors/";
         switch (card.color) {
             case 1:
                 path += "Bay_eichel";
