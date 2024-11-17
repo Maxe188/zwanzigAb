@@ -50,7 +50,7 @@ socket.on('update players', (backendPlayers) => {
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
-    if(!(Object.keys(players).length >= 2)) return;
+    if (!(Object.keys(players).length >= 2)) return;
     socket.emit('starting game');
 });
 document.getElementById('formDebugStart').addEventListener('submit', function (event) {
@@ -90,7 +90,7 @@ socket.on('update leaderboard', (leaderBoard) => {
             for (const id in players) { // for-in is unorderd
                 const player = players[id];
                 const tableHead = document.createElement('th');
-                if(id === socket.id) tableHead.style.backgroundColor = 'rgba(200,80,80,1)';
+                if (id === socket.id) tableHead.style.backgroundColor = 'rgba(200,80,80,1)';
                 tableHead.textContent = player.name;
                 tableRow.appendChild(tableHead);
             }
@@ -110,7 +110,7 @@ socket.on('update trumpf', (trumpfColor) => {
 });
 
 socket.on('deal three', () => {
-    if(debugGame) {
+    if (debugGame) {
         console.log('simulate deal btn pressed');
         document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(new FrontendCard(WERT.ASS, FARBE.HERZ)) + ')';
         socket.emit('start dealing three');
@@ -125,17 +125,17 @@ document.getElementById('dealThreeButton').onclick = () => {
 }
 socket.on('choose trumpf', () => {
     console.log('choose trumpf');
-    if(debugGame) {
+    if (debugGame) {
         socket.emit('set trumpf', Math.floor(Math.random() * 3));
         return;
     }
     choosingTrumpf = true;
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
-function cardClicked(element){
+function cardClicked(element) {
     console.log('clicked on card');
     let clickedIndex = parseInt(element.classList[0]);
-    if(choosingTrumpf) {
+    if (choosingTrumpf) {
         choosingTrumpf = false;
         console.log('index of clicked card: ' + clickedIndex);
         document.getElementById('trumpfMessage').style.display = 'none';
@@ -150,7 +150,7 @@ function cardClicked(element){
 }
 
 socket.on('deal two', () => {
-    if(debugGame) {
+    if (debugGame) {
         console.log('simulate deal btn pressed');
         socket.emit('start dealing two');
         return;
@@ -163,9 +163,9 @@ document.getElementById('dealTwoButton').onclick = () => {
 }
 socket.on('trade', () => {
     selectedTradingCards = [];
-    if(debugGame) {
+    if (debugGame) {
         console.log('simulate no trading');
-        socket.emit('enterTrade', [0,2,4]);
+        socket.emit('enterTrade', [0, 2, 4]);
         return;
     }
     tradeing = true;
@@ -190,17 +190,27 @@ socket.on('lets go', () => {
     centerDiv.innerHTML = '';
     centerDiv.appendChild(goText);
 });
-
+socket.on('not valid card', (cardIndex) => {
+    const cardDiv = ownHandDiv.children[cardIndex].firstChild.firstChild;
+    cardDiv.classList.add('notValid');
+    setTimeout(() => { cardDiv.classList.remove('notValid') }, 1000);
+});
+socket.on('won', () => {
+    console.log('won');
+});
+socket.on('lost', () => {
+    console.log('lost');
+});
 
 socket.on('update gameState', (gameState) => {
     // future: show ownStiche
     console.log(gameState);
     createOwnHand(ownHandDiv, gameState);
     othersDiv.innerHTML = createOtherPlayers(gameState);
-    createCenter(centerDiv ,gameState);
+    createCenter(centerDiv, gameState);
 });
-function createOwnHand(hand, gameState){
-    if(JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand))  return; // cannot simply conpare(==) two arrays because array instances are never the same
+function createOwnHand(hand, gameState) {
+    if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
     const numOfCards = gameState.ownHand.length;
@@ -209,7 +219,7 @@ function createOwnHand(hand, gameState){
         // first layer: rotatingContainer
         let container = document.createElement('div');
         container.className = 'rotatingContainer';
-        const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) /2) + 90;
+        const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) / 2) + 90;
         container.style = 'transform: rotate(' + (tilt.toString()) + 'deg);';
         // second layer: hoverAndRotateFix
         let fix = document.createElement('div');
@@ -223,11 +233,11 @@ function createOwnHand(hand, gameState){
 
         fix.appendChild(card);
         container.appendChild(fix);
-        
+
         hand.appendChild(container);
     }
 }
-function createOtherPlayers(gameState){
+function createOtherPlayers(gameState) {
     playerContainer = "";
     const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
     const degOfRotation = 360 / (numOfOtherPlayers + 1);
@@ -255,7 +265,7 @@ function createOtherPlayers(gameState){
             // first layer: rotatingContainer
             let container = document.createElement('div');
             container.className = 'rotatingContainer';
-            const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) /2) + 90;
+            const tilt = degOfTilt * index - (degOfTilt * (numOfCards - 1) / 2) + 90;
             container.style = 'transform: rotate(' + (tilt.toString()) + 'deg);';
             // second layer: rotateFix
             let fix = document.createElement('div');
@@ -272,12 +282,12 @@ function createOtherPlayers(gameState){
 
         playerDiv.appendChild(head);
         playerDiv.appendChild(otherHand);
-        
+
         playerContainer += playerDiv.outerHTML;
     }
     return playerContainer;
 }
-function createCenter(center, gameState){
+function createCenter(center, gameState) {
     center.innerHTML = "";
     const numOfCards = gameState.center.length;
     for (let index = 0; index < numOfCards; index++) {

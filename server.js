@@ -146,14 +146,20 @@ io.on('connection', (socket) => {
         // send message to socket  never reached because check above
         break;
       case 'not valid card':
-        // send message to socket
+        socket.emit('not valid card', cardIndex);
         break;
       case 'new round':
         sendLeaderboard();
         setTimeout(() => { 
           updateGameStates();
-          console.log('send deal three to the current player');
-          getSocket(game.dealingPlayer.id).emit('deal three');
+          if(game.players.every(player => player.score > 0)){
+            console.log('send deal three to the current player');
+            getSocket(game.dealingPlayer.id).emit('deal three');
+          } else {
+            players.forEach(player => {
+              player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
+            });
+          }
         }, 1500);
         break;
       default:

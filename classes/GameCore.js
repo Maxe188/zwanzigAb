@@ -1,4 +1,4 @@
-const { Card, FARBE, WERT  } = require("./Card");
+const { Card, createDeck, FARBE, WERT } = require("./Card");
 const Round = require("./Round");
 
 // future: make things private with #
@@ -132,6 +132,8 @@ module.exports = class Game {
         this.round++;
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
         this.players.forEach((player) => player.newRound());
+        this.deck = createDeck();
+        this.#shuffleCards(this.deck);
 
         if (this.dealingPlayerIndex < this.players.length - 1) {
             this.dealingPlayerIndex++;
@@ -164,7 +166,16 @@ module.exports = class Game {
         return 'played';
     }
     #isValidCard(testingCard) {
-        return true; // future: check farbe und ob trumpf
+        if(this.debugGame) return true;
+        // check if player has to play spacific color
+        if(this.currentPlayer.hand.some(card => card.color === this.currentRound.farbeZumAngeben)){
+            return (testingCard.color === this.currentRound.farbeZumAngeben);
+        } else { // check if player has to otherwise play trumpf
+            if(this.currentPlayer.hand.some(card => card.color === this.currentRound.trumpf)){
+                return (testingCard.color === this.currentRound.trumpf);
+            }
+        }
+        return true;
     }
 
     checkAllCards() {

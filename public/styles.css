@@ -221,6 +221,12 @@ th {
   border-width: 3px;
   border-color: blue;
 }
+.notValid {
+  box-shadow: 0 0 20px rgba(255, 0, 0, 1);
+  border: solid;
+  border-width: 3px;
+  border-color: red;
+}
 
 .otherPlayersContainer {
   position: absolute;
