@@ -68,7 +68,7 @@ module.exports = class Game {
         this.state = STATES.DEAL;
         this.players.forEach(player => {
             this.#dealCards(player, 2);
-            player.hand.sort((a, b) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
+            player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
         });
     }
 
@@ -78,7 +78,7 @@ module.exports = class Game {
 
     playerTrades(playerIndex, indices){
         this.players[playerIndex].trade(indices, this.deck, this.used);
-        this.players[playerIndex].hand.sort((a, b) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
+        this.players[playerIndex].hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
     }
 
     updateLeaderboard() {
