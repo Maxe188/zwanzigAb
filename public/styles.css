@@ -48,7 +48,11 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   text-align: center;
+}
+.cardColor {
+  background-size: auto;
 }
 
 .name {

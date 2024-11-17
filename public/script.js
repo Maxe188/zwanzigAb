@@ -226,7 +226,7 @@ function createOwnHand(hand, gameState) {
         fix.className = 'hoverAndRotateFix';
         // third layer: card hand
         let card = document.createElement('div');
-        card.className = index.toString() + ' card handCard';
+        card.className = index.toString() + ' card handCard cardColor';
         card.onclick = (event) => cardClicked(event.target);
         card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.ownHand[index]) + ')';
@@ -293,7 +293,7 @@ function createCenter(center, gameState) {
     for (let index = 0; index < numOfCards; index++) {
         // create one card
         let card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card cardColor';
         card.textContent = FrontendCard.toCardString(gameState.center[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.center[index]) + ')';
 
