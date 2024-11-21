@@ -112,12 +112,10 @@ socket.on('update trumpf', (trumpfColor) => {
 socket.on('deal three', () => {
     if (debugGame) {
         console.log('simulate deal btn pressed');
-        document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(new FrontendCard(WERT.ASS, FARBE.HERZ)) + ')';
         socket.emit('start dealing three');
         return;
     }
     document.getElementById('dealThreeMessage').style.display = 'flex';
-    document.getElementById('ablageCard').style.backgroundImage = 'url(' + FrontendCard.toImgUrl(new FrontendCard(WERT.ASS, FARBE.HERZ)) + ')';
 });
 document.getElementById('dealThreeButton').onclick = () => {
     socket.emit('start dealing three');
@@ -293,7 +291,8 @@ function createCenter(center, gameState) {
     for (let index = 0; index < numOfCards; index++) {
         // create one card
         let card = document.createElement('div');
-        card.className = 'card cardColor';
+        card.className = 'card';
+        //card.classList.add('cardColor');
         //card.textContent = FrontendCard.toCardString(gameState.center[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(gameState.center[index]) + ')';
 
