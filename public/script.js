@@ -252,7 +252,7 @@ function createOtherPlayers(gameState) {
         let playerDiv = document.createElement('div');
         playerDiv.className = 'otherPlayer';
         const rotation = degOfRotation * (playerI + 1);
-        playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
+        playerDiv.style.transform = 'rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
         if(gameState.currentPlayerName === playerName) playerDiv.style.backgroundColor = 'rgba(50, 70, 130, 0.5);';
         // second layer: playerHead
         let head = document.createElement('div');
