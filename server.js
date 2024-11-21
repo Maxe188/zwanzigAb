@@ -138,7 +138,9 @@ io.on('connection', (socket) => {
     if (!(socket.id === game.currentPlayer.id)) return;
     let playingPlayer = game.players.find((player) => player.id === socket.id);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
-    switch(game.checkAndPlayCard(playingPlayer, cardIndex)) {
+
+    let playingResponse = game.checkAndPlayCard(playingPlayer, cardIndex);
+    switch(playingResponse) {
       case 'played':
         updateGameStates();
         break;
@@ -150,9 +152,11 @@ io.on('connection', (socket) => {
         break;
       case 'new round':
         sendLeaderboard();
-        setTimeout(() => { 
+        updateGameStates();
+        setTimeout(() => {
+          game.triggerNewRound();
           updateGameStates();
-          if(game.players.every(player => player.score > 0)){
+          if(game.didSomeoneWin){
             console.log('send deal three to the current player');
             getSocket(game.dealingPlayer.id).emit('deal three');
           } else {

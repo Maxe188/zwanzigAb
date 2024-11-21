@@ -6,6 +6,7 @@ const Round = require("./Round");
 module.exports = class Game {
     running = false;
     debugGame = false;
+    roundOver = false;
     dealingPlayerIndex = -1;
     dealingPlayer = null;
     trumpfPlayer = null;
@@ -93,7 +94,6 @@ module.exports = class Game {
     }
 
     #nextPlayer() {
-        let isNewRound = false;
         do {
             if (this.turn < this.players.length - 1) { // I dont understand why it works but it does
                 if(this.turn == 0) this.currentRound.farbeZumAngeben = this.center[0].color;
@@ -122,8 +122,7 @@ module.exports = class Game {
                 this.lap++;
                 if(this.lap == 5){
                     this.lap = 0;
-                    this.#nextRound();
-                    isNewRound = true;
+                    this.roundOver = true;
                 }
 
                 this.turn = 0;
@@ -131,7 +130,11 @@ module.exports = class Game {
             this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
-        return isNewRound;
+        return this.roundOver;
+    }
+
+    triggerNewRound(){
+        if(this.roundOver) this.#nextRound();
     }
 
     #nextRound() {
@@ -183,6 +186,10 @@ module.exports = class Game {
             }
         }
         return true;
+    }
+
+    get didSomeoneWin() {
+        return this.players.every(player => player.score > 0);
     }
 
     checkAllCards() {

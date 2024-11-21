@@ -195,9 +195,11 @@ socket.on('not valid card', (cardIndex) => {
 });
 socket.on('won', () => {
     console.log('won');
+    alert('you won');
 });
 socket.on('lost', () => {
     console.log('lost');
+    alert('you lost');
 });
 
 socket.on('update gameState', (gameState) => {
