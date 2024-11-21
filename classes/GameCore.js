@@ -96,7 +96,7 @@ module.exports = class Game {
     #nextPlayer() {
         do {
             if (this.turn < this.players.length - 1) { // I dont understand why it works but it does
-                if(this.turn == 0) this.currentRound.farbeZumAngeben = this.center[0].color;
+                if(this.turn === 0) this.currentRound.farbeZumAngeben = this.center[0].color;
                 this.turn++;
             } else {
                 // find highest card

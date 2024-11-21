@@ -125,6 +125,7 @@ io.on('connection', (socket) => {
   });
   socket.on('not participating', () => {
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    if(tradingPlayer === game.trumpfPlayer) return; // !!!
     tradingPlayer.doNotParticipate(game.used);
 
     updateGameStates();
