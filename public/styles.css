@@ -37,11 +37,11 @@ button:hover {
 
 .card {
   /*
-  original card mesurement: 59mm * 91mm radius 5mm
+  original card mesurement: 56mm * 100mm radius 5mm
   scaled by: 1.5
   */
-  width: 88.5px;
-  height: 136.5px;
+  width: 84px;
+  height: 150px;
   border-radius: 7.5px;
   background-color: darkgray;
   color: whitesmoke;

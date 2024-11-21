@@ -35,77 +35,85 @@ class FrontendCard {
         return path;
     }
 
+    static backImgUrl(){
+        return "/pictures/card_images/back.png";
+    }
+
     static toImgUrl(card){
-        let path = "/pictures/";
+        let path = "/pictures/card_images/";
         switch (card.color) {
             case 1:
+                path += "Eichel_";
                 switch (card.number) {
                     case 1:
-                        path += "error";
+                        path += "sieben";
                     case 2:
-                        path += "error";
+                        path += "unter";
                     case 3:
-                        path += "error";
+                        path += "ober";
                     case 4:
-                        path += "error";
+                        path += "koenig";
                     case 5:
-                        path += "error";
+                        path += "zehn";
                     case 6:
-                        path += "error";
+                        path += "ass";
                 }
                 break;
             case 2:
+                path += "Schipp_";
                 switch (card.number) {
                     case 1:
-                        path += "error";
+                        path += "sieben";
                     case 2:
-                        path += "error";
+                        path += "unter";
                     case 3:
-                        path += "error";
+                        path += "ober";
                     case 4:
-                        path += "error";
+                        path += "koenig";
                     case 5:
-                        path += "error";
+                        path += "zehn";
                     case 6:
-                        path += "error";
+                        path += "ass";
                 }
                 break;
             case 3:
+                path += "Herz_";
                 switch (card.number) {
                     case 1:
-                        path += "error";
+                        path += "sieben";
                     case 2:
-                        path += "error";
+                        path += "unter";
                     case 3:
-                        path += "error";
+                        path += "ober";
                     case 4:
-                        path += "error";
+                        path += "koenig";
                     case 5:
-                        path += "error";
+                        path += "zehn";
                     case 6:
-                        path += "Herz-Ass";
+                        path += "ass";
                 }
                 break;
             case 4:
+                path += "Schellen_";
                 switch (card.number) {
                     case 1:
-                        path += "error";
+                        path += "sieben";
                     case 2:
-                        path += "error";
+                        path += "unter";
                     case 3:
-                        path += "error";
+                        path += "ober";
                     case 4:
-                        path += "error";
+                        path += "koenig";
                     case 5:
-                        path += "error";
+                        path += "zehn";
                     case 6:
-                        path += "error";
+                        path += "ass";
                 }
                 break;
             default:
                 return "not valid";
         }
-        path += ".webp";
+        path += ".png";
         return path;
     }
 

@@ -228,8 +228,8 @@ function createOwnHand(hand, gameState) {
         let card = document.createElement('div');
         card.className = index.toString() + ' card handCard cardColor';
         card.onclick = (event) => cardClicked(event.target);
-        card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
-        card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.ownHand[index]) + ')';
+        //card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
+        card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(gameState.ownHand[index]) + ')';
 
         fix.appendChild(card);
         container.appendChild(fix);
@@ -273,6 +273,7 @@ function createOtherPlayers(gameState) {
             // third layer: card
             let card = document.createElement('div');
             card.className = 'card';
+            card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl() + ')';
 
 
             fix.appendChild(card);
@@ -294,8 +295,8 @@ function createCenter(center, gameState) {
         // create one card
         let card = document.createElement('div');
         card.className = 'card cardColor';
-        card.textContent = FrontendCard.toCardString(gameState.center[index]);
-        card.style.backgroundImage = 'url(' + FrontendCard.toColorUrl(gameState.center[index]) + ')';
+        //card.textContent = FrontendCard.toCardString(gameState.center[index]);
+        card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(gameState.center[index]) + ')';
 
         center.appendChild(card);
     }
