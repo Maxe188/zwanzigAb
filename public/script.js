@@ -273,8 +273,6 @@ function createOtherPlayers(gameState) {
             // third layer: card
             let card = document.createElement('div');
             card.className = 'card';
-            card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl() + ')';
-
 
             fix.appendChild(card);
             container.appendChild(fix);

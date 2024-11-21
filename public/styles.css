@@ -44,6 +44,7 @@ button:hover {
   height: 150px;
   border-radius: 7.5px;
   background-color: darkgray;
+  background-image: url('pictures//card_images/back.png');
   color: whitesmoke;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   background-size: cover;
@@ -169,6 +170,7 @@ th {
   padding: 8px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background-image: url('pictures//card_images/back.png');
 }
 
 .cardArea {
