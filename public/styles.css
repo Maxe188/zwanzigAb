@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   background-color: rgb(77, 94, 3);
-  background-image: url('pictures/vector-game-background.svg');
+  background-image: url('pictures/backgrounds/vector-game-background.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -159,8 +159,12 @@ th {
 .noBorder tr th:last-child {border-right: none;}
 
 .trumpfDisplay{
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 80px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translate(0, -130px);
+  background-position: center;
 }
 
 .mitte {
