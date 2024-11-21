@@ -47,16 +47,22 @@ class FrontendCard {
                 switch (card.number) {
                     case 1:
                         path += "sieben";
+                        break;
                     case 2:
                         path += "unter";
+                        break;
                     case 3:
                         path += "ober";
+                        break;
                     case 4:
                         path += "koenig";
+                        break;
                     case 5:
                         path += "zehn";
+                        break;
                     case 6:
                         path += "ass";
+                        break;
                 }
                 break;
             case 2:
@@ -64,16 +70,22 @@ class FrontendCard {
                 switch (card.number) {
                     case 1:
                         path += "sieben";
+                        break;
                     case 2:
                         path += "unter";
+                        break;
                     case 3:
                         path += "ober";
+                        break;
                     case 4:
                         path += "koenig";
+                        break;
                     case 5:
                         path += "zehn";
+                        break;
                     case 6:
                         path += "ass";
+                        break;
                 }
                 break;
             case 3:
@@ -81,16 +93,22 @@ class FrontendCard {
                 switch (card.number) {
                     case 1:
                         path += "sieben";
+                        break;
                     case 2:
                         path += "unter";
+                        break;
                     case 3:
                         path += "ober";
+                        break;
                     case 4:
                         path += "koenig";
+                        break;
                     case 5:
                         path += "zehn";
+                        break;
                     case 6:
                         path += "ass";
+                        break;
                 }
                 break;
             case 4:
@@ -98,16 +116,22 @@ class FrontendCard {
                 switch (card.number) {
                     case 1:
                         path += "sieben";
+                        break;
                     case 2:
                         path += "unter";
+                        break;
                     case 3:
                         path += "ober";
+                        break;
                     case 4:
                         path += "koenig";
+                        break;
                     case 5:
                         path += "zehn";
+                        break;
                     case 6:
                         path += "ass";
+                        break;
                 }
                 break;
             default:

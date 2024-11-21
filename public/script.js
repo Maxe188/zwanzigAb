@@ -226,8 +226,9 @@ function createOwnHand(hand, gameState) {
         fix.className = 'hoverAndRotateFix';
         // third layer: card hand
         let card = document.createElement('div');
-        card.className = index.toString() + ' card handCard cardColor';
         card.onclick = (event) => cardClicked(event.target);
+        card.className = index.toString() + ' card handCard';
+        //card.classList.add('cardColor');
         //card.textContent = FrontendCard.toCardString(gameState.ownHand[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(gameState.ownHand[index]) + ')';
 
