@@ -135,6 +135,7 @@ module.exports = class Game {
 
     triggerNewRound(){
         if(this.roundOver) this.#nextRound();
+        this.roundOver = false;
     }
 
     #nextRound() {

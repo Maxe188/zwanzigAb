@@ -151,10 +151,10 @@ io.on('connection', (socket) => {
         socket.emit('not valid card', cardIndex);
         break;
       case 'new round':
-        sendLeaderboard();
         updateGameStates();
         setTimeout(() => {
           game.triggerNewRound();
+          sendLeaderboard();
           updateGameStates();
           if(game.didSomeoneWin){
             console.log('send deal three to the current player');
