@@ -175,7 +175,7 @@ th {
 }
 
 .stapel {
-  background-color: whitesmoke;
+  background-color: rgb(35 35 69);
   padding: 8px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

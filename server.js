@@ -195,6 +195,7 @@ io.on('connection', (socket) => {
       gameState.ownHand = game.players[playerIndex].hand;
       gameState.ownStiche = game.players[playerIndex].stiche;
       gameState.center = game.center;
+      gameState.currentPlayerIndex = game.players.findIndex(player => player.id === game.currentPlayer.id);
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer == playerIndex) continue;
