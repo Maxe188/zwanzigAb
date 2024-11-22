@@ -171,6 +171,9 @@ io.on('connection', (socket) => {
           }
         }, 1500);
         break;
+      case 'too soon':
+        console.log('player clicked too soon');
+        break;
       default:
         console.log('error');
     }
