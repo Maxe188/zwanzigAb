@@ -101,7 +101,7 @@ module.exports = class Game {
                 this.turn++;
             } else {
                 this.#lastTurn = true;
-                
+
                 // find highest card
                 let highestIndex = 0;
                 let highest = this.center[0].cardToNum(this.currentRound);
@@ -144,7 +144,7 @@ module.exports = class Game {
         }
     }
 
-    triggerNewRound(){
+    triggerNewRound(){  // future: test and remove if not needed
         if(!(this.#roundOver)) return;
         this.#roundOver = false;
         this.#nextRound();
@@ -203,7 +203,7 @@ module.exports = class Game {
     }
 
     get didSomeoneWin() {
-        return this.players.every(player => player.score > 0);
+        return !(this.players.every(player => player.score > 0));
     }
 
     get isRunning() {
