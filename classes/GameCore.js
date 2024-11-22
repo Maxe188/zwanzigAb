@@ -102,7 +102,9 @@ module.exports = class Game {
             } else {
                 this.#lastTurn = true;
             }
-            this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
+            let currentPlayerIndex = (this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length;
+            console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 '+this.turn+' + '+this.offset+') % '+this.players.length);
+            this.currentPlayer = this.players[currentPlayerIndex];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
         return this.#roundOver;
