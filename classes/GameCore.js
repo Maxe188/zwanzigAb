@@ -127,12 +127,16 @@ module.exports = class Game {
 
                 this.turn = 0;
             }
-            let currentPlayerIndex = (this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length;
-            console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 + '+this.turn+' + '+this.offset+') % '+this.players.length);
-            this.currentPlayer = this.players[currentPlayerIndex];
-            this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
+            if(!(this.#roundOver)) this.#updateCurrentPlayer();
         } while(this.currentPlayer.notParticipating);
         return this.#roundOver;
+    }
+
+    #updateCurrentPlayer(){
+        let currentPlayerIndex = (this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length;
+        console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 + '+this.turn+' + '+this.offset+') % '+this.players.length);
+        this.currentPlayer = this.players[currentPlayerIndex];
+        this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
     }
 
     triggerLastTurn(){
@@ -148,6 +152,7 @@ module.exports = class Game {
         if(!(this.#roundOver)) return;
         this.#roundOver = false;
         this.#nextRound();
+        this.#updateCurrentPlayer();
     }
 
     #nextRound() {
