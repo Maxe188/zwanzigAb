@@ -118,6 +118,12 @@ module.exports = class Game {
                 console.log('offset: ' + this.offset);
                 const owner = this.players[ownerIndex];
                 owner.stiche++;
+                // check for new round
+                this.lap++;
+                if(this.lap == 5){
+                    this.lap = 0;
+                    this.#roundOver = true;
+                }
 
                 this.turn = 0;
             }
@@ -135,13 +141,7 @@ module.exports = class Game {
         // clear center
         for(let card in this.center) this.used.push(card);
         this.center = [];
-        // check for new round
-        this.lap++;
-        if(this.lap == 5){
-            this.lap = 0;
-            this.#roundOver = true;
-            this.triggerNewRound();
-        }
+        if(this.#roundOver) this.triggerNewRound();
     }
 
     triggerNewRound(){  // future: test and remove if not needed
