@@ -109,7 +109,7 @@ module.exports = class Game {
     }
 
     triggerLastTurn(){
-        if(!this.#lastTurn) return;
+        if(!(this.#lastTurn)) return;
         this.#lastTurn = false;
         // find highest card
         let highestIndex = 0;
@@ -142,7 +142,7 @@ module.exports = class Game {
     }
 
     triggerNewRound(){
-        if(!this.#roundOver) return;
+        if(!(this.#roundOver)) return;
         this.#roundOver = false;
         this.#nextRound();
     }
