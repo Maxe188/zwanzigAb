@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
       case 'new round':
         updateGameStates();
         setTimeout(() => {
-          game.triggerNewRound();
+          game.triggerLastTurn();
           sendLeaderboard();
           updateGameStates();
           if(game.didSomeoneWin){

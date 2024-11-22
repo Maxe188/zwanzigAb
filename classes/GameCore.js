@@ -4,9 +4,10 @@ const Round = require("./Round");
 // future: make things private with #
 
 module.exports = class Game {
-    running = false;
-    debugGame = false;
-    roundOver = false;
+    #running = false;
+    #debugGame = false;
+    #roundOver = false;
+    #lastTurn = false;
     dealingPlayerIndex = -1;
     dealingPlayer = null;
     trumpfPlayer = null;
@@ -38,21 +39,21 @@ module.exports = class Game {
     }
 
     Start(debugging = false) {
-        this.running = true;
-        this.debugGame = debugging;
+        this.#running = true;
+        this.#debugGame = debugging;
         this.updateLeaderboard();
         this.#shuffleCards(this.deck);
         this.currentPlayer = this.players[this.turn];
         this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
-        if (this.debugGame) {
+        if (this.#debugGame) {
             this.dealingPlayer = this.players[0];
         } else {
             this.dealingPlayer = this.players[this.players.length - 1];
         }
     }
     Stop() {
-        this.running = false;
+        this.#running = false;
     }
 
     dealThree() {
@@ -99,43 +100,51 @@ module.exports = class Game {
                 if(this.turn === 0) this.currentRound.farbeZumAngeben = this.center[0].color;
                 this.turn++;
             } else {
-                // find highest card
-                let highestIndex = 0;
-                let highest = this.center[0].cardToNum(this.currentRound);
-                for(let i = 1; i < this.center.length; i++) {
-                    const cardAsNum = this.center[i].cardToNum(this.currentRound);
-                    if(cardAsNum > highest) {
-                        highest = cardAsNum;
-                        highestIndex = i;
-                    }
-                }
-                // add stich to owner of the card
-                const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
-                this.offset = ownerIndex;
-                console.log('offset: ' + this.offset);
-                const owner = this.players[ownerIndex];
-                owner.stiche++;
-                // clear center
-                for(let card in this.center) this.used.push(card);
-                this.center = [];
-                // check for new round
-                this.lap++;
-                if(this.lap == 5){
-                    this.lap = 0;
-                    this.roundOver = true;
-                }
-
-                this.turn = 0;
+                this.#lastTurn = true;
             }
             this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
-        return this.roundOver;
+        return this.#roundOver;
+    }
+
+    triggerLastTurn(){
+        if(!this.#lastTurn) return;
+        this.#lastTurn = false;
+        // find highest card
+        let highestIndex = 0;
+        let highest = this.center[0].cardToNum(this.currentRound);
+        for(let i = 1; i < this.center.length; i++) {
+            const cardAsNum = this.center[i].cardToNum(this.currentRound);
+            if(cardAsNum > highest) {
+                highest = cardAsNum;
+                highestIndex = i;
+            }
+        }
+        // add stich to owner of the card
+        const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
+        this.offset = ownerIndex;
+        console.log('offset: ' + this.offset);
+        const owner = this.players[ownerIndex];
+        owner.stiche++;
+        // clear center
+        for(let card in this.center) this.used.push(card);
+        this.center = [];
+        // check for new round
+        this.lap++;
+        if(this.lap == 5){
+            this.lap = 0;
+            this.#roundOver = true;
+            this.triggerNewRound();
+        }
+
+        this.turn = 0;
     }
 
     triggerNewRound(){
-        if(this.roundOver) this.#nextRound();
-        this.roundOver = false;
+        if(!this.#roundOver) return;
+        this.#roundOver = false;
+        this.#nextRound();
     }
 
     #nextRound() {
@@ -151,7 +160,7 @@ module.exports = class Game {
             this.dealingPlayerIndex = 0;
         }
 
-        if (this.debugGame) {
+        if (this.#debugGame) {
             this.trumpfPlayer = this.players[this.dealingPlayerIndex];
         } else {
             // formula to get the player before the dealing player: needed because -1 is out of index and with that formula it gives the last index :)
@@ -176,7 +185,7 @@ module.exports = class Game {
         return 'played';
     }
     #isValidCard(testingCard) {
-        if(this.debugGame) return true;
+        if(this.#debugGame) return true;
         // check if player has to play spacific color
         if(this.turn === 0) return true;
         if(this.currentPlayer.hand.some(card => card.color === this.currentRound.farbeZumAngeben)){
@@ -191,6 +200,10 @@ module.exports = class Game {
 
     get didSomeoneWin() {
         return this.players.every(player => player.score > 0);
+    }
+
+    get isRunning() {
+        return this.#running;
     }
 
     checkAllCards() {
