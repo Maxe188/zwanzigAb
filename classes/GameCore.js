@@ -101,9 +101,28 @@ module.exports = class Game {
                 this.turn++;
             } else {
                 this.#lastTurn = true;
+                
+                // find highest card
+                let highestIndex = 0;
+                let highest = this.center[0].cardToNum(this.currentRound);
+                for(let i = 1; i < this.center.length; i++) {
+                    const cardAsNum = this.center[i].cardToNum(this.currentRound);
+                    if(cardAsNum > highest) {
+                        highest = cardAsNum;
+                        highestIndex = i;
+                    }
+                }
+                // add stich to owner of the card
+                const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
+                this.offset = ownerIndex;
+                console.log('offset: ' + this.offset);
+                const owner = this.players[ownerIndex];
+                owner.stiche++;
+
+                this.turn = 0;
             }
             let currentPlayerIndex = (this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length;
-            console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 '+this.turn+' + '+this.offset+') % '+this.players.length);
+            console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 + '+this.turn+' + '+this.offset+') % '+this.players.length);
             this.currentPlayer = this.players[currentPlayerIndex];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
         } while(this.currentPlayer.notParticipating);
@@ -113,22 +132,6 @@ module.exports = class Game {
     triggerLastTurn(){
         if(!(this.#lastTurn)) return;
         this.#lastTurn = false;
-        // find highest card
-        let highestIndex = 0;
-        let highest = this.center[0].cardToNum(this.currentRound);
-        for(let i = 1; i < this.center.length; i++) {
-            const cardAsNum = this.center[i].cardToNum(this.currentRound);
-            if(cardAsNum > highest) {
-                highest = cardAsNum;
-                highestIndex = i;
-            }
-        }
-        // add stich to owner of the card
-        const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
-        this.offset = ownerIndex;
-        console.log('offset: ' + this.offset);
-        const owner = this.players[ownerIndex];
-        owner.stiche++;
         // clear center
         for(let card in this.center) this.used.push(card);
         this.center = [];
@@ -139,8 +142,6 @@ module.exports = class Game {
             this.#roundOver = true;
             this.triggerNewRound();
         }
-
-        this.turn = 0;
     }
 
     triggerNewRound(){
