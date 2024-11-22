@@ -101,6 +101,7 @@ module.exports = class Game {
                 this.turn++;
             } else {
                 this.#lastTurn = true;
+                console.log('last');
             }
             this.currentPlayer = this.players[(this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length];
             this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
@@ -110,6 +111,7 @@ module.exports = class Game {
 
     triggerLastTurn(){
         if(!(this.#lastTurn)) return;
+        console.log('mhhhhhh');
         this.#lastTurn = false;
         // find highest card
         let highestIndex = 0;
@@ -143,6 +145,7 @@ module.exports = class Game {
 
     triggerNewRound(){
         if(!(this.#roundOver)) return;
+        console.log('round');
         this.#roundOver = false;
         this.#nextRound();
     }
@@ -170,6 +173,7 @@ module.exports = class Game {
     }
 
     checkAndPlayCard(player, cardIndex) {
+        if(this.#roundOver || this.#lastTurn) return;
         const card = this.currentPlayer.hand[cardIndex];
         if (player !== this.currentPlayer) {
             console.log("wrong player");

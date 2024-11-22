@@ -144,6 +144,10 @@ io.on('connection', (socket) => {
     switch(playingResponse) {
       case 'played':
         updateGameStates();
+        setTimeout(() => {
+          game.triggerLastTurn();
+          updateGameStates();
+        }, 1500);
         break;
       case 'not your turn':
         // send message to socket  never reached because check above
