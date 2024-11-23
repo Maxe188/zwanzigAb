@@ -162,12 +162,12 @@ io.on('connection', (socket) => {
           sendLeaderboard();
           updateGameStates();
           if(game.didSomeoneWin){
-            console.log('send deal three to the current player');
-            getSocket(game.dealingPlayer.id).emit('deal three');
-          } else {
-            players.forEach(player => {
+            game.players.forEach(player => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
             });
+          } else {
+            console.log('send deal three to the current player');
+            getSocket(game.dealingPlayer.id).emit('deal three');
           }
         }, 1500);
         break;
