@@ -250,6 +250,7 @@ function createOwnHand(hand, gameState) {
 function createOtherPlayers(gameState) {
     playerContainer = "";
     const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
+    const ownIndex = gameState.otherPlayers.findIndex(player => player === 'you');
     const degOfRotation = 360 / numOfOtherPlayers;
     for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
@@ -260,8 +261,8 @@ function createOtherPlayers(gameState) {
         // first layer: playerDiv
         let playerDiv = document.createElement('div');
         playerDiv.className = 'otherPlayer';
-        const rotation = (degOfRotation * playerI * (-1)) + (degOfRotation * playerI);
-        console.log('rotation: ' + rotation+' because of: ('+degOfRotation+' * '+playerI+' * (-1)) + ('+degOfRotation+' * '+playerI+')');
+        const rotation = (degOfRotation * playerI * (-1)) + (degOfRotation * ownIndex);
+        //console.log('rotation: ' + rotation+' because of: ('+degOfRotation+' * '+playerI+' * (-1)) + ('+degOfRotation+' * '+playerI+')');
         playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
         if(gameState.currentPlayerName === playerName) {
             console.log('current player: ' + playerName);
