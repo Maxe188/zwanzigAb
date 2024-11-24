@@ -241,6 +241,9 @@ th {
   border-width: 3px;
   border-color: red;
 }
+.currentPlayer{
+  background-color: rgba(50, 70, 130, 0.5);
+}
 
 .otherPlayersContainer {
   position: absolute;

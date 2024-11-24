@@ -133,7 +133,7 @@ module.exports = class Game {
     }
 
     #updateCurrentPlayer(){
-        let currentPlayerIndex = (((this.turn === 0 ? this.dealingPlayerIndex + 1 : this.offset) + this.turn) % this.players.length);
+        let currentPlayerIndex = (((this.lap === 0 ? this.dealingPlayerIndex + 1 : this.offset) + this.turn) % this.players.length);
         console.log('next player as index: ' + currentPlayerIndex+' because of: ((('+this.turn+' === 0 ? '+this.dealingPlayerIndex+' + 1 : '+this.offset+') + '+this.turn+') % '+this.players.length+')');
         this.currentPlayer = this.players[currentPlayerIndex];
         this.currentPlayer ? {} : console.log('player error');
