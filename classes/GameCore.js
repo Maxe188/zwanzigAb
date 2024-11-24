@@ -120,14 +120,14 @@ module.exports = class Game {
                 owner.stiche++;
                 // check for new round
                 this.lap++;
-                if(this.lap == 5){
+                if(this.lap === 5){
                     this.lap = 0;
                     this.#roundOver = true;
                 }
 
                 this.turn = 0;
             }
-            if(!(this.#roundOver)) this.#updateCurrentPlayer();
+            this.#updateCurrentPlayer();
         } while(this.currentPlayer.notParticipating);
         return this.#roundOver;
     }
