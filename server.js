@@ -1,4 +1,4 @@
-// future impruvements: not using id, creating rooms, beautify css (use rem)
+// future impruvements: not using id, creating rooms, beautify css (use rem), speech bubbles, card animations, card directions
 
 const express = require('express');
 const { createServer } = require('node:http');
