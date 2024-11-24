@@ -210,7 +210,10 @@ io.on('connection', (socket) => {
       gameState.currentPlayerName = game.currentPlayer.name;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
-        if (otherPlayer == playerIndex) continue;
+        if (otherPlayer == playerIndex) {
+          tempOtherPlayers[game.players[otherPlayer].name] = 'you';
+          continue;
+        }
         tempOtherPlayers[game.players[otherPlayer].name] = {
           handCount: game.players[otherPlayer].hand.length,
           stichCount: game.players[otherPlayer].stiche

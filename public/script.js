@@ -13,6 +13,7 @@ const centerDiv = document.getElementById('center');
 const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
+var username = "";
 
 var choosingTrumpf = false;
 var tradeing = false;
@@ -30,7 +31,7 @@ socket.on('name suggestion', (suggestedName) => {
 
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
-    const username = usernameInput.value;
+    username = usernameInput.value;
     socket.emit('set name', username);
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
     nameDiv.style.display = 'none';
@@ -213,6 +214,13 @@ function createOwnHand(hand, gameState) {
     if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
+
+    if(gameState.currentPlayerName === username) {
+        console.log('its your turn');
+        hand.classList.add('currentPlayer');
+    } else {
+        if(hand.classList.contains('currentPlayer')) hand.classList.remove('currentPlayer');
+    }
     
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 8.5;
@@ -242,10 +250,11 @@ function createOwnHand(hand, gameState) {
 function createOtherPlayers(gameState) {
     playerContainer = "";
     const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
-    const degOfRotation = 360 / (numOfOtherPlayers + 1);
+    const degOfRotation = 360 / (numOfOtherPlayers);
     for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
         const otherPlayer = gameState.otherPlayers[playerName];
+        if(gameState.otherPlayers[playerName] = 'you') continue;
         const numOfCards = otherPlayer.handCount;
         const numOfStiche = otherPlayer.stichCount;
         // first layer: playerDiv
