@@ -127,7 +127,7 @@ module.exports = class Game {
 
                 this.turn = 0;
             }
-            this.#updateCurrentPlayer();
+            if(this.currentPlayer.notParticipating || !(this.#roundOver)) this.#updateCurrentPlayer();
         } while(this.currentPlayer.notParticipating);
         return this.#roundOver;
     }
