@@ -44,12 +44,12 @@ module.exports = class Game {
         this.updateLeaderboard();
         this.#shuffleCards(this.deck);
         this.currentPlayer = this.players[this.turn];
-        this.trumpfPlayer = this.players[this.dealingPlayerIndex + 1];
+        this.trumpfPlayer = this.players[(this.dealingPlayerIndex + 1) % this.players.length];
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
         if (this.#debugGame) {
             this.dealingPlayer = this.players[0];
         } else {
-            this.dealingPlayer = this.players[this.players.length - 1];
+            this.dealingPlayer = this.players[(this.dealingPlayerIndex + this.players.length) % this.players.length];
         }
     }
     Stop() {
@@ -133,10 +133,10 @@ module.exports = class Game {
     }
 
     #updateCurrentPlayer(){
-        let currentPlayerIndex = (this.dealingPlayerIndex + 1 + this.turn + this.offset) % this.players.length;
+        let currentPlayerIndex = (((this.turn === 0 ? this.dealingPlayerIndex + 1 : this.offset) + this.turn) % this.players.length);
         console.log('next player as index: ' + currentPlayerIndex+' because of: ('+this.dealingPlayerIndex+' + 1 + '+this.turn+' + '+this.offset+') % '+this.players.length);
         this.currentPlayer = this.players[currentPlayerIndex];
-        this.currentPlayer ? {} : console.log('player error' + (this.dealingPlayerIndex + 1 + this.turn));
+        this.currentPlayer ? {} : console.log('player error');
     }
 
     triggerLastTurn(){
@@ -172,7 +172,7 @@ module.exports = class Game {
             this.trumpfPlayer = this.players[this.dealingPlayerIndex];
         } else {
             // formula to get the player before the dealing player: needed because -1 is out of index and with that formula it gives the last index :)
-            this.trumpfPlayer = this.players[(this.dealingPlayerIndex - 1 + this.players.length) % this.players.length];
+            this.trumpfPlayer = this.players[(this.dealingPlayerIndex + 1) % this.players.length];
         }
         this.dealingPlayer = this.players[this.dealingPlayerIndex];
     }
