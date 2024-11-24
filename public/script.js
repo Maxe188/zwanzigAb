@@ -260,7 +260,7 @@ function createOtherPlayers(gameState) {
         // first layer: playerDiv
         let playerDiv = document.createElement('div');
         playerDiv.className = 'otherPlayer';
-        const rotation = degOfRotation * (playerI) * (-1);
+        const rotation = degOfRotation * playerI * (-1) - (degOfRotation * playerI);
         playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
         if(gameState.currentPlayerName === playerName) {
             console.log('current player: ' + playerName);
