@@ -266,7 +266,7 @@ function createOtherPlayers(gameState) {
         playerDiv.className = 'otherPlayer';
         const rotation = (degOfRotation * playerI * (-1)) + (degOfRotation * ownIndex);
         //console.log('rotation: ' + rotation+' because of: ('+degOfRotation+' * '+playerI+' * (-1)) + ('+degOfRotation+' * '+playerI+')');
-        rotations[playerName] = { 'cardRotation': rotation };
+        rotations[playerName] = { 'cardRotation': rotation }; // !!!
         playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
         if(gameState.currentPlayerName === playerName) {
             console.log('current player: ' + playerName);
@@ -318,8 +318,8 @@ function createCenter(center, gameState) {
         let card = document.createElement('div');
         card.className = 'card';
         // calculate rotation to see who played the card
-        const rotation = rotations[ownerName].cardRotation;
-        card.style = 'position: absolut; transform: rotate(' + (rotation.toString()) + 'deg);';
+        //const rotation = rotations[ownerName].cardRotation;
+        //card.style = 'position: absolut; transform: rotate(' + (rotation.toString()) + 'deg);';
         //card.classList.add('cardColor');
         //card.textContent = FrontendCard.toCardString(gameState.center[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(backendCard) + ')';
