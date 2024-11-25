@@ -211,13 +211,14 @@ socket.on('update gameState', (gameState) => {
     createCenter(centerDiv, gameState);
 });
 function createOwnHand(hand, gameState) {
-    if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
+    //if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
+    if(this.trading) return;
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
 
     if(gameState.currentPlayerName === username) {
         console.log('its your turn');
-        hand.classList.add('currentPlayer');
+        if(!(hand.classList.contains('currentPlayer')))hand.classList.add('currentPlayer');
     } else {
         if(hand.classList.contains('currentPlayer')) hand.classList.remove('currentPlayer');
     }
