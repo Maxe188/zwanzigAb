@@ -308,6 +308,7 @@ function createOtherPlayers(gameState) {
     return playerContainer;
 }
 function createCenter(center, gameState) {
+    console.log(rotations);
     center.innerHTML = "";
     const numOfCards = gameState.center.length;
     for (let index = 0; index < numOfCards; index++) {
