@@ -34,7 +34,7 @@ module.exports = class Player {
             console.log('tried to play card at unvalid index: ' + cardIndex);
             return 'unvalid index';
         }
-        newCard.ownerId = this.id;
+        newCard.ownerId = this.id; // future: maby work with name
         return this.hand.splice(cardIndex, 1, newCard)[0];
     }
 
