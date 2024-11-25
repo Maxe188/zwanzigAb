@@ -250,7 +250,7 @@ function createOwnHand(hand, gameState) {
 function createOtherPlayers(gameState) {
     playerContainer = "";
     const numOfOtherPlayers = Object.keys(gameState.otherPlayers).length;
-    const ownIndex = gameState.otherPlayers.findIndex(player => player === 'you');
+    const ownIndex = Object.keys(gameState.otherPlayers).findIndex(playerName => gameState.otherPlayers[playerName] === 'you');
     const degOfRotation = 360 / numOfOtherPlayers;
     for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
