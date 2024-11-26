@@ -88,10 +88,17 @@ module.exports = class Game {
         let row = {};
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             let player = this.players[playerIndex];
-            const playerScore = player.notParticipating ? '-' : player.score;
+            const playerScore = row[playerIndex] === '-' ? '-' : player.score;
             row[playerIndex] = playerScore;
         }
         this.leaderboard[rowIndex] = row;
+        let nextRow = {};
+        for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+            let player = this.players[playerIndex];
+            const playerScore = player.notParticipating ? '-' : '?';
+            nextRow[playerIndex] = playerScore;
+        }
+        this.leaderboard[rowIndex + 1] = nextRow;
     }
 
     #nextPlayer() {
