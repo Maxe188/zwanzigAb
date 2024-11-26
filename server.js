@@ -85,6 +85,7 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal three');
   }
   socket.on('start dealing three', () => {
+    if(!game.isRunning) return;
     if (!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
@@ -94,6 +95,7 @@ io.on('connection', (socket) => {
     getSocket(game.trumpfPlayer.id).emit('choose trumpf');
   });
   socket.on('set trumpf', (cardIndex) => {
+    if(!game.isRunning) return;
     if (!(socket.id === game.trumpfPlayer.id)) return;
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
@@ -104,6 +106,7 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal two');
   });
   socket.on('start dealing two', () => {
+    if(!game.isRunning) return;
     if (!(socket.id === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
@@ -112,6 +115,7 @@ io.on('connection', (socket) => {
     toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
+    if(!game.isRunning) return;
     let tradingPlayerIndex = game.players.findIndex((player) => player.id === socket.id);
     game.playerTrades(tradingPlayerIndex, indices);
 
@@ -122,6 +126,7 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('not participating', () => {
+    if(!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
     if(tradingPlayer === game.trumpfPlayer) return; // !!!
     tradingPlayer.doNotParticipate(game.used);
@@ -134,6 +139,7 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('play card', (cardIndex) => {
+    if(!game.isRunning) return;
     if (!(socket.id === game.currentPlayer.id)) return;
     let playingPlayer = game.players.find((player) => player.id === socket.id);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());

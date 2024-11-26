@@ -321,7 +321,7 @@ function createCenter(center, gameState) {
         card.className = 'card';
         // calculate rotation to see who played the card
         const cardRotation = rotations[ownerName];
-        card.style = 'position: absolute; transform: rotate(' + (cardRotation.toString()) + 'deg);';
+        card.style = 'position: absolute; transform: rotate(' + (cardRotation.toString()) + 'deg)  translate(0, 35px);';
         //card.classList.add('cardColor');
         //card.textContent = FrontendCard.toCardString(gameState.center[index]);
         card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(backendCard) + ')';
