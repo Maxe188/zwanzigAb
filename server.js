@@ -302,6 +302,12 @@ io.on('connection', (socket) => {
   */
 });
 
+
+// Dashboard
+app.get('/dash', (req, res) => {
+  res.send('online users: ' + io.sockets.length);
+});
+
 // IP feature
 app.set('trust proxy', true);
 app.get('/ip', (req, res) => {
