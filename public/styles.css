@@ -158,13 +158,19 @@ th {
 .noBorder tr th:first-child {border-left: none;}
 .noBorder tr th:last-child {border-right: none;}
 
+.trumpfDisplayContainer{
+  background-color: rgba(128, 128, 128, 0.45);
+  text-align: center;
+  transform: translate(0, -130px);
+  border-radius: 10px;
+}
 .trumpfDisplay{
   width: 70px;
   height: 80px;
   background-size: contain;
   background-repeat: no-repeat;
-  transform: translate(0, -130px);
   background-position: center;
+  background-image: url('pictures/colors/question-mark.png');
 }
 
 .mitte {
