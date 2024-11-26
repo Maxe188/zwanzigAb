@@ -267,6 +267,7 @@ function createOtherPlayers(gameState) {
         const rotation = (degOfRotation * playerI * (-1)) + (degOfRotation * ownIndex);
         //console.log('rotation: ' + rotation+' because of: ('+degOfRotation+' * '+playerI+' * (-1)) + ('+degOfRotation+' * '+playerI+')');
         rotations[playerName] = { 'cardRotation': rotation }; // !!!
+        console.log(rotations);
         playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
         if(gameState.currentPlayerName === playerName) {
             console.log('current player: ' + playerName);
