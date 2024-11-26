@@ -1,5 +1,3 @@
-// future impruvements: not using id, creating rooms, beautify css (use rem), speech bubbles, card animations, card directions, fixing leaderbord
-
 const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');

@@ -1,0 +1,8 @@
+use docker
+not using id
+creating rooms
+beautify css (use rem)
+speech bubbles
+card animations
+card directions
+fixing leaderbord

@@ -258,7 +258,10 @@ function createOtherPlayers(gameState) {
     for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
         const otherPlayer = gameState.otherPlayers[playerName];
-        if(gameState.otherPlayers[playerName] === 'you') continue;
+        if(gameState.otherPlayers[playerName] === 'you') {
+            rotations[username] = 0;
+            continue;
+        }
         const numOfCards = otherPlayer.handCount;
         const numOfStiche = otherPlayer.stichCount;
         // first layer: playerDiv
@@ -308,7 +311,6 @@ function createOtherPlayers(gameState) {
     return playerContainer;
 }
 function createCenter(center, gameState) {
-    console.log(rotations);
     center.innerHTML = "";
     const numOfCards = gameState.center.length;
     for (let index = 0; index < numOfCards; index++) {
@@ -318,7 +320,6 @@ function createCenter(center, gameState) {
         let card = document.createElement('div');
         card.className = 'card';
         // calculate rotation to see who played the card
-        console.log(ownerName);
         const cardRotation = rotations[ownerName];
         card.style = 'position: absolut; transform: rotate(' + (cardRotation.toString()) + 'deg);';
         //card.classList.add('cardColor');
