@@ -88,7 +88,7 @@ module.exports = class Game {
         let row = {};
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             let player = this.players[playerIndex];
-            const playerScore = (this.leaderboard && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
+            const playerScore = (this.leaderboard !== undefined && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
             row[playerIndex] = playerScore;
         }
         this.leaderboard[rowIndex] = row;
