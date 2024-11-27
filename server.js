@@ -305,7 +305,7 @@ io.on('connection', (socket) => {
 
 // Dashboard
 app.get('/dash', (req, res) => {
-  res.send('online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size):' + io.of("/").sockets.size);
+  res.send('online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size);
 });
 
 // IP feature

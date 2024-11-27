@@ -89,7 +89,7 @@ module.exports = class Game {
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             let player = this.players[playerIndex];
             console.log(this.leaderboard);
-            const playerScore = (this.leaderboard && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
+            const playerScore = (this.#hasProperties(this.leaderboard) && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
             row[playerIndex] = playerScore;
         }
         this.leaderboard[rowIndex] = row;
@@ -221,6 +221,10 @@ module.exports = class Game {
 
     get isRunning() {
         return this.#running;
+    }
+
+    #hasProperties(){
+        return Object.keys(this.leaderboard).length === 0;
     }
 
     checkAllCards() {
