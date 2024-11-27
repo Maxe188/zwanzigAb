@@ -46,7 +46,7 @@
       <div class="otherPlayersContainer" id="others">
         <div class="otherPlayer" style="transform: rotate(120deg) translate(-300px) rotate(90deg) scale(0.8);">
           <div>
-            <h3>player 1</h3>
+            <h3 class="playerName">player 1</h3>
           </div>
           <div class="otherHand">
             <div class="rotatingContainer" style="transform: rotate(70deg)">
@@ -78,7 +78,7 @@
         </div>
         <div class="otherPlayer" style="transform: rotate(240deg) translate(-300px) rotate(90deg) scale(0.8);">
           <div>
-            <h3>player 2</h3>
+            <h3 class="playerName">player 2</h3>
           </div>
           <div class="otherHand">
             <div class="rotatingContainer" style="transform: rotate(70deg)">
@@ -162,21 +162,29 @@
           </div>
         </div>
       </div>
-      <div class="message" id="dealThreeMessage">
-        <h2>Du bist dran mit</h2>
-        <button type="button" id="dealThreeButton">drei austeilen</button>
+      <div class="messageOverlay" id="dealThreeMessage">
+        <div class="message">
+          <h2>Du bist dran mit</h2>
+          <button type="button" id="dealThreeButton">drei austeilen</button>
+        </div>
       </div>
-      <div class="message" id="trumpfMessage">
-        <h2>Klicke auf eine Karte die Trumpf sein soll</h2>
+      <div class="messageOverlay" id="trumpfMessage">
+        <div class="message">
+          <h2>Klicke auf eine Karte die Trumpf sein soll</h2>
+        </div>
       </div>
-      <div class="message" id="dealTwoMessage">
-        <h2>Du bist dran mit</h2>
-        <button type="button" id="dealTwoButton">zwei austeilen</button>
+      <div class="messageOverlay" id="dealTwoMessage">
+        <div class="message">
+          <h2>Du bist dran mit</h2>
+          <button type="button" id="dealTwoButton">zwei austeilen</button>
+        </div>
       </div>
-      <div class="message" id="tradeMessage">
-        <h2>Wähle weise...</h2>
-        <button type="button" id="tradeButton">tauschen</button>
-        <button type="button" id="outButton">ich bin raus</button>
+      <div class="messageOverlay" id="tradeMessage">
+        <div class="message">
+          <h2>Klick auf alle Karten die du tauschen willst und dann auf fertig.</h2>
+          <button type="button" id="tradeButton">fertig</button>
+          <button type="button" id="outButton">ich bin raus</button>
+        </div>
       </div>
     </div>
   </div>

@@ -159,6 +159,7 @@ th {
 .noBorder tr th:last-child {border-right: none;}
 
 .trumpfDisplayContainer{
+  position: absolute;
   background-color: rgba(128, 128, 128, 0.45);
   text-align: center;
   transform: translate(0, -130px);
@@ -199,7 +200,7 @@ th {
   justify-content: center;
   align-items: center;
   position: absolute;
-  background-color: rgba(245, 245, 245, 0.5);
+  background-color: rgba(245, 245, 245, 0.75);
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -207,6 +208,16 @@ th {
 }
 .message > h2 {
   margin: 0;
+}
+
+.messageOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vh;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
 }
 
 .player {
@@ -284,4 +295,7 @@ th {
 }
 .rotateFix {
   transform: translate(-295px) rotate(-90deg);
+}
+.playerName{
+  color: white;
 }
