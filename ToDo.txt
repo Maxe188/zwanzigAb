@@ -5,7 +5,7 @@
 [ ] speech bubbles
 [ ] card animations
 [X] card directions
-[ ] fixing leaderbord
+[X] fixing leaderbord
 [ ] 
 [ ] 
 [ ] 
