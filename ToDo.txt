@@ -6,8 +6,8 @@
 [ ] card animations
 [X] card directions
 [X] fixing leaderbord
-[ ] 
-[ ] 
+[ ] make "aussteigen" not possible
+[ ] show ownStiche
 [ ] 
 [ ] 
 [ ] 

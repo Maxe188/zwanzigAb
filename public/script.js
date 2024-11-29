@@ -9,11 +9,13 @@ const usernameInput = document.getElementById('username');
 const ownHandDiv = document.getElementById('myself');
 const othersDiv = document.getElementById('others');
 const centerDiv = document.getElementById('center');
+const outButton = document.getElementById('outButton');
 
 const gameDiv = document.getElementById('gameDiv');
 
 var players = {};
 var username = "";
+var lastGameState = {};
 
 var choosingTrumpf = false;
 var tradeing = false;
@@ -169,6 +171,10 @@ socket.on('trade', () => {
         return;
     }
     tradeing = true;
+
+    if(lastGameState.currentPlayerName === username) outButton.style.display = 'none';
+    else outButton.style.display = 'inline-block';
+
     document.getElementById('tradeMessage').style.display = 'flex';
 });
 document.getElementById('tradeButton').onclick = () => {
@@ -177,7 +183,12 @@ document.getElementById('tradeButton').onclick = () => {
     console.log('trade cards: ' + selectedTradingCards)
     socket.emit('enterTrade', selectedTradingCards);
 }
-document.getElementById('outButton').onclick = () => {
+outButton.onclick = () => {
+    if(!(Object.entries(lastGameState.otherPlayers).every((pair) => pair[1].traded === true))){
+        alert('nicht alle haben getauscht');
+        return;
+    }
+
     tradeing = false;
     document.getElementById('tradeMessage').style.display = 'none';
     console.log('you\'re out');
@@ -204,12 +215,12 @@ socket.on('lost', () => {
     alert('you lost');
 });
 
-socket.on('update gameState', (gameState) => {
-    // future: show ownStiche
-    console.log(gameState);
-    createOwnHand(ownHandDiv, gameState);
-    othersDiv.innerHTML = createOtherPlayers(gameState);
-    createCenter(centerDiv, gameState);
+socket.on('update gameState', (backendGameState) => {
+    console.log(backendGameState);
+    lastGameState = backendGameState;
+    createOwnHand(ownHandDiv, backendGameState);
+    othersDiv.innerHTML = createOtherPlayers(backendGameState);
+    createCenter(centerDiv, backendGameState);
 });
 function createOwnHand(hand, gameState) {
     if(gameState.currentPlayerName === username) {

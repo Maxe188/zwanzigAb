@@ -78,9 +78,13 @@ module.exports = class Game {
         for (let i = 0; i < numberOfCards; i++) recivingPlayer.getCard(this.deck.pop());
     }
 
-    playerTrades(playerIndex, indices){
-        this.players[playerIndex].trade(indices, this.deck, this.used);
-        this.players[playerIndex].hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
+    playerTrades(player, indices){
+        player.trade(indices, this.deck, this.used);
+        player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
+    }
+    playerDoNotParticipate(player){
+        if(player === game.trumpfPlayer) return;
+        player.doNotParticipate(this.used);
     }
 
     updateLeaderboard() {
@@ -167,6 +171,7 @@ module.exports = class Game {
         this.currentRound = new Round(FARBE.UNDEFINIERT, FARBE.UNDEFINIERT);
         this.players.forEach((player) => player.newRound());
         this.deck = createDeck();
+        this.used = [];
         this.#shuffleCards(this.deck);
 
         if (this.dealingPlayerIndex < this.players.length - 1) {

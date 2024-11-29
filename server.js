@@ -116,8 +116,8 @@ io.on('connection', (socket) => {
   });
   socket.on('enterTrade', (indices) => {
     if(!game.isRunning) return;
-    let tradingPlayerIndex = game.players.findIndex((player) => player.id === socket.id);
-    game.playerTrades(tradingPlayerIndex, indices);
+    let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    game.playerTrades(tradingPlayer, indices);
 
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) {
@@ -128,8 +128,7 @@ io.on('connection', (socket) => {
   socket.on('not participating', () => {
     if(!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
-    if(tradingPlayer === game.trumpfPlayer) return; // !!!
-    tradingPlayer.doNotParticipate(game.used);
+    if(game.playerDoNotParticipate(tradingPlayer)) return;
 
     updateGameStates();
     sendLeaderboard();
@@ -220,7 +219,8 @@ io.on('connection', (socket) => {
         }
         tempOtherPlayers[game.players[otherPlayer].name] = {
           handCount: game.players[otherPlayer].hand.length,
-          stichCount: game.players[otherPlayer].stiche
+          stichCount: game.players[otherPlayer].stiche,
+          traded: game.players[otherPlayer].traded
         }
       }
       gameState.otherPlayers = tempOtherPlayers;
