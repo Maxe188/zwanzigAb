@@ -172,7 +172,7 @@ socket.on('trade', () => {
     }
     tradeing = true;
 
-    if(lastGameState.currentPlayerName === username) outButton.style.display = 'none';
+    if(lastGameState.currentPlayerName === username || Object.keys(lastGameState.otherPlayers).length === 2) outButton.style.display = 'none';
     else outButton.style.display = 'inline-block';
 
     document.getElementById('tradeMessage').style.display = 'flex';
@@ -184,7 +184,7 @@ document.getElementById('tradeButton').onclick = () => {
     socket.emit('enterTrade', selectedTradingCards);
 }
 outButton.onclick = () => {
-    if(!(Object.entries(lastGameState.otherPlayers).every((pair) => pair[1].traded === true))){
+    if(!(Object.entries(lastGameState.otherPlayers).every((pair) => pair[1].traded))){
         alert('nicht alle haben getauscht');
         return;
     }

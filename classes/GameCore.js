@@ -83,7 +83,8 @@ module.exports = class Game {
         player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
     }
     playerDoNotParticipate(player){
-        if(player === game.trumpfPlayer) return;
+        if(player === this.trumpfPlayer) return;
+        if(this.players.every((otherPlayer) => otherPlayer !== this.trumpfPlayer && otherPlayer.traded)) return;
         player.doNotParticipate(this.used);
     }
 
