@@ -211,6 +211,7 @@ io.on('connection', (socket) => {
       gameState.ownStiche = game.players[playerIndex].stiche;
       gameState.center = game.center;
       gameState.currentPlayerName = game.currentPlayer.name;
+      gameState.dealingPlayerName = game.dealingPlayer.name;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer === playerIndex) {
