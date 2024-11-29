@@ -189,7 +189,7 @@ io.on('connection', (socket) => {
     delete players[socket.id];
     updatePlayers();
     console.log('X a user ' + socket.id + ' disconnected because of: ' + reason);
-    if (game.isRunning) {
+    if (Object.entries(game.players).findIndex(player => player.id === socket.id) > -1 && game.isRunning) {
       game.Stop();
       game = new Game([], [], [], [], null);
       toPlayingPlayers('game ended');
