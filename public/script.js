@@ -185,8 +185,8 @@ document.getElementById('tradeButton').onclick = () => {
 }
 outButton.onclick = () => {
     console.log(Object.entries(lastGameState.otherPlayers));
-    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded)))){
-        alert('es haben nich alle getauscht');
+    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded)))){ // wenn du austeilender bist, und nicht alle vor dir getauscht haben(angenommen du hast getauscht), dann darfst du nicht raus gehen
+        alert('es haben nich alle getauscht!');
         return;
     }
 

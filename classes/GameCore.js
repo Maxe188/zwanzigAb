@@ -84,7 +84,6 @@ module.exports = class Game {
     }
     playerDoNotParticipate(player){
         if(player === this.trumpfPlayer) return false;
-        if(this.players.every((otherPlayer) => otherPlayer !== this.trumpfPlayer && otherPlayer.traded)) return false;
         player.doNotParticipate(this.used);
         return true;
     }
