@@ -185,8 +185,8 @@ document.getElementById('tradeButton').onclick = () => {
 }
 outButton.onclick = () => {
     console.log(Object.entries(lastGameState.otherPlayers));
-    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] !== 'you' || pair[1].traded)))){
-        alert('sicher das alle anderen vor dir getauscht haben?');
+    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded)))){
+        alert('es haben nich alle getauscht');
         return;
     }
 
