@@ -8,7 +8,7 @@
 [X] fixing leaderbord
 [ ] make "aussteigen" not possible
 [ ] show ownStiche
-[ ] 
+[ ] bug identical usernames
 [ ] 
 [ ] 
 [ ] 
