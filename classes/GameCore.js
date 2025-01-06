@@ -83,9 +83,10 @@ module.exports = class Game {
         player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
     }
     playerDoNotParticipate(player){
-        if(player === this.trumpfPlayer) return;
-        if(this.players.every((otherPlayer) => otherPlayer !== this.trumpfPlayer && otherPlayer.traded)) return;
+        if(player === this.trumpfPlayer) return false;
+        if(this.players.every((otherPlayer) => otherPlayer !== this.trumpfPlayer && otherPlayer.traded)) return false;
         player.doNotParticipate(this.used);
+        return true;
     }
 
     updateLeaderboard() {
@@ -196,6 +197,9 @@ module.exports = class Game {
         if (player !== this.currentPlayer) {
             console.log("wrong player");
             return 'not your turn';
+        }
+        if(!(this.players.every((p) => p.traded == true))){
+            return 'too soon';
         }
         if (!(this.#isValidCard(card))) {
             console.log("not valid card");

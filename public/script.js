@@ -184,7 +184,7 @@ document.getElementById('tradeButton').onclick = () => {
     socket.emit('enterTrade', selectedTradingCards);
 }
 outButton.onclick = () => {
-    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => pair[1].traded))){
+    if(lastGameState.dealingPlayerName === username || !(Object.entries(lastGameState.otherPlayers).every((pair) => pair[1].traded))){
         alert('nicht alle haben getauscht');
         return;
     }

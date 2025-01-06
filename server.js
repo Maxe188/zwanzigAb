@@ -128,7 +128,10 @@ io.on('connection', (socket) => {
   socket.on('not participating', () => {
     if(!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.id);
-    if(game.playerDoNotParticipate(tradingPlayer)) return;
+    if(game.playerDoNotParticipate(tradingPlayer)) {
+      console.log('not participating not worked');
+      return;
+    }
 
     updateGameStates();
     sendLeaderboard();
