@@ -1,19 +1,25 @@
+// import libraries
 const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 
+// import local files
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
 const Game = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
 
+// create server
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  connectionStateRecovery: {}
+});
+// set port to predifined environment var or 3000
 const port = process.env.PORT || 3000;
 
-// make the public folder public for files to refrerence eachother
+// make the public-folder public for files to refrerence eachother
 app.use(express.static('public'));
 
 // handle get request
@@ -21,11 +27,11 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
 
+// globals
 const players = {};
 const maxPlayers = 6;
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
-//Game
 var game = new Game([], [], [], [], null);
 
 io.on('connection', (socket) => {
