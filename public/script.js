@@ -27,6 +27,16 @@ var selectedTradingCards = [];
 var lastHand;
 const rotations = {};
 
+// handle IDs
+socket.on("session", ({ sessionID, userID }) => {
+    // attach the session ID to the next reconnection attempts
+    socket.auth = { sessionID };
+    // store it in the sessionStorage
+    sessionStorage.setItem("sessionID", sessionID); // future? may be changed to local storage to only be able to play one game
+    // save the ID of the user
+    socket.userID = userID;
+});
+
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
     usernameInput.value = suggestedName;
