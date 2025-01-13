@@ -3,6 +3,8 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
+const crypto = require("crypto"); // future: maby uuid
+const randomId = () => crypto.randomBytes(8).toString("hex");
 
 // import local files
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
@@ -27,6 +29,8 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
 
+const sessions = {};
+
 // globals
 const players = {};
 const maxPlayers = 6;
@@ -34,27 +38,21 @@ const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', '
 
 var game = new Game([], [], [], [], null);
 
-// user authentification: sessionID, userID
+// user authentification: sessionID(private, reconnection), userID(public, for others)
 io.use((socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
   if (sessionID) {
     // find existing session
-    const session = sessionStore.findSession(sessionID);
+    const session = sessions[sessionID];
     if (session) {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
-      socket.username = session.username;
       return next();
     }
-  }
-  const username = socket.handshake.auth.username;
-  if (!username) {
-    return next(new Error("invalid username"));
   }
   // create new session
   socket.sessionID = randomId();
   socket.userID = randomId();
-  socket.username = username;
   next();
 });
 
