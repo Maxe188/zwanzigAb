@@ -358,6 +358,10 @@ function createCenter(center, gameState) {
     }
 }
 
+socket.onAny((eventName, ...args) => {
+  console.log("unknown event: " + eventName);
+});
+
 /* future chat feature
 const form = document.getElementById('form');
 const input = document.getElementById('input');

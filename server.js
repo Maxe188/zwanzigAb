@@ -70,10 +70,6 @@ io.use((socket, next) => {
   next();
 });
 
-socket.onAny((eventName, ...args) => {
-  console.log("unknown event: " + eventName);
-});
-
 io.on('connection', (socket) => {
   sessions[socket.sessionID] = {
     userID: socket.userID,
@@ -254,6 +250,10 @@ io.on('connection', (socket) => {
       game = new Game([], [], [], [], null);
       toPlayingPlayers('game ended');
     }
+  });
+  
+  socket.onAny((eventName, ...args) => {
+    console.log("unknown event: " + eventName);
   });
 
   function updateGameStates() {
