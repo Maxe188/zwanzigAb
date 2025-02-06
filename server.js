@@ -30,6 +30,18 @@ app.get('/', (req, res) => {
 });
 
 const sessions = {};
+const expirationTimeInMs = 300000; // 5min.
+// loop to check expired sessions
+const intervalSession = setInterval(expirationCheck,1000); //every second
+// clearInterval(intervalSession);
+function expirationCheck(){
+  const rightNow = Date.now();
+  sessions.forEach(session => {
+    if(rightNow - session.timeOfLastConnection > expirationTimeInMs){
+      delete session;
+    }
+  });
+}
 
 // globals
 const players = {};
@@ -47,16 +59,27 @@ io.use((socket, next) => {
     if (session) {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
+      timeOfLastConnection = Date.now();
       return next();
     }
+
   }
-  // create new session
+  // create new IDs
   socket.sessionID = randomId();
   socket.userID = randomId();
   next();
 });
 
+socket.onAny((eventName, ...args) => {
+  console.log("unknown event: " + eventName);
+});
+
 io.on('connection', (socket) => {
+  sessions[socket.sessionID] = {
+    userID: socket.userID,
+    timeOfLastConnection: Date.now(),
+    connected: true,
+  };
   // send IDs
   socket.emit("session", {
     sessionID: socket.sessionID,

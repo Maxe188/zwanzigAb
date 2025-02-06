@@ -1,4 +1,6 @@
-const socket = io();
+const socket = io({
+    autoConnect: false
+});
 
 const nameDiv = document.getElementById('nameDiv');
 
@@ -28,6 +30,10 @@ var lastHand;
 const rotations = {};
 
 // handle IDs
+const sessionID = localStorage.getItem("sessionID");
+if (sessionID) socket.auth = { sessionID };
+socket.connect();
+
 socket.on("session", ({ sessionID, userID }) => {
     // attach the session ID to the next reconnection attempts
     socket.auth = { sessionID };
