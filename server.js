@@ -36,11 +36,11 @@ const intervalSession = setInterval(expirationCheck,1000); //every second
 // clearInterval(intervalSession);
 function expirationCheck(){
   const rightNow = Date.now();
-  sessions.forEach(session => {
+  for (const session in sessions) {
     if(rightNow - session.timeOfLastConnection > expirationTimeInMs){
       delete session;
     }
-  });
+  }
 }
 
 // globals
@@ -251,7 +251,7 @@ io.on('connection', (socket) => {
       toPlayingPlayers('game ended');
     }
   });
-  
+
   socket.onAny((eventName, ...args) => {
     console.log("unknown event: " + eventName);
   });
