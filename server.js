@@ -84,8 +84,8 @@ io.on('connection', (socket) => {
   });
 
   //console.log(socket);
-  console.log('O a user ' + socket.id + ' connected');
-  players[socket.id] = { savedSocket: socket };
+  console.log('O a user ' + socket.userID + ' connected');
+  players[socket.userID] = { savedSocket: socket };
 
   const playerCount = Object.keys(players).length;
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
@@ -96,9 +96,9 @@ io.on('connection', (socket) => {
   socket.emit('name suggestion', nameSuggestions[randomIndex]);
 
   socket.on('set name', (recivedName) => {
-    players[socket.id].name = recivedName;
+    players[socket.userID].name = recivedName;
     updatePlayers();
-    console.log('user ' + socket.id + ' set name to: ' + recivedName);
+    console.log('user ' + socket.userID + ' set name to: ' + recivedName);
 
     console.log('all players: {');
     for (const id in players) {
@@ -140,7 +140,7 @@ io.on('connection', (socket) => {
   }
   socket.on('start dealing three', () => {
     if(!game.isRunning) return;
-    if (!(socket.id === game.dealingPlayer.id)) return;
+    if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
     updateGameStates();
@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
   });
   socket.on('set trumpf', (cardIndex) => {
     if(!game.isRunning) return;
-    if (!(socket.id === game.trumpfPlayer.id)) return;
+    if (!(socket.userID === game.trumpfPlayer.id)) return;
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
@@ -161,7 +161,7 @@ io.on('connection', (socket) => {
   });
   socket.on('start dealing two', () => {
     if(!game.isRunning) return;
-    if (!(socket.id === game.dealingPlayer.id)) return;
+    if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
     updateGameStates();
@@ -170,7 +170,7 @@ io.on('connection', (socket) => {
   });
   socket.on('enterTrade', (indices) => {
     if(!game.isRunning) return;
-    let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    let tradingPlayer = game.players.find((player) => player.id === socket.userID);
     game.playerTrades(tradingPlayer, indices);
 
     updateGameStates();
@@ -181,7 +181,7 @@ io.on('connection', (socket) => {
   });
   socket.on('not participating', () => {
     if(!game.isRunning) return;
-    let tradingPlayer = game.players.find((player) => player.id === socket.id);
+    let tradingPlayer = game.players.find((player) => player.id === socket.userID);
     if(!(game.playerDoNotParticipate(tradingPlayer))) {
       console.log('not participating not worked');
       return;
@@ -196,8 +196,8 @@ io.on('connection', (socket) => {
   });
   socket.on('play card', (cardIndex) => {
     if(!game.isRunning) return;
-    if (!(socket.id === game.currentPlayer.id)) return;
-    let playingPlayer = game.players.find((player) => player.id === socket.id);
+    if (!(socket.userID === game.currentPlayer.id)) return;
+    let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
     let playingResponse = game.checkAndPlayCard(playingPlayer, cardIndex);
@@ -243,10 +243,10 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', (reason) => {
-    delete players[socket.id];
+    delete players[socket.userID];
     updatePlayers();
-    console.log('X a user ' + socket.id + ' disconnected because of: ' + reason);
-    if (Object.entries(game.players).findIndex(player => player.id === socket.id) > -1 && game.isRunning) {
+    console.log('X a user ' + socket.userID + ' disconnected because of: ' + reason);
+    if (Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) {
       game.Stop();
       game = new Game([], [], [], [], null);
       toPlayingPlayers('game ended');

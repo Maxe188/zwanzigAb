@@ -30,7 +30,7 @@ var lastHand;
 const rotations = {};
 
 // handle IDs
-const sessionID = localStorage.getItem("sessionID");
+const sessionID = sessionStorage.getItem("sessionID");
 if (sessionID) socket.auth = { sessionID };
 socket.connect();
 
