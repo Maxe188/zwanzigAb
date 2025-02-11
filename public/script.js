@@ -359,7 +359,7 @@ function createCenter(center, gameState) {
 }
 
 socket.onAny((eventName, ...args) => {
-  console.log("unknown event: " + eventName);
+  //console.log("unknown event: " + eventName);
 });
 
 /* future chat feature

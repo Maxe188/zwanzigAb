@@ -38,6 +38,7 @@ function expirationCheck(){
   const rightNow = Date.now();
   for (const session in sessions) {
     if(rightNow - session.timeOfLastConnection > expirationTimeInMs){
+      console.log("kicked: " + session.userID);
       delete session;
     }
   }
@@ -253,7 +254,12 @@ io.on('connection', (socket) => {
   });
 
   socket.onAny((eventName, ...args) => {
-    console.log("unknown event: " + eventName);
+    //console.log("unknown event: " + eventName);
+    sessions[socket.sessionID] = {
+      userID: socket.userID,
+      timeOfLastConnection: Date.now(),
+      connected: true,
+    };
   });
 
   function updateGameStates() {
