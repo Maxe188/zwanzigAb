@@ -235,10 +235,11 @@ socket.on('lost', () => {
 socket.on('update gameState', (backendGameState) => {
     console.log(backendGameState);
     lastGameState = backendGameState;
+    username = backendGameState.yourName;
     createOwnHand(ownHandDiv, backendGameState);
     othersDiv.innerHTML = createOtherPlayers(backendGameState);
     createCenter(centerDiv, backendGameState);
-    setState(backendGameState.state);
+    setState(backendGameState.state, backendGameState);
 });
 function createOwnHand(hand, gameState) {
     if(gameState.currentPlayerName === username) {
@@ -358,7 +359,7 @@ function createCenter(center, gameState) {
         center.appendChild(card);
     }
 }
-function setState(state){
+function setState(state, gameState){
     nameDiv.style.display = 'none';
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'none';
@@ -369,14 +370,17 @@ function setState(state){
     switch(state){
         case 1:
             gameDiv.style.display = 'block';
+            if(gameState.dealingPlayerName != username) return;
             document.getElementById('dealTwoMessage').style.display = 'flex';
             break;
         case 2:
             gameDiv.style.display = 'block';
+            if(gameState.currentPlayerName != username) return;
             document.getElementById('trumpfMessage').style.display = 'flex';
             break;
         case 3:
             gameDiv.style.display = 'block';
+            if(gameState.youTraded) return;
             document.getElementById('tradeMessage').style.display = 'flex';
             break;
         case 4:
@@ -384,6 +388,7 @@ function setState(state){
             break;
         case 5:
             gameDiv.style.display = 'block';
+            if(gameState.dealingPlayerName != username) return;
             document.getElementById('dealThreeMessage').style.display = 'flex';
             break;
         case 6:

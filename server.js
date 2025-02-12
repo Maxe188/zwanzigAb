@@ -278,12 +278,14 @@ io.on('connection', (socket) => {
 
     for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
       let gameState = {};
+      gameState.yourName = game.players[playerIndex].name;
       gameState.ownHand = game.players[playerIndex].hand;
       gameState.ownStiche = game.players[playerIndex].stiche;
       gameState.center = game.center;
       gameState.currentPlayerName = game.currentPlayer.name;
       gameState.dealingPlayerName = game.dealingPlayer.name;
       gameState.state = game.state;
+      gameState.youTraded = game.players[playerIndex].traded;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer === playerIndex) {
@@ -319,11 +321,13 @@ io.on('connection', (socket) => {
     console.log(player.toString() + ' stiche: ' + player.stiche);
 
     let gameState = {};
+    gameState.yourName = player.name;
     gameState.ownHand = player.hand;
     gameState.center = game.center;
     gameState.currentPlayerName = game.currentPlayer.name;
     gameState.dealingPlayerName = game.dealingPlayer.name;
     gameState.state = game.state;
+    gameState.youTraded = player.traded;
     let tempOtherPlayers = {};
     for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
       if (game.players[otherPlayer].id == player.id) {
