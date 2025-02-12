@@ -3,7 +3,7 @@ const Round = require("./Round");
 
 // future: make things private with #
 
-module.exports = class Game {
+class Game {
     #running = false;
     #debugGame = false;
     #roundOver = false;
@@ -51,23 +51,24 @@ module.exports = class Game {
         } else {
             this.dealingPlayer = this.players[(this.dealingPlayerIndex + this.players.length) % this.players.length];
         }
+        this.state = STATES.DEAL_THREE;
     }
     Stop() {
         this.#running = false;
     }
 
     dealThree() {
-        this.state = STATES.DEAL;
+        this.state = STATES.SET_TRUMPF;
         this.players.forEach(player => {
             this.#dealCards(player, 3);
         });
     }
     setTrumpf(color) {
-        this.state = STATES.DEAL;
+        this.state = STATES.DEAL_TWO;
         this.currentRound.trumpf = color;
     }
     dealTwo() {
-        this.state = STATES.DEAL;
+        this.state = STATES.TRADE_CARDS;
         this.players.forEach(player => {
             this.#dealCards(player, 2);
             player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
@@ -249,8 +250,15 @@ module.exports = class Game {
 
 }
 const STATES = {
-    DEAL: 1,
+    DEAL_TWO: 1,
     SET_TRUMPF: 2,
     TRADE_CARDS: 3,
-    PLAY: 4
+    PLAY: 4,
+    DEAL_THREE: 5,
+    READY: 6
 };
+
+module.exports = {
+    Game,
+    STATES
+}

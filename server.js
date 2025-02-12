@@ -8,7 +8,7 @@ const randomId = () => crypto.randomBytes(8).toString("hex");
 
 // import local files
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
-const Game = require('./classes/GameCore.js');
+const { Game, STATES } = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
 
@@ -32,12 +32,12 @@ app.get('/', (req, res) => {
 const sessions = {};
 const expirationTimeInMs = 300000; // 5min.
 // loop to check expired sessions
-const intervalSession = setInterval(expirationCheck,1000); //every second
+const intervalSession = setInterval(expirationCheck, 1000); //every second
 // clearInterval(intervalSession);
-function expirationCheck(){
+function expirationCheck() {
   const rightNow = Date.now();
   for (const session in sessions) {
-    if(rightNow - session.timeOfLastConnection > expirationTimeInMs){
+    if (rightNow - session.timeOfLastConnection > expirationTimeInMs) {
       console.log("kicked: " + session.userID);
       delete session;
     }
@@ -90,10 +90,13 @@ io.on('connection', (socket) => {
   const playerCount = Object.keys(players).length;
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
 
-  // Returns a random integer from 0 to 9:
-  let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
-  //name suggestion
-  socket.emit('name suggestion', nameSuggestions[randomIndex]);
+  if (game.isRunning) { updateOnePlayer(game.players.find((player) => player.id === socket.userID)) }
+  else {
+    // Returns a random integer from 0 to 9:
+    let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
+    //name suggestion
+    socket.emit('name suggestion', nameSuggestions[randomIndex]);
+  }
 
   socket.on('set name', (recivedName) => {
     players[socket.userID].name = recivedName;
@@ -139,7 +142,7 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal three');
   }
   socket.on('start dealing three', () => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
@@ -149,7 +152,7 @@ io.on('connection', (socket) => {
     getSocket(game.trumpfPlayer.id).emit('choose trumpf');
   });
   socket.on('set trumpf', (cardIndex) => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     if (!(socket.userID === game.trumpfPlayer.id)) return;
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
@@ -160,7 +163,7 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal two');
   });
   socket.on('start dealing two', () => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
@@ -169,7 +172,7 @@ io.on('connection', (socket) => {
     toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
     game.playerTrades(tradingPlayer, indices);
 
@@ -180,9 +183,9 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('not participating', () => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
-    if(!(game.playerDoNotParticipate(tradingPlayer))) {
+    if (!(game.playerDoNotParticipate(tradingPlayer))) {
       console.log('not participating not worked');
       return;
     }
@@ -192,16 +195,17 @@ io.on('connection', (socket) => {
     if (game.players.every((player) => player.traded == true)) {
       console.log('lets gooo!!!!!');
       toPlayingPlayers('lets go');
+      game.state = STATES.PLAY;
     }
   });
   socket.on('play card', (cardIndex) => {
-    if(!game.isRunning) return;
+    if (!game.isRunning) return;
     if (!(socket.userID === game.currentPlayer.id)) return;
     let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
     let playingResponse = game.checkAndPlayCard(playingPlayer, cardIndex);
-    switch(playingResponse) {
+    switch (playingResponse) {
       case 'played':
         updateGameStates();
         setTimeout(() => {
@@ -221,10 +225,11 @@ io.on('connection', (socket) => {
           game.triggerLastTurn();
           sendLeaderboard();
           updateGameStates();
-          if(game.didSomeoneWin){
+          if (game.didSomeoneWin) {
             game.players.forEach(player => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
             });
+            game.Stop();
           } else {
             console.log('send deal three to the current player');
             getSocket(game.dealingPlayer.id).emit('deal three');
@@ -278,6 +283,7 @@ io.on('connection', (socket) => {
       gameState.center = game.center;
       gameState.currentPlayerName = game.currentPlayer.name;
       gameState.dealingPlayerName = game.dealingPlayer.name;
+      gameState.state = game.state;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer === playerIndex) {
@@ -315,12 +321,19 @@ io.on('connection', (socket) => {
     let gameState = {};
     gameState.ownHand = player.hand;
     gameState.center = game.center;
+    gameState.currentPlayerName = game.currentPlayer.name;
+    gameState.dealingPlayerName = game.dealingPlayer.name;
+    gameState.state = game.state;
     let tempOtherPlayers = {};
     for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
-      if (game.players[otherPlayer] == player) continue;
+      if (game.players[otherPlayer].id == player.id) {
+        tempOtherPlayers[game.players[otherPlayer].name] = 'you';
+        continue;
+      }
       tempOtherPlayers[game.players[otherPlayer].name] = {
         handCount: game.players[otherPlayer].hand.length,
-        stichCount: game.players[otherPlayer].stiche
+        stichCount: game.players[otherPlayer].stiche,
+        traded: game.players[otherPlayer].traded
       }
     }
     gameState.otherPlayers = tempOtherPlayers;
@@ -328,9 +341,9 @@ io.on('connection', (socket) => {
     console.log('*** game state end ***');
   }
 
-  function toPlayingPlayers(eventMessage, optionalData){
+  function toPlayingPlayers(eventMessage, optionalData) {
     // can be replaced if players are in a room
-    if(optionalData){
+    if (optionalData) {
       game.players.forEach(player => getSocket(player.id).emit(eventMessage, optionalData));
     } else {
       game.players.forEach(player => getSocket(player.id).emit(eventMessage));
@@ -338,7 +351,7 @@ io.on('connection', (socket) => {
   }
 
   // log leaderboard and send update event to all
-  function sendLeaderboard(){
+  function sendLeaderboard() {
     game.updateLeaderboard();
     console.log(game.leaderboard);
     toPlayingPlayers('update leaderboard', game.leaderboard);

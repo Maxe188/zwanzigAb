@@ -238,6 +238,7 @@ socket.on('update gameState', (backendGameState) => {
     createOwnHand(ownHandDiv, backendGameState);
     othersDiv.innerHTML = createOtherPlayers(backendGameState);
     createCenter(centerDiv, backendGameState);
+    setState(backendGameState.state);
 });
 function createOwnHand(hand, gameState) {
     if(gameState.currentPlayerName === username) {
@@ -355,6 +356,42 @@ function createCenter(center, gameState) {
         card.style.backgroundImage = 'url(' + FrontendCard.toImgUrl(backendCard) + ')';
 
         center.appendChild(card);
+    }
+}
+function setState(state){
+    nameDiv.style.display = 'none';
+    readyDiv.style.display = 'none';
+    gameDiv.style.display = 'none';
+    document.getElementById('dealThreeMessage').style.display = 'none';
+    document.getElementById('trumpfMessage').style.display = 'none';
+    document.getElementById('dealTwoMessage').style.display = 'none';
+    document.getElementById('tradeMessage').style.display = 'none';
+    switch(state){
+        case 1:
+            gameDiv.style.display = 'block';
+            document.getElementById('dealTwoMessage').style.display = 'flex';
+            break;
+        case 2:
+            gameDiv.style.display = 'block';
+            document.getElementById('trumpfMessage').style.display = 'flex';
+            break;
+        case 3:
+            gameDiv.style.display = 'block';
+            document.getElementById('tradeMessage').style.display = 'flex';
+            break;
+        case 4:
+            gameDiv.style.display = 'block';
+            break;
+        case 5:
+            gameDiv.style.display = 'block';
+            document.getElementById('dealThreeMessage').style.display = 'flex';
+            break;
+        case 6:
+            readyDiv.style.display = 'block';
+            break;
+        default:
+            nameDiv.style.display = 'block';
+            break;
     }
 }
 
