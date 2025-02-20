@@ -8,7 +8,8 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": ""
   },
   "dependencies": {
     "express": "^5.0.1",
