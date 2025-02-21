@@ -8,8 +8,8 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "start": "nodemon server.js",
-    "build": ""
+    "start": "node server.js",
+    "build": "npm install"
   },
   "dependencies": {
     "express": "^5.0.1",
