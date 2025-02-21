@@ -126,7 +126,7 @@ socket.on('update leaderboard', (leaderBoard) => {
     }
 });
 socket.on('update trumpf', (trumpfColor) => {
-    document.getElementById('theTrumpfDisplay').style.backgroundImage = 'url(' + FrontendCard.toColorUrl(new FrontendCard(-1, trumpfColor)) + ')';
+    document.getElementById('theTrumpfDisplay').style.backgroundImage = 'url(' + FrontendCard.colorUrl(trumpfColor) + ')';
 });
 
 socket.on('deal three', () => {

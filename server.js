@@ -212,8 +212,9 @@ io.on('connection', (socket) => {
       case 'played':
         updateGameStates();
         setTimeout(() => {
-          game.triggerLastTurn();
+          game.triggerLastTurn(); // needed??
           updateGameStates();
+          toPlayingPlayers('update trumpf', game.currentRound.trumpf);
         }, 1500);
         break;
       case 'not your turn':
@@ -228,6 +229,7 @@ io.on('connection', (socket) => {
           game.triggerLastTurn();
           sendLeaderboard();
           updateGameStates();
+          toPlayingPlayers('update trumpf', game.currentRound.trumpf);
           if (game.didSomeoneWin) {
             game.players.forEach(player => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');

@@ -13,25 +13,27 @@ class FrontendCard {
         return (Object.keys(FARBE).at(index - 1)).toString();
     }
 
-    static toColorUrl(card){
+    static colorUrl(color){
         let path = "/pictures/colors/";
-        switch (card.color) {
+        switch (color) {
             case 1:
-                path += "Bay_eichel";
+                path += "Bay_eichel.svg";
                 break;
             case 2:
-                path += "Bay_schipp";
+                path += "Bay_schipp.svg";
                 break;
             case 3:
-                path += "Bay_herz";
+                path += "Bay_herz.svg";
                 break;
             case 4:
-                path += "Bay_schellen";
+                path += "Bay_schellen.svg";
+                break;
+            case 5:
+                path += "question-mark.png";
                 break;
             default:
                 return "not valid";
         }
-        path += ".svg";
         return path;
     }
 
