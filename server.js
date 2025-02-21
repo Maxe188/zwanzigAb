@@ -92,7 +92,8 @@ io.on('connection', (socket) => {
 
   if (game.isRunning) { 
     updateOnePlayer(game.players.find((player) => player.id === socket.userID));
-    sendLeaderboard();
+    updatePlayersForOnePlayer();
+    sendLeaderboardToOne();
   } else {
     // Returns a random integer from 0 to 9:
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
@@ -291,6 +292,7 @@ io.on('connection', (socket) => {
       gameState.dealingPlayerName = game.dealingPlayer.name;
       gameState.state = game.state;
       gameState.youTraded = game.players[playerIndex].traded;
+      gameState.debugGame = game.debugGame;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer === playerIndex) {
@@ -333,6 +335,7 @@ io.on('connection', (socket) => {
     gameState.dealingPlayerName = game.dealingPlayer.name;
     gameState.state = game.state;
     gameState.youTraded = player.traded;
+    gameState.debugGame = game.debugGame;
     let tempOtherPlayers = {};
     for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
       if (game.players[otherPlayer].id == player.id) {
@@ -365,6 +368,9 @@ io.on('connection', (socket) => {
     console.log(game.leaderboard);
     toPlayingPlayers('update leaderboard', game.leaderboard);
   }
+  function sendLeaderboardToOne(player) {
+    getSocket(player.id).emit('update leaderboard', game.leaderboard);
+  }
 
   function getSocket(recivingId) {
     return users[recivingId].savedSocket;
@@ -372,6 +378,9 @@ io.on('connection', (socket) => {
 
   function updatePlayers() {
     io.emit('update players', getUsersWithNames());
+  }
+  function updatePlayersForOnePlayer(player) {
+    getSocket(player.id).emit('update players', getUsersWithNames());
   }
 
   function getUsersWithNames() {

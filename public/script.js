@@ -224,10 +224,12 @@ socket.on('not valid card', (cardIndex) => {
     setTimeout(() => { cardDiv.classList.remove('notValid') }, 1000);
 });
 socket.on('won', () => {
+    playing = false;
     console.log('won');
     alert('you won');
 });
 socket.on('lost', () => {
+    playing = false;
     console.log('lost');
     alert('you lost');
 });
@@ -236,6 +238,7 @@ socket.on('update gameState', (backendGameState) => {
     console.log(backendGameState);
     lastGameState = backendGameState;
     username = backendGameState.yourName;
+    debugGame = backendGameState.debugGame;
     createOwnHand(ownHandDiv, backendGameState);
     othersDiv.innerHTML = createOtherPlayers(backendGameState);
     createCenter(centerDiv, backendGameState);
@@ -360,6 +363,7 @@ function createCenter(center, gameState) {
     }
 }
 function setState(state, gameState){
+    // hide everything
     nameDiv.style.display = 'none';
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'none';
@@ -367,6 +371,7 @@ function setState(state, gameState){
     document.getElementById('trumpfMessage').style.display = 'none';
     document.getElementById('dealTwoMessage').style.display = 'none';
     document.getElementById('tradeMessage').style.display = 'none';
+    // show what is needed and set needed variables
     switch(state){
         case 1:
             gameDiv.style.display = 'block';
@@ -376,15 +381,18 @@ function setState(state, gameState){
         case 2:
             gameDiv.style.display = 'block';
             if(gameState.currentPlayerName != username) return;
+            choosingTrumpf = true;
             document.getElementById('trumpfMessage').style.display = 'flex';
             break;
         case 3:
             gameDiv.style.display = 'block';
             if(gameState.youTraded) return;
+            tradeing = true;
             document.getElementById('tradeMessage').style.display = 'flex';
             break;
         case 4:
             gameDiv.style.display = 'block';
+            playing = true;
             break;
         case 5:
             gameDiv.style.display = 'block';
