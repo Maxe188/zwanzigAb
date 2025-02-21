@@ -45,7 +45,7 @@ function expirationCheck() {
 }
 
 // globals
-const players = {};
+const users = {};
 const maxPlayers = 6;
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
@@ -85,13 +85,15 @@ io.on('connection', (socket) => {
 
   //console.log(socket);
   console.log('O a user ' + socket.userID + ' connected');
-  players[socket.userID] = { savedSocket: socket };
+  users[socket.userID] = { savedSocket: socket };
 
-  const playerCount = Object.keys(players).length;
+  const playerCount = Object.keys(users).length; // future: rework
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
 
-  if (game.isRunning) { updateOnePlayer(game.players.find((player) => player.id === socket.userID)) }
-  else {
+  if (game.isRunning) { 
+    updateOnePlayer(game.players.find((player) => player.id === socket.userID));
+    sendLeaderboard();
+  } else {
     // Returns a random integer from 0 to 9:
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
     //name suggestion
@@ -99,14 +101,14 @@ io.on('connection', (socket) => {
   }
 
   socket.on('set name', (recivedName) => {
-    players[socket.userID].name = recivedName;
+    users[socket.userID].name = recivedName;
     updatePlayers();
     console.log('user ' + socket.userID + ' set name to: ' + recivedName);
 
     console.log('all players: {');
-    for (const id in players) {
-      const player = players[id];
-      console.log('  ' + id + ' : ' + player.name);
+    for (const id in users) {
+      const user = users[id];
+      console.log('  ' + id + ' : ' + user.name);
     }
     console.log('}');
   });
@@ -121,10 +123,10 @@ io.on('connection', (socket) => {
     game = new Game([], createDeck(), [], [], null);
     // future: adding players to game obj   move to GameCore!!
     let i = 0;
-    const playersWithNames = getPlayersWithNames();
-    for (const id in playersWithNames) {
-      const player = playersWithNames[id];
-      game.players[i] = new Player(id, player.name);
+    const usersWithNames = getUsersWithNames();
+    for (const id in usersWithNames) {
+      const user = usersWithNames[id];
+      game.players[i] = new Player(id, user.name);
       i++;
     }
 
@@ -248,7 +250,7 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', (reason) => {
-    delete players[socket.userID];
+    delete users[socket.userID];
     updatePlayers();
     console.log('X a user ' + socket.userID + ' disconnected because of: ' + reason);
     if (Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) {
@@ -362,20 +364,20 @@ io.on('connection', (socket) => {
   }
 
   function getSocket(recivingId) {
-    return players[recivingId].savedSocket;
+    return users[recivingId].savedSocket;
   }
 
   function updatePlayers() {
-    io.emit('update players', getPlayersWithNames());
+    io.emit('update players', getUsersWithNames());
   }
 
-  function getPlayersWithNames() {
-    let tempPlayers = {};
-    for (const id in players) {
-      const player = players[id];
-      if (player.hasOwnProperty('name')) tempPlayers[id] = { name: player.name };
+  function getUsersWithNames() {
+    let tempUsers = {};
+    for (const id in users) {
+      const user = users[id];
+      if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name };
     }
-    return tempPlayers;
+    return tempUsers;
   }
 
   /* future chat feature
