@@ -181,6 +181,7 @@ io.on('connection', (socket) => {
     updateGameStates();
     if (game.players.every((player) => player.traded == true)) {
       console.log('lets gooo!!!!!');
+      game.state = STATES.PLAY;
       toPlayingPlayers('lets go');
     }
   });
@@ -196,8 +197,8 @@ io.on('connection', (socket) => {
     sendLeaderboard();
     if (game.players.every((player) => player.traded == true)) {
       console.log('lets gooo!!!!!');
-      toPlayingPlayers('lets go');
       game.state = STATES.PLAY;
+      toPlayingPlayers('lets go');
     }
   });
   socket.on('play card', (cardIndex) => {

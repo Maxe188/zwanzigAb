@@ -167,6 +167,7 @@ class Game {
         this.#roundOver = false;
         this.#nextRound();
         this.#updateCurrentPlayer();
+        this.state = STATES.DEAL_THREE;
     }
 
     #nextRound() {
