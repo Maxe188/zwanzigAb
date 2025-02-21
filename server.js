@@ -61,6 +61,10 @@ io.use((socket, next) => {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
       timeOfLastConnection = Date.now();
+
+      users[socket.userID] = { savedSocket: socket };
+      console.log('user ' + socket.userID + ' reconnected');
+
       return next();
     }
 
@@ -90,10 +94,12 @@ io.on('connection', (socket) => {
   const playerCount = Object.keys(users).length; // future: rework
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
 
-  if (game.isRunning) { 
-    updateOnePlayer(game.players.find((player) => player.id === socket.userID));
-    updatePlayersForOnePlayer();
-    sendLeaderboardToOne();
+  if (game.isRunning) {
+    const reconnectingPlayer = game.players.find((player) => player.id === socket.userID);
+    users[socket.userID].name = reconnectingPlayer.name;
+    updateOnePlayer(reconnectingPlayer);
+    updatePlayersForOnePlayer(reconnectingPlayer);
+    sendLeaderboardToOne(reconnectingPlayer);
   } else {
     // Returns a random integer from 0 to 9:
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);

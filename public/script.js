@@ -104,18 +104,19 @@ socket.on('game ended', () => {
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
-    for (let rowIndex = 0; rowIndex <= Object.keys(leaderBoard).length; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < Object.keys(leaderBoard).length; rowIndex++) {
         const tableRow = document.createElement('tr');
         if (rowIndex == 0) {
-            for (const id in players) { // for-in is unorderd
-                const player = players[id];
+            const names = leaderBoard[rowIndex];
+            for (let nameIndex = 0; nameIndex < Object.keys(names).length; nameIndex++) {
+                const name = names[nameIndex];
                 const tableHead = document.createElement('th');
-                if (id === socket.id) tableHead.style.backgroundColor = 'rgba(200,80,80,1)';
-                tableHead.textContent = player.name;
+                if (name === username) tableHead.style.backgroundColor = 'rgba(200,80,80,1)';
+                tableHead.textContent = name;
                 tableRow.appendChild(tableHead);
             }
         } else {
-            const rowScores = leaderBoard[rowIndex - 1];
+            const rowScores = leaderBoard[rowIndex];
             for (let scoreIndex = 0; scoreIndex < Object.keys(rowScores).length; scoreIndex++) {
                 const tableData = document.createElement('td');
                 tableData.textContent = rowScores[scoreIndex];

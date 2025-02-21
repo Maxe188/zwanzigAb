@@ -91,11 +91,19 @@ class Game {
     }
 
     updateLeaderboard() {
-        let rowIndex = this.round - 1;
+        let rowIndex = this.round - 1 + 1; // -1 because round starts at 1 but array at 0, and +1 because of the row with names
+        if (rowIndex === 1) {
+            let nameRow = {};
+            for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+                let player = this.players[playerIndex];
+                nameRow[playerIndex] = player.name;
+            }
+            this.leaderboard[0] = nameRow;
+        }
         let row = {};
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             let player = this.players[playerIndex];
-            const playerScore = (this.#hasNoProperties(this.leaderboard) && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
+            const playerScore = (this.leaderboard[1] && (this.leaderboard[rowIndex])[playerIndex] === '-') ? '-' : player.score;
             row[playerIndex] = playerScore;
         }
         this.leaderboard[rowIndex] = row;
@@ -232,10 +240,6 @@ class Game {
 
     get isRunning() {
         return this.#running;
-    }
-
-    #hasNoProperties(){
-        return !(Object.keys(this.leaderboard).length === 0);
     }
 
     checkAllCards() {
