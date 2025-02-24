@@ -127,7 +127,7 @@ socket.on('update leaderboard', (leaderBoard) => {
     }
 });
 socket.on('update trumpf', (trumpfColor) => {
-    document.getElementById('theTrumpfDisplay').style.backgroundImage = 'url(' + FrontendCard.colorUrl(trumpfColor) + ')';
+    showTrumpf(trumpfColor);
 });
 
 socket.on('deal three', () => {
@@ -152,19 +152,21 @@ socket.on('choose trumpf', () => {
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
 function cardClicked(element) {
-    console.log('clicked on card');
     let clickedIndex = parseInt(element.classList[0]);
     if (choosingTrumpf) {
         choosingTrumpf = false;
-        console.log('index of clicked card: ' + clickedIndex);
         document.getElementById('trumpfMessage').style.display = 'none';
         socket.emit('set trumpf', clickedIndex);
+        console.log('index of chosen card: ' + clickedIndex);
     } else if (tradeing) {
         element.classList.toggle('selected');
         selectedTradingCards.includes(clickedIndex) ? selectedTradingCards.splice(selectedTradingCards.indexOf(clickedIndex), 1) : selectedTradingCards.push(clickedIndex);
+        console.log('toggled ' + clickedIndex + '. card');
     } else if (playing) {
-        console.log('played card: ' + element.innerHTML);
         socket.emit('play card', clickedIndex);
+        console.log('played card: ' + element.innerHTML);
+    } else {
+        console.log('clicked on card and nothing happened');
     }
 }
 
@@ -244,6 +246,7 @@ socket.on('update gameState', (backendGameState) => {
     othersDiv.innerHTML = createOtherPlayers(backendGameState);
     createCenter(centerDiv, backendGameState);
     setState(backendGameState.state, backendGameState);
+    showTrumpf(backendGameState.trumpfColor);
 });
 function createOwnHand(hand, gameState) {
     if(gameState.currentPlayerName === username) {
@@ -407,6 +410,10 @@ function setState(state, gameState){
             nameDiv.style.display = 'block';
             break;
     }
+}
+
+function showTrumpf(trumpfColor) {
+    document.getElementById('theTrumpfDisplay').style.backgroundImage = 'url(' + FrontendCard.colorUrl(trumpfColor) + ')';
 }
 
 socket.onAny((eventName, ...args) => {

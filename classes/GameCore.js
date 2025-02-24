@@ -137,7 +137,7 @@ class Game {
                 // add stich to owner of the card
                 const ownerIndex = this.players.findIndex(player => player.id == this.center[highestIndex].ownerId);
                 this.offset = ownerIndex;
-                console.log('offset: ' + this.offset);
+                //console.log('offset: ' + this.offset);
                 const owner = this.players[ownerIndex];
                 owner.stiche++;
                 // check for new round
@@ -156,7 +156,7 @@ class Game {
 
     #updateCurrentPlayer(){
         let currentPlayerIndex = (((this.lap === 0 ? this.dealingPlayerIndex + 1 : this.offset) + this.turn) % this.players.length);
-        console.log('next player as index: ' + currentPlayerIndex+' because of: ((('+this.turn+' === 0 ? '+this.dealingPlayerIndex+' + 1 : '+this.offset+') + '+this.turn+') % '+this.players.length+')');
+        //console.log('next player as index: ' + currentPlayerIndex+' because of: ((('+this.turn+' === 0 ? '+this.dealingPlayerIndex+' + 1 : '+this.offset+') + '+this.turn+') % '+this.players.length+')');
         this.currentPlayer = this.players[currentPlayerIndex];
         this.currentPlayer ? {} : console.log('player error');
     }

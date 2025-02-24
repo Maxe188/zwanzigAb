@@ -240,6 +240,9 @@ io.on('connection', (socket) => {
           if (game.didSomeoneWin) {
             game.players.forEach(player => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
+              game.Stop();
+              game = new Game([], [], [], [], null);
+              //toPlayingPlayers('game ended');
             });
             game.Stop();
           } else {
@@ -263,7 +266,7 @@ io.on('connection', (socket) => {
     delete users[socket.userID];
     updatePlayers();
     console.log('X a user ' + socket.userID + ' disconnected because of: ' + reason);
-    if (Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) {
+    if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
       game.Stop();
       game = new Game([], [], [], [], null);
       toPlayingPlayers('game ended');
@@ -299,6 +302,7 @@ io.on('connection', (socket) => {
       gameState.state = game.state;
       gameState.youTraded = game.players[playerIndex].traded;
       gameState.debugGame = game.debugGame;
+      gameState.trumpfColor = game.currentRound.trumpf;
       let tempOtherPlayers = {};
       for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
         if (otherPlayer === playerIndex) {
@@ -342,6 +346,7 @@ io.on('connection', (socket) => {
     gameState.state = game.state;
     gameState.youTraded = player.traded;
     gameState.debugGame = game.debugGame;
+    gameState.trumpfColor = game.currentRound.trumpf;
     let tempOtherPlayers = {};
     for (let otherPlayer = 0; otherPlayer < game.players.length; otherPlayer++) {
       if (game.players[otherPlayer].id == player.id) {
@@ -389,8 +394,9 @@ io.on('connection', (socket) => {
     getSocket(player.id).emit('update players', getUsersWithNames());
   }
 
+  var tempUsers = {};
   function getUsersWithNames() {
-    let tempUsers = {};
+    if (game.isRunning) return tempUsers;
     for (const id in users) {
       const user = users[id];
       if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name };
