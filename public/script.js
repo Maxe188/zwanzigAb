@@ -12,6 +12,8 @@ const ownHandDiv = document.getElementById('myself');
 const othersDiv = document.getElementById('others');
 const centerDiv = document.getElementById('center');
 const outButton = document.getElementById('outButton');
+const goText = document.createElement('h1');
+goText.textContent = 'Los gehts!!!';
 
 const gameDiv = document.getElementById('gameDiv');
 
@@ -221,8 +223,6 @@ outButton.onclick = () => {
 }
 socket.on('lets go', () => {
     playing = true;
-    const goText = document.createElement('h1');
-    goText.textContent = 'Los gehts!!!';
     centerDiv.innerHTML = '';
     centerDiv.appendChild(goText);
 });
@@ -406,6 +406,7 @@ function setState(state, gameState){
         case 4:
             gameDiv.style.display = 'block';
             playing = true;
+            if (centerDiv.innerHTML === "") centerDiv.appendChild(goText);
             break;
         case 5:
             gameDiv.style.display = 'block';
@@ -423,7 +424,7 @@ function setState(state, gameState){
 function currentPlayerColor(gameState){
     const firstRow = leaderbordTable.children[0].children;
     for (let nameIndex = 0; nameIndex < firstRow.length; nameIndex++) {
-        if(firstRow[nameIndex].textContent === gameState.currentPlayerName) firstRow[nameIndex].style.color = 'rgba(152, 12, 56, 0.5)';
+        if(firstRow[nameIndex].textContent === gameState.currentPlayerName) firstRow[nameIndex].style.color = 'rgba(9, 57, 177, 0.82)';
         else firstRow[nameIndex].style.color = 'rgb(0, 0, 0)';
     }
 }
