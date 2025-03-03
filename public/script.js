@@ -252,6 +252,7 @@ socket.on('update gameState', (backendGameState) => {
     createCenter(centerDiv, backendGameState);
     setState(backendGameState.state, backendGameState);
     showTrumpf(backendGameState.trumpfColor);
+    currentPlayerColor(backendGameState);
 });
 function createOwnHand(hand, gameState) {
     if(gameState.currentPlayerName === username) {
@@ -417,6 +418,13 @@ function setState(state, gameState){
         default:
             nameDiv.style.display = 'block';
             break;
+    }
+}
+function currentPlayerColor(gameState){
+    const firstRow = leaderbordTable.children[0].children;
+    for (let nameIndex = 0; nameIndex < firstRow.length; nameIndex++) {
+        if(firstRow[nameIndex].textContent === gameState.currentPlayerName) firstRow[nameIndex].style.color = 'rgba(152, 12, 56, 0.5)';
+        else firstRow[nameIndex].style.color = 'rgb(0, 0, 0)';
     }
 }
 
