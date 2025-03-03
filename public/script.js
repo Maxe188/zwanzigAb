@@ -191,7 +191,7 @@ socket.on('trade', () => {
     }
     tradeing = true;
 
-    if(lastGameState.currentPlayerName === username || Object.keys(lastGameState.otherPlayers).length === 2) outButton.style.display = 'none';
+    if(lastGameState.currentPlayerName === username || Object.keys(lastGameState.otherPlayers).length <= 2) outButton.style.display = 'none';
     else outButton.style.display = 'inline-block';
 
     document.getElementById('tradeMessage').style.display = 'flex';
@@ -203,9 +203,14 @@ document.getElementById('tradeButton').onclick = () => {
     socket.emit('enterTrade', selectedTradingCards);
 }
 outButton.onclick = () => {
-    console.log(Object.entries(lastGameState.otherPlayers));
-    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded)))){ // wenn du austeilender bist, und nicht alle vor dir getauscht haben(angenommen du hast getauscht), dann darfst du nicht raus gehen
-        alert('es haben nich alle getauscht!');
+    for(const playerName in lastGameState.otherPlayers){
+        if (lastGameState.otherPlayers[playerName].handCount === 0 && username != playerName && lastGameState.currentPlayerName != playerName) {
+            alert('Du musst leider mitspielen!');
+            return;
+        }
+    }
+    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded || pair[0] === lastGameState.currentPlayerName)))){ // wenn du austeilender bist, und nicht alle vor dir getauscht haben(angenommen du hast getauscht), dann darfst du nicht raus gehen. Außnahme Trumpfspielen, weil er mitspielen muss
+        alert('Es haben nicht alle getauscht!');
         return;
     }
 
@@ -385,6 +390,7 @@ function setState(state, gameState){
         case 2:
             gameDiv.style.display = 'block';
             if(gameState.currentPlayerName != username) return;
+            console.log('currently coosing trumpf: ' + gameState.currentPlayerName + ' you: ' + username);
             choosingTrumpf = true;
             document.getElementById('trumpfMessage').style.display = 'flex';
             break;
@@ -393,6 +399,8 @@ function setState(state, gameState){
             if(gameState.youTraded) return;
             tradeing = true;
             document.getElementById('tradeMessage').style.display = 'flex';
+            if(gameState.currentPlayerName === username || Object.keys(gameState.otherPlayers).length === 2) outButton.style.display = 'none';
+            else outButton.style.display = 'inline-block';
             break;
         case 4:
             gameDiv.style.display = 'block';

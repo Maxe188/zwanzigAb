@@ -3,7 +3,7 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
-const crypto = require("crypto"); // future: maby uuid
+const crypto = require("crypto"); // future: maybe uuid
 const randomId = () => crypto.randomBytes(8).toString("hex");
 
 // import local files
@@ -48,6 +48,7 @@ function expirationCheck() {
 const users = {};
 const maxPlayers = 6;
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
+const tempUsers = {};
 
 var game = new Game([], [], [], [], null);
 
@@ -97,8 +98,8 @@ io.on('connection', (socket) => {
   if (game.isRunning) {
     const reconnectingPlayer = game.players.find((player) => player.id === socket.userID);
     users[socket.userID].name = reconnectingPlayer.name;
-    updateOnePlayer(reconnectingPlayer);
     updatePlayersForOnePlayer(reconnectingPlayer);
+    updateOnePlayer(reconnectingPlayer);
     sendLeaderboardToOne(reconnectingPlayer);
   } else {
     // Returns a random integer from 0 to 9:
@@ -394,7 +395,6 @@ io.on('connection', (socket) => {
     getSocket(player.id).emit('update players', getUsersWithNames());
   }
 
-  var tempUsers = {};
   function getUsersWithNames() {
     if (game.isRunning) return tempUsers;
     for (const id in users) {
