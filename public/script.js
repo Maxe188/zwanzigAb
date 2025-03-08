@@ -12,6 +12,7 @@ const ownHandDiv = document.getElementById('myself');
 const othersDiv = document.getElementById('others');
 const centerDiv = document.getElementById('center');
 const outButton = document.getElementById('outButton');
+const leaveButton = document.getElementById('leaveButton');
 const goText = document.createElement('h1');
 goText.textContent = 'Los gehts!!!';
 
@@ -91,17 +92,31 @@ socket.on('start debug game', () => {
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'block';
 });
+leaveButton.onclick = () => {
+    if(confirm('Spiel wirklich verlassen?\nEs wird für alle beendet!'))  socket.emit('leave game');
+};
+
 socket.on('game ended', () => {
     console.log('game stoped');
-    gameDiv.style.display = 'none';
-    socket.disconnect();
-    socket.connect();
     // reset
     nameDiv.style.display = 'block';
+    readyDiv.style.display = 'none';
+    gameDiv.style.display = 'none';
     document.getElementById('dealThreeMessage').style.display = 'none';
     document.getElementById('trumpfMessage').style.display = 'none';
     document.getElementById('dealTwoMessage').style.display = 'none';
     document.getElementById('tradeMessage').style.display = 'none';
+
+    players = {};
+    username = "";
+    lastGameState = {};
+    choosingTrumpf = false;
+    tradeing = false;
+    playing = false;
+    debugGame = false;
+    selectedTradingCards = [];
+
+    alert('Spiel angehalten.');
 });
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
@@ -234,12 +249,12 @@ socket.on('not valid card', (cardIndex) => {
 socket.on('won', () => {
     playing = false;
     console.log('won');
-    alert('you won');
+    alert('Du hast gewonnen!\nGlückwunsch!');
 });
 socket.on('lost', () => {
     playing = false;
     console.log('lost');
-    alert('you lost');
+    alert('Du hast leider dieses mal verloren!');
 });
 
 socket.on('update gameState', (backendGameState) => {

@@ -97,6 +97,7 @@ io.on('connection', (socket) => {
 
   if (game.isRunning) {
     const reconnectingPlayer = game.players.find((player) => player.id === socket.userID);
+    if (!reconnectingPlayer) return; // add specktatormode
     users[socket.userID].name = reconnectingPlayer.name;
     updatePlayersForOnePlayer(reconnectingPlayer);
     updateOnePlayer(reconnectingPlayer);
@@ -262,6 +263,10 @@ io.on('connection', (socket) => {
   ///...
 
 
+  socket.on('leave game', () => {
+    if(!game.isRunning) return;
+    io.emit('game ended');
+  });
 
   socket.on('disconnect', (reason) => {
     delete users[socket.userID];

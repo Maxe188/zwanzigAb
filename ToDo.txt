@@ -11,6 +11,6 @@
 [ ] bug identical usernames
 [ ] let the server check every action
 [ ] adding mobile view
-[ ] 
+[ ] add specktatormode
 [ ] 
 [ ] 
