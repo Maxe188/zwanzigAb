@@ -285,7 +285,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (reason) => {
     delete users[socket.userID];
     updatePlayers();
-    sessions[socket.sessionID].connected = false;
+    //sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
       game.Stop();
@@ -436,6 +436,7 @@ io.on('connection', (socket) => {
 app.get('/dash', (req, res) => {
   const rightNow = Date.now();
   let dashboardHTML = '';
+  dashboardHTML += '<title>Dashboard</title>';
   dashboardHTML += '<p>online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size + '<p>';
   dashboardHTML += '<p>sessions: {<br>';
   for (const sessionID in sessions) {
