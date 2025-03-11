@@ -278,6 +278,14 @@ socket.on('lost', () => {
     }
 });
 
+socket.on('kicked', (reason) => {
+    alert('Du wurdest gekickt!\nGrund: ' + reason + '\nBitte lade die Seite neu.');
+    reset();
+});
+socket.on('game already running', () => {
+    alert('Das Spiel läuft bereits!\nBitte warte bis es vorbei ist.');
+});
+
 socket.on('update gameState', (backendGameState) => {
     console.log(backendGameState);
     lastGameState = backendGameState;

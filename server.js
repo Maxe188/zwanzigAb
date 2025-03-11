@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 const sessions = {};
-const expirationTimeInSec = 600 * 1000; // 10min.
+const expirationTimeInSec = 900 * 1000; // 15min.
 // loop to check expired sessions
 const intervalSession = setInterval(expirationCheck, 1000); //every second
 // clearInterval(intervalSession);
@@ -41,7 +41,10 @@ function expirationCheck() {
     if (rightNow - session.timeOfLastConnection > expirationTimeInSec) {
       console.log('kicked: ' + sessionID + ' user: ' + session.userID + ' because of inactivity');
       delete sessions[sessionID];
-      if (session.userID) delete users[session.userID];
+      if (session.userID) {
+        getSocket(session.userID).emit('kicked', 'Inaktivität');
+        delete users[session.userID];
+      }
       if (game.isRunning) io.emit('game ended');
     }
   }
@@ -93,7 +96,10 @@ io.on('connection', (socket) => {
 
   if (game.isRunning) {
     const reconnectingPlayer = game.players.find((player) => player.id === socket.userID);
-    if (!reconnectingPlayer) return; // add specktatormode
+    if (!reconnectingPlayer) {
+      //socket.emit('game already running');
+      return; // add specktatormode
+    }
     users[socket.userID].name = reconnectingPlayer.name;
     updatePlayersForOnePlayer(reconnectingPlayer);
     updateOnePlayer(reconnectingPlayer);
@@ -106,6 +112,10 @@ io.on('connection', (socket) => {
   }
 
   socket.on('set name', (recivedName) => {
+    if (game.isRunning) {
+      //socket.emit('game already running');
+      return;
+    }
     socket.userID = randomId();
 
     users[socket.userID] = {
@@ -275,10 +285,10 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (reason) => {
     delete users[socket.userID];
     updatePlayers();
-    console.log('X a user ' + socket.userID + ' disconnected because of: ' + reason);
+    sessions[socket.sessionID].connected = false;
+    console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
       game.Stop();
-      game = new Game([], [], [], [], null);
       toPlayingPlayers('game ended');
     }
   });
@@ -424,12 +434,14 @@ io.on('connection', (socket) => {
 
 // Dashboard
 app.get('/dash', (req, res) => {
+  const rightNow = Date.now();
   let dashboardHTML = '';
   dashboardHTML += '<p>online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size + '<p>';
   dashboardHTML += '<p>sessions: {<br>';
   for (const sessionID in sessions) {
     const session = sessions[sessionID];
-    dashboardHTML += '&nbsp;&nbsp;' + sessionID + ' { ' + session.userID + ' : ' + session.timeOfLastConnection + ' }<br>';
+    const elapsed = new Date(rightNow - session.timeOfLastConnection);
+    dashboardHTML += '&nbsp;&nbsp;' + sessionID + ' { ' + session.userID + ' : ' + elapsed.getMinutes() + ':' + elapsed.getSeconds() + ' }<br>';
   }
   dashboardHTML += '}<p>';
   dashboardHTML += '<p>users: {<br/>';
