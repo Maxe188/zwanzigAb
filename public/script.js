@@ -37,13 +37,11 @@ const sessionID = sessionStorage.getItem("sessionID");
 if (sessionID) socket.auth = { sessionID };
 socket.connect();
 
-socket.on("session", ({ sessionID, userID }) => {
+socket.on("session", ({ sessionID }) => {
     // attach the session ID to the next reconnection attempts
     socket.auth = { sessionID };
     // store it in the sessionStorage
     sessionStorage.setItem("sessionID", sessionID); // future? may be changed to local storage to only be able to play one game
-    // save the ID of the user
-    socket.userID = userID;
 });
 
 socket.on('name suggestion', (suggestedName) => {
@@ -98,7 +96,10 @@ leaveButton.onclick = () => {
 
 socket.on('game ended', () => {
     console.log('game stoped');
-    // reset
+    reset();
+    alert('Spiel angehalten.');
+});
+function reset(){
     nameDiv.style.display = 'block';
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'none';
@@ -115,9 +116,7 @@ socket.on('game ended', () => {
     playing = false;
     debugGame = false;
     selectedTradingCards = [];
-
-    alert('Spiel angehalten.');
-});
+}
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
@@ -249,12 +248,34 @@ socket.on('not valid card', (cardIndex) => {
 socket.on('won', () => {
     playing = false;
     console.log('won');
-    alert('Du hast gewonnen!\nGlückwunsch!');
+    if(confirm('Du hast gewonnen!\nGlückwunsch!\nNochmal spielen?')){
+        console.log('next round');
+        let lastUsername = username;
+        reset();
+        username = lastUsername;
+        socket.emit('set name', username);
+        console.log('Dein Username ist immernoch: ' + username + '.');
+        nameDiv.style.display = 'none';
+        readyDiv.style.display = 'block';
+    } else {
+        reset();
+    }
 });
 socket.on('lost', () => {
     playing = false;
     console.log('lost');
-    alert('Du hast leider dieses mal verloren!');
+    if(confirm('Du hast leider dieses mal verloren!\nNochmal spielen?')){
+        console.log('next round');
+        let lastUsername = username;
+        reset();
+        username = lastUsername;
+        socket.emit('set name', username);
+        console.log('Dein Username ist immernoch: ' + username + '.');
+        nameDiv.style.display = 'none';
+        readyDiv.style.display = 'block';
+    } else {
+        reset();
+    }
 });
 
 socket.on('update gameState', (backendGameState) => {

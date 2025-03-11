@@ -20,8 +20,6 @@ class Game {
 
     state = 0; // STATES at the end of file
 
-    currentRound = null;
-
     /**
      * Represents a Game
      * @param {Player[]} players The list of Player currently playing
@@ -55,6 +53,28 @@ class Game {
     }
     Stop() {
         this.#running = false;
+        this.reset();
+    }
+    reset() {
+        this.#running = false;
+        this.#debugGame = false;
+        this.#roundOver = false;
+        this.#lastTurn = false;
+        this.dealingPlayerIndex = -1;
+        this.dealingPlayer = null;
+        this.trumpfPlayer = null;
+        this.turn = 0;
+        this.lap = 0;
+        this.offset = 0;
+        this.currentPlayer = null;
+        this.leaderboard = {};
+        this.round = 1;
+        this.state = 0;
+        this.currentRound = null;
+        this.players = [];
+        this.deck = [];
+        this.used = [];
+        this.center = [];
     }
 
     dealThree() {

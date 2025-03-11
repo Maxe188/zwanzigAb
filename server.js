@@ -30,16 +30,19 @@ app.get('/', (req, res) => {
 });
 
 const sessions = {};
-const expirationTimeInMs = 300000; // 5min.
+const expirationTimeInSec = 600 * 1000; // 10min.
 // loop to check expired sessions
 const intervalSession = setInterval(expirationCheck, 1000); //every second
 // clearInterval(intervalSession);
 function expirationCheck() {
   const rightNow = Date.now();
-  for (const session in sessions) {
-    if (rightNow - session.timeOfLastConnection > expirationTimeInMs) {
-      console.log("kicked: " + session.userID);
-      delete session;
+  for (const sessionID in sessions) {
+    const session = sessions[sessionID];
+    if (rightNow - session.timeOfLastConnection > expirationTimeInSec) {
+      console.log('kicked: ' + sessionID + ' user: ' + session.userID + ' because of inactivity');
+      delete sessions[sessionID];
+      if (session.userID) delete users[session.userID];
+      if (game.isRunning) io.emit('game ended');
     }
   }
 }
@@ -48,11 +51,11 @@ function expirationCheck() {
 const users = {};
 const maxPlayers = 6;
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
-const tempUsers = {};
+var tempUsers = {};
 
 var game = new Game([], [], [], [], null);
 
-// user authentification: sessionID(private, reconnection), userID(public, for others)
+// user authentification: sessionID(private, reconnection, validation), userID(public, for others)
 io.use((socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
   if (sessionID) {
@@ -61,36 +64,29 @@ io.use((socket, next) => {
     if (session) {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
-      timeOfLastConnection = Date.now();
+      session.timeOfLastConnection = Date.now();
 
-      users[socket.userID] = { savedSocket: socket };
-      console.log('user ' + socket.userID + ' reconnected');
+      console.log('user ' + sessionID + ' reconnected');
 
       return next();
     }
-
   }
   // create new IDs
   socket.sessionID = randomId();
-  socket.userID = randomId();
   next();
 });
 
 io.on('connection', (socket) => {
+  console.log('O a session ' + socket.sessionID + ' connected');
+
   sessions[socket.sessionID] = {
-    userID: socket.userID,
     timeOfLastConnection: Date.now(),
     connected: true,
   };
   // send IDs
   socket.emit("session", {
-    sessionID: socket.sessionID,
-    userID: socket.userID,
+    sessionID: socket.sessionID
   });
-
-  //console.log(socket);
-  console.log('O a user ' + socket.userID + ' connected');
-  users[socket.userID] = { savedSocket: socket };
 
   const playerCount = Object.keys(users).length; // future: rework
   if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
@@ -110,9 +106,16 @@ io.on('connection', (socket) => {
   }
 
   socket.on('set name', (recivedName) => {
-    users[socket.userID].name = recivedName;
+    socket.userID = randomId();
+
+    users[socket.userID] = {
+      name: recivedName,
+      savedSocket: socket
+    };
     updatePlayers();
-    console.log('user ' + socket.userID + ' set name to: ' + recivedName);
+    console.log('user ' + socket.userID + ' joined and set name to: ' + recivedName);
+    
+    sessions[socket.sessionID].userID = socket.userID;
 
     console.log('all players: {');
     for (const id in users) {
@@ -242,10 +245,11 @@ io.on('connection', (socket) => {
           if (game.didSomeoneWin) {
             game.players.forEach(player => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
-              game.Stop();
-              game = new Game([], [], [], [], null);
-              //toPlayingPlayers('game ended');
             });
+            //toPlayingPlayers('game ended');
+            for(const player of game.players) {
+              delete users[player.id];
+            }
             game.Stop();
           } else {
             console.log('send deal three to the current player');
@@ -282,7 +286,6 @@ io.on('connection', (socket) => {
   socket.onAny((eventName, ...args) => {
     //console.log("unknown event: " + eventName);
     sessions[socket.sessionID] = {
-      userID: socket.userID,
       timeOfLastConnection: Date.now(),
       connected: true,
     };
@@ -402,6 +405,7 @@ io.on('connection', (socket) => {
 
   function getUsersWithNames() {
     if (game.isRunning) return tempUsers;
+    tempUsers = {};
     for (const id in users) {
       const user = users[id];
       if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name };
@@ -420,7 +424,27 @@ io.on('connection', (socket) => {
 
 // Dashboard
 app.get('/dash', (req, res) => {
-  res.send('online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size);
+  let dashboardHTML = '';
+  dashboardHTML += '<p>online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size + '<p>';
+  dashboardHTML += '<p>sessions: {<br>';
+  for (const sessionID in sessions) {
+    const session = sessions[sessionID];
+    dashboardHTML += '&nbsp;&nbsp;' + sessionID + ' { ' + session.userID + ' : ' + session.timeOfLastConnection + ' }<br>';
+  }
+  dashboardHTML += '}<p>';
+  dashboardHTML += '<p>users: {<br/>';
+  for (const id in users) {
+    const user = users[id];
+    dashboardHTML += '&nbsp;&nbsp;' + id + ' : ' + user.name + '<br/>';
+  }
+  dashboardHTML += '}<p>';
+  dashboardHTML += '<p>players: {<br/>';
+  for (const id in game.players) {
+    const player = game.players[id];
+    dashboardHTML += '&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
+  }
+  dashboardHTML += '}<p>';
+  res.send(dashboardHTML);
 });
 
 // IP feature
