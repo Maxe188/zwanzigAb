@@ -1,13 +1,18 @@
+const Bot = require("./Bot.js");
+
 module.exports = class Player {
     hand = [];
     score = 20;
     stiche = 0;
     traded = false;
     notParticipating = false;
+    isBot = false;
 
-    constructor(id, name) {
+    constructor(id, name, isBot = false) {
         this.id = id;
         this.name = name;
+        this.isBot = isBot;
+        if(isBot) this.masterMind = new Bot(name);
     }
 
     playCard(cardIndex) {
@@ -39,7 +44,7 @@ module.exports = class Player {
     }
 
     /**
-     * plays cards and gets new ones
+     * replaces the cards at the given indices with new cards from the deck
      * @param {number[]} cardIndices list of cards indices that should be traded
      * @param {Card[]} deck currently used deck to get new cards from
      * @param {Card[]} used where to put used cards
