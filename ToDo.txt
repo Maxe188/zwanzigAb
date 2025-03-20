@@ -1,16 +1,20 @@
 [ ] use docker
-[ ] not using id
-[ ] creating rooms
+[X] not using socket.id
+[X] creating rooms
 [ ] beautify css (use rem)
 [ ] speech bubbles
 [ ] card animations
 [X] card directions
 [X] fixing leaderbord
-[ ] make "aussteigen" not possible
+[X] make "aussteigen" not possible
 [ ] show ownStiche
 [ ] bug identical usernames
 [ ] let the server check every action
 [ ] adding mobile view
 [ ] add specktatormode
+[ ] handle duplicate sessions
+[ ] more join buttons
+[ ] 
+[ ] 
 [ ] 
 [ ] 

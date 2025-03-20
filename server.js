@@ -1,10 +1,11 @@
 // import libraries
 const express = require('express');
-const { createServer } = require('node:http');
+const { createServer, get } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 const crypto = require("crypto"); // future: maybe uuid
 const randomId = () => crypto.randomBytes(8).toString("hex");
+const randomRoomId = () => crypto.randomBytes(3).toString("hex");
 
 // import local files
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
@@ -30,7 +31,7 @@ app.get('/', (req, res) => {
 });
 
 const sessions = {};
-const expirationTimeInSec = 900 * 1000; // 15min.
+const expirationTimeInSec = 900 * 1000; // 900sec. = 15min.
 // loop to check expired sessions
 const intervalSession = setInterval(expirationCheck, 1000); //every second
 // clearInterval(intervalSession);
@@ -43,20 +44,19 @@ function expirationCheck() {
       delete sessions[sessionID];
       if (session.userID) {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
+        rooms[users[session.userID]].removePlayer(users[session.userID].savedSocket);
         delete users[session.userID];
       }
-      if (game.isRunning) io.emit('game ended');
+      if (rooms[users[session.userID]].game.isRunning) io.emit('game ended');
     }
   }
 }
 
 // globals
+const rooms = {};
 const users = {};
-const maxPlayers = 6;
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
-var tempUsers = {};
 
-var game = new Game([], [], [], [], null);
 
 // user authentification: sessionID(private, reconnection, validation), userID(public, for others)
 io.use((socket, next) => {
@@ -84,25 +84,24 @@ io.on('connection', (socket) => {
 
   sessions[socket.sessionID] = {
     timeOfLastConnection: Date.now(),
-    connected: true,
+    connected: true
   };
+
   // send IDs
   socket.emit("session", {
     sessionID: socket.sessionID
   });
 
-  const playerCount = Object.keys(users).length; // future: rework
-  if (playerCount > maxPlayers) console.log('too many players!!!!!!!');
-
-  if (game.isRunning) {
-    const reconnectingPlayer = game.players.find((player) => player.id === socket.userID);
+  if (socket.userID) {
+    const reconnectingPlayer = getGame().players.find((player) => player.id === socket.userID);
     if (!reconnectingPlayer) {
       //socket.emit('game already running');
+      error('spectator mode not implemented');
       return; // add specktatormode
     }
     users[socket.userID].name = reconnectingPlayer.name;
     updatePlayersForOnePlayer(reconnectingPlayer);
-    updateOnePlayer(reconnectingPlayer);
+    updateOnePlayer(getGame(), reconnectingPlayer);
     sendLeaderboardToOne(reconnectingPlayer);
   } else {
     // Returns a random integer from 0 to 9:
@@ -111,19 +110,59 @@ io.on('connection', (socket) => {
     socket.emit('name suggestion', nameSuggestions[randomIndex]);
   }
 
-  socket.on('set name', (recivedName) => {
-    if (game.isRunning) {
-      //socket.emit('game already running');
+  socket.on('join room', ({ recivedName, roomInfo }) => { // roomInfo: any for any room, id for specific, create for new
+    if(!recivedName || users.find(user => user.name === recivedName) != undefined) {
+      socket.emit('joined room response', 'nameTaken');
       return;
     }
-    socket.userID = randomId();
+    
+    let roomID;
+    if(roomInfo === 'create') {
+      roomID = randomRoomId();
+      rooms[roomID] = new Room(roomID);
+    } else if(roomInfo === 'any') {
+      possibleRoomID;
+      for (const testRoomID of rooms) {
+        const room = rooms[testRoomID];
+        if (room.game.isRunning || room.isFull) continue;
+        possibleRoomID = testRoomID;
+        break;
+      }
+      if (possibleRoomID) {
+        roomID = possibleRoomID;
+      } else {
+        roomID = randomRoomId();
+        rooms[roomID] = new Room(roomID);
+      }
+    } else {
+      if(!rooms[roomInfo]) {
+        socket.emit('joined room response', 'roomNotFound');
+        return;
+      } else if(rooms[roomInfo].isFull) {
+        socket.emit('joined room response', 'roomFull');
+        return;
+      }
+      roomID = roomInfo;
+    }
 
+    socket.userID = randomId();
     users[socket.userID] = {
       name: recivedName,
-      savedSocket: socket
+      roomID: roomID, 
+      savedSocket: socket // needed? when rooms are a thing
     };
+
+    const addingResponse = rooms[roomID].addPlayer(socket, recivedName);
+    if(addingResponse === 'room full') {
+      socket.emit('joined room response', addingResponse);
+      return;
+    }
+    socket.emit('joined room response', roomID);
+
+    //socket.emit('game already running');
+    
     updatePlayers();
-    console.log('user ' + socket.userID + ' joined and set name to: ' + recivedName);
+    console.log('user ' + socket.userID + ' joined room: ' + roomID + ' and set name to: ' + recivedName);
     
     sessions[socket.sessionID].userID = socket.userID;
 
@@ -135,22 +174,18 @@ io.on('connection', (socket) => {
     console.log('}');
   });
   socket.on('starting game', () => {
-    startGame(false);
+    const game = getGame();
+    if (game.isRunning) { error('game already running'); return; }
+    if (game.players.length < 2) return;
+    startGame(false, getGame());
   });
   socket.on('starting debug game', () => {
-    startGame(true);
+    startGame(true, getGame());
   });
-  function startGame(startAsDebug) {
+  function startGame(startAsDebug, game) {
     // future: check players >= 2    do not if debug
-    game = new Game([], createDeck(), [], [], null);
+    game.deck = createDeck();
     // future: adding players to game obj   move to GameCore!!
-    let i = 0;
-    const usersWithNames = getUsersWithNames();
-    for (const id in usersWithNames) {
-      const user = usersWithNames[id];
-      game.players[i] = new Player(id, user.name);
-      i++;
-    }
 
     // send clients a start game event
     startAsDebug ? toPlayingPlayers('start debug game') : toPlayingPlayers('start game');
@@ -166,8 +201,9 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal three');
   }
   socket.on('start dealing three', () => {
-    if (!game.isRunning) return;
-    if (!(socket.userID === game.dealingPlayer.id)) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (deal three)'); return; }
+    if (!(socket.userID === game.dealingPlayer.id)) { error('not dealing-player tried to deal three'); return; }
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
     game.dealThree();
     updateGameStates();
@@ -176,8 +212,9 @@ io.on('connection', (socket) => {
     getSocket(game.trumpfPlayer.id).emit('choose trumpf');
   });
   socket.on('set trumpf', (cardIndex) => {
-    if (!game.isRunning) return;
-    if (!(socket.userID === game.trumpfPlayer.id)) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (set trumpf)'); return; }
+    if (!(socket.userID === game.trumpfPlayer.id)) { error('not trumpf-player tried to set trumpf'); return; }
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
@@ -187,8 +224,9 @@ io.on('connection', (socket) => {
     getSocket(game.dealingPlayer.id).emit('deal two');
   });
   socket.on('start dealing two', () => {
-    if (!game.isRunning) return;
-    if (!(socket.userID === game.dealingPlayer.id)) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (deal two)'); return; }
+    if (!(socket.userID === game.dealingPlayer.id))  { error('not dealing-player tried to deal two'); return; }
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
     updateGameStates();
@@ -196,7 +234,8 @@ io.on('connection', (socket) => {
     toPlayingPlayers('trade');
   });
   socket.on('enterTrade', (indices) => {
-    if (!game.isRunning) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (enterd trade)'); return; }
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
     game.playerTrades(tradingPlayer, indices);
 
@@ -208,12 +247,10 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('not participating', () => {
-    if (!game.isRunning) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (not participating)'); return; }
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
-    if (!(game.playerDoNotParticipate(tradingPlayer))) {
-      console.log('not participating not worked');
-      return;
-    }
+    if (!(game.playerDoNotParticipate(tradingPlayer))) { error('not participating not worked'); return; }
 
     updateGameStates();
     sendLeaderboard();
@@ -224,8 +261,9 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('play card', (cardIndex) => {
-    if (!game.isRunning) return;
-    if (!(socket.userID === game.currentPlayer.id)) return;
+    const game = getGame();
+    if (!game.isRunning) { error('game not running (play card)'); return; }
+    if (!(socket.userID === game.currentPlayer.id))  { error('not currentPlayer tried to play card'); return; }
     let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
@@ -278,14 +316,16 @@ io.on('connection', (socket) => {
 
 
   socket.on('leave game', () => {
-    if(!game.isRunning) return;
+    const game = getGame();
+    if(!game.isRunning) { error('game not running (leave game)'); return; }
     io.emit('game ended');
   });
 
   socket.on('disconnect', (reason) => {
+    const game = getGame();
     delete users[socket.userID];
     updatePlayers();
-    //sessions[socket.sessionID].connected = false;
+    sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
       game.Stop();
@@ -295,13 +335,13 @@ io.on('connection', (socket) => {
 
   socket.onAny((eventName, ...args) => {
     //console.log("unknown event: " + eventName);
-    sessions[socket.sessionID] = {
-      timeOfLastConnection: Date.now(),
-      connected: true,
-    };
+    sessions[socket.sessionID].timeOfLastConnection = Date.now();
+    sessions[socket.sessionID].timeOfLastConnection.connected = true;
   });
 
+  // local helper functions because they need access to socket
   function updateGameStates() {
+    const game = getGame();
     console.log('*** game state ***');
     console.log('Deck length: ' + game.deck.length);
     console.log('number of used cards: ' + game.used.length);
@@ -351,6 +391,7 @@ io.on('connection', (socket) => {
     */
   }
   function updateOnePlayer(player) {
+    const game = getGame();
     console.log('*** game state ***');
     console.log('Deck length: ' + game.deck.length);
     console.log('number of used cards: ' + game.used.length);
@@ -384,6 +425,7 @@ io.on('connection', (socket) => {
   }
 
   function toPlayingPlayers(eventMessage, optionalData) {
+    const game = getGame();
     // can be replaced if players are in a room
     if (optionalData) {
       game.players.forEach(player => getSocket(player.id).emit(eventMessage, optionalData));
@@ -394,33 +436,37 @@ io.on('connection', (socket) => {
 
   // log leaderboard and send update event to all
   function sendLeaderboard() {
+    const game = getGame();
     game.updateLeaderboard();
     console.log(game.leaderboard);
     toPlayingPlayers('update leaderboard', game.leaderboard);
   }
   function sendLeaderboardToOne(player) {
+    const game = getGame();
     getSocket(player.id).emit('update leaderboard', game.leaderboard);
   }
 
-  function getSocket(recivingId) {
-    return users[recivingId].savedSocket;
-  }
-
   function updatePlayers() {
-    io.emit('update players', getUsersWithNames());
+    io.to(getRoom()).emit('update players', getPlayerNameAndID());
   }
   function updatePlayersForOnePlayer(player) {
-    getSocket(player.id).emit('update players', getUsersWithNames());
+    getSocket(player.id).emit('update players', getPlayerNameAndID());
   }
 
-  function getUsersWithNames() {
-    if (game.isRunning) return tempUsers;
-    tempUsers = {};
-    for (const id in users) {
-      const user = users[id];
-      if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name };
+  function getPlayerNameAndID() {
+    const game = getGame();
+    let tempPlayers = {};
+    for (const player of game.player) {
+      tempPlayers[player.id] = { name: player.name };
     }
-    return tempUsers;
+    return tempPlayers;
+  }
+
+  function getGame() {
+    return rooms[users[socket.userID].roomID].game;
+  }
+  function getRoom() {
+    return rooms[users[socket.userID].roomID];
   }
 
   /* future chat feature
@@ -430,6 +476,16 @@ io.on('connection', (socket) => {
   });
   */
 });
+
+// helper functions
+function error(message) {
+  console.lot('ERROR: ' + message);
+  io.emit('error', message);
+}
+
+function getSocket(recivingId) {
+  return users[recivingId].savedSocket;
+}
 
 
 // Dashboard
@@ -446,14 +502,13 @@ app.get('/dash', (req, res) => {
   }
   dashboardHTML += '}<p>';
   dashboardHTML += '<p>users: {<br/>';
-  for (const id in users) {
-    const user = users[id];
-    dashboardHTML += '&nbsp;&nbsp;' + id + ' : ' + user.name + '<br/>';
+  for (const userID in users) {
+    const user = users[userID];
+    dashboardHTML += '&nbsp;&nbsp;' + userID + ' : ' + user.name + ' : ' + user.roomID + '<br/>';
   }
   dashboardHTML += '}<p>';
-  dashboardHTML += '<p>players: {<br/>';
-  for (const id in game.players) {
-    const player = game.players[id];
+  dashboardHTML += '<p>players of first room: {<br/>';
+  for (const player of rooms[0].game.players) {
     dashboardHTML += '&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
   }
   dashboardHTML += '}<p>';

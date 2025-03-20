@@ -3,6 +3,14 @@ const Round = require("./Round");
 
 // future: make things private with #
 
+/**
+ * Represents a Game
+ * @class Game
+ * @property {boolean} #running If the game is running
+ * @property {boolean} #debugGame If the game is in debug mode
+ * @property {boolean} #roundOver If the round is over
+ * ...
+ */
 class Game {
     #running = false;
     #debugGame = false;

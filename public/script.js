@@ -18,7 +18,7 @@ goText.textContent = 'Los gehts!!!';
 
 const gameDiv = document.getElementById('gameDiv');
 
-var players = {};
+var players = {}; // {id: {name: 'name', ?bot?: true/false}}
 var username = "";
 var lastGameState = {};
 
@@ -52,11 +52,25 @@ socket.on('name suggestion', (suggestedName) => {
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     username = usernameInput.value;
-    socket.emit('set name', username);
+    socket.emit('join room', { recivedName: username, roomInfo: 'any'});
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
-    nameDiv.style.display = 'none';
-    readyDiv.style.display = 'block';
 });
+socket.on('joined room response', (response) => {
+    if(response === 'nameTaken') {
+        alert('Name schon vergeben!');
+    } else if(response === 'roomFull') {
+        alert('Raum ist voll!');
+    } else if(response === 'gameRunning') {
+        alert('Spiel läuft bereits!');
+    } else if(response === 'roomNotFound') {
+        alert('Raum nicht gefunden!');
+    } else {
+        nameDiv.style.display = 'none';
+        readyDiv.style.display = 'block';
+        console.log('joined room: ' + response); // future: show room name
+    }
+});
+// future: more join buttons
 
 socket.on('update players', (backendPlayers) => {
     console.log(backendPlayers);
@@ -71,7 +85,7 @@ socket.on('update players', (backendPlayers) => {
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
-    if (!(Object.keys(players).length >= 2)) return;
+    if (!(Object.keys(players).length >= 2)) { alert('Es müssen mindestens 2 Spieler da sein!'); return; }
     socket.emit('starting game');
 });
 document.getElementById('formDebugStart').addEventListener('submit', function (event) {
@@ -117,6 +131,7 @@ function reset(){
     debugGame = false;
     selectedTradingCards = [];
 }
+
 socket.on('update leaderboard', (leaderBoard) => {
     console.log(leaderBoard);
     leaderbordTable.innerHTML = "";
@@ -148,7 +163,7 @@ socket.on('update trumpf', (trumpfColor) => {
 
 socket.on('deal three', () => {
     if (debugGame) {
-        console.log('simulate deal btn pressed');
+        console.log('simulate deal three btn pressed');
         socket.emit('start dealing three');
         return;
     }
@@ -188,7 +203,7 @@ function cardClicked(element) {
 
 socket.on('deal two', () => {
     if (debugGame) {
-        console.log('simulate deal btn pressed');
+        console.log('simulate deal two btn pressed');
         socket.emit('start dealing two');
         return;
     }
@@ -248,42 +263,35 @@ socket.on('not valid card', (cardIndex) => {
 socket.on('won', () => {
     playing = false;
     console.log('won');
-    if(confirm('Du hast gewonnen!\nGlückwunsch!\nNochmal spielen?')){
-        console.log('next round');
-        let lastUsername = username;
-        reset();
-        username = lastUsername;
-        socket.emit('set name', username);
-        console.log('Dein Username ist immernoch: ' + username + '.');
-        nameDiv.style.display = 'none';
-        readyDiv.style.display = 'block';
-    } else {
-        reset();
-    }
+    confirm('Du hast gewonnen!\nGlückwunsch!\nNochmal spielen?') ? playAgain() : reset();
 });
 socket.on('lost', () => {
     playing = false;
     console.log('lost');
-    if(confirm('Du hast leider dieses mal verloren!\nNochmal spielen?')){
-        console.log('next round');
-        let lastUsername = username;
-        reset();
-        username = lastUsername;
-        socket.emit('set name', username);
-        console.log('Dein Username ist immernoch: ' + username + '.');
-        nameDiv.style.display = 'none';
-        readyDiv.style.display = 'block';
-    } else {
-        reset();
-    }
+    confirm('Du hast leider dieses mal verloren!\nNochmal spielen?') ? playAgain() : reset();
 });
+function playAgain() {
+    console.log('next round');
+    let lastUsername = username;
+    reset();
+    username = lastUsername;
+    socket.emit('set name', username);
+    console.log('Dein Username ist immernoch: ' + username + '.');
+    nameDiv.style.display = 'none';
+    readyDiv.style.display = 'block';
+}
 
 socket.on('kicked', (reason) => {
     alert('Du wurdest gekickt!\nGrund: ' + reason + '\nBitte lade die Seite neu.');
     reset();
 });
-socket.on('game already running', () => {
+
+socket.on('game already running', () => { // needed?
     alert('Das Spiel läuft bereits!\nBitte warte bis es vorbei ist.');
+});
+
+socket.on('error', (error) => {
+    console.log('ERROR: ' + error);
 });
 
 socket.on('update gameState', (backendGameState) => {
@@ -307,7 +315,6 @@ function createOwnHand(hand, gameState) {
     }
 
     if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
-    //if(this.trading) return;
 
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
