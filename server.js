@@ -12,6 +12,7 @@ const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
 const { Game, STATES } = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
 const Round = require('./classes/Round.js');
+const Room = require('./classes/Room.js');
 
 // create server
 const app = express();
@@ -111,7 +112,7 @@ io.on('connection', (socket) => {
   }
 
   socket.on('join room', ({ recivedName, roomInfo }) => { // roomInfo: any for any room, id for specific, create for new
-    if(!recivedName || users.find(user => user.name === recivedName) != undefined) {
+    if(!recivedName || Object.values(users).find(user => user.name === recivedName) != undefined) {
       socket.emit('joined room response', 'nameTaken');
       return;
     }
@@ -121,8 +122,8 @@ io.on('connection', (socket) => {
       roomID = randomRoomId();
       rooms[roomID] = new Room(roomID);
     } else if(roomInfo === 'any') {
-      possibleRoomID;
-      for (const testRoomID of rooms) {
+      let possibleRoomID;
+      for (const testRoomID in rooms) {
         const room = rooms[testRoomID];
         if (room.game.isRunning || room.isFull) continue;
         possibleRoomID = testRoomID;
@@ -160,13 +161,14 @@ io.on('connection', (socket) => {
     socket.emit('joined room response', roomID);
 
     //socket.emit('game already running');
+
+    sessions[socket.sessionID].userID = socket.userID;
     
     updatePlayers();
     console.log('user ' + socket.userID + ' joined room: ' + roomID + ' and set name to: ' + recivedName);
     
-    sessions[socket.sessionID].userID = socket.userID;
 
-    console.log('all players: {');
+    console.log('all users: {');
     for (const id in users) {
       const user = users[id];
       console.log('  ' + id + ' : ' + user.name);
@@ -322,9 +324,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', (reason) => {
-    const game = getGame();
-    delete users[socket.userID];
-    updatePlayers();
+    if(socket.userID) {
+      const game = getGame();
+      delete users[socket.userID];
+      updatePlayers();
+    }
     sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
@@ -447,7 +451,8 @@ io.on('connection', (socket) => {
   }
 
   function updatePlayers() {
-    io.to(getRoom()).emit('update players', getPlayerNameAndID());
+    //console.log('update players');
+    io.to(getRoomID()).emit('update players', getPlayerNameAndID());
   }
   function updatePlayersForOnePlayer(player) {
     getSocket(player.id).emit('update players', getPlayerNameAndID());
@@ -456,17 +461,27 @@ io.on('connection', (socket) => {
   function getPlayerNameAndID() {
     const game = getGame();
     let tempPlayers = {};
-    for (const player of game.player) {
+    for (const player of game.players) {
       tempPlayers[player.id] = { name: player.name };
     }
+    //console.log('players: ' + JSON.stringify(tempPlayers));
     return tempPlayers;
   }
 
   function getGame() {
-    return rooms[users[socket.userID].roomID].game;
+    const userID = sessions[socket.sessionID].userID;
+    if(!userID) { error('userID in sessions not found (get game)'); return; }
+    if(!users[userID]) { error('user not found (get game)'); return; }
+    if(!users[userID].roomID) { error('roomID in user not found (get game)'); return; }
+    if(!rooms[users[userID].roomID]) { error('room not found (get game)'); return; }
+    return rooms[users[userID].roomID].game;
   }
-  function getRoom() {
-    return rooms[users[socket.userID].roomID];
+  function getRoomID() {
+    const userID = sessions[socket.sessionID].userID;
+    if(!userID) { error('userID in sessions not found (get room)'); return; }
+    if(!users[userID]) { error('user not found (get room)'); return; }
+    if(!users[userID].roomID) { error('roomID in user not found (get room)'); return; }
+    return users[userID].roomID;
   }
 
   /* future chat feature
@@ -479,7 +494,7 @@ io.on('connection', (socket) => {
 
 // helper functions
 function error(message) {
-  console.lot('ERROR: ' + message);
+  console.log('ERROR: ' + message);
   io.emit('error', message);
 }
 
@@ -494,6 +509,7 @@ app.get('/dash', (req, res) => {
   let dashboardHTML = '';
   dashboardHTML += '<title>Dashboard</title>';
   dashboardHTML += '<p>online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size + '<p>';
+  dashboardHTML += '<p>currently running games: ' + Object.keys(rooms).length + '<p>';
   dashboardHTML += '<p>sessions: {<br>';
   for (const sessionID in sessions) {
     const session = sessions[sessionID];
@@ -508,8 +524,12 @@ app.get('/dash', (req, res) => {
   }
   dashboardHTML += '}<p>';
   dashboardHTML += '<p>players of first room: {<br/>';
-  for (const player of rooms[0].game.players) {
-    dashboardHTML += '&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
+  if(Object.keys(rooms).length === 0) {
+    dashboardHTML += '&nbsp;&nbsp;no rooms created yet <br/>';
+  } else {
+    for (const player of rooms[Object.keys(rooms)[0]].game.players) {
+      dashboardHTML += '&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
+    }
   }
   dashboardHTML += '}<p>';
   res.send(dashboardHTML);

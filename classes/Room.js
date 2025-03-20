@@ -1,5 +1,5 @@
-const { Game, STATES } = require('./classes/GameCore.js');
-const randomId = () => crypto.randomBytes(8).toString("hex");
+const { Game } = require('./GameCore.js');
+const Player = require('./Player.js');
 
 class Room {
     //name = '';
@@ -16,7 +16,7 @@ class Room {
         if(this.isFull) return 'room full';
         socket.join(this.id);
         
-        game.players.push(new Player(socket.userID, name));
+        this.game.players.push(new Player(socket.userID, name));
 
         if(this.game.players.length >= this.maxPlayers) this.isFull = true;
     }
