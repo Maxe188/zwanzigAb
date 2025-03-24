@@ -314,3 +314,6 @@ th {
   width: 35px;
   height: 35px;
 }
+.leaveButton:hover {
+  background-color: rgb(87, 16, 16);
+}

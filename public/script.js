@@ -116,8 +116,12 @@ socket.on('not connected', () => {
 
 socket.on('game ended', () => {
     console.log('game stoped');
+    let lastUsername = username;
     reset();
+    username = lastUsername;
     alert('Spiel gestoppt.');
+    usernameInput.value = username;
+    console.log('Dein Username ist immernoch: ' + username + '.');
 });
 function reset(){
     nameDiv.style.display = 'block';
@@ -281,8 +285,9 @@ function playAgain() {
     let lastUsername = username;
     reset();
     username = lastUsername;
-    socket.emit('set name', username);
+    socket.emit('join room', { recivedName: username, roomInfo: 'any'});
     console.log('Dein Username ist immernoch: ' + username + '.');
+    usernameInput.value = username;
     nameDiv.style.display = 'none';
     readyDiv.style.display = 'block';
 }
