@@ -2,7 +2,7 @@ const { Game } = require('./GameCore.js');
 const Player = require('./Player.js');
 
 class Room {
-    //name = '';
+    //roomName = '';
     game = null;
     maxPlayers = 5;
     isFull = false;
@@ -22,6 +22,10 @@ class Room {
     }
     removePlayer(socket) {
         socket.leave(this.id);
+    }
+
+    closeRoom() {
+        throw new Error('Not implemented');
     }
 }
 

@@ -108,10 +108,16 @@ leaveButton.onclick = () => {
     if(confirm('Spiel wirklich verlassen?\nEs wird für alle beendet!'))  socket.emit('leave game');
 };
 
+socket.on('not connected', () => {
+    console.log('error: was not connected');
+    reset();
+    setTimeout(() => { socket.connect(); }, 300);
+});
+
 socket.on('game ended', () => {
     console.log('game stoped');
     reset();
-    alert('Spiel angehalten.');
+    alert('Spiel gestoppt.');
 });
 function reset(){
     nameDiv.style.display = 'block';

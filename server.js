@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
 
-const sessions = {};
+const sessions = {}; // sessionID: {userID, timeOfLastConnection, connected}
 const expirationTimeInSec = 900 * 1000; // 900sec. = 15min.
 // loop to check expired sessions
 const intervalSession = setInterval(expirationCheck, 1000); //every second
@@ -42,20 +42,20 @@ function expirationCheck() {
     const session = sessions[sessionID];
     if (rightNow - session.timeOfLastConnection > expirationTimeInSec) {
       console.log('kicked: ' + sessionID + ' user: ' + session.userID + ' because of inactivity');
-      delete sessions[sessionID];
       if (session.userID) {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
-        rooms[users[session.userID]].removePlayer(users[session.userID].savedSocket);
+        rooms[users[session.userID].roomID].removePlayer(users[session.userID].savedSocket);
+        if (rooms[users[session.userID]].game.isRunning) io.emit('game ended');
         delete users[session.userID];
       }
-      if (rooms[users[session.userID]].game.isRunning) io.emit('game ended');
+      delete sessions[sessionID];
     }
   }
 }
 
 // globals
 const rooms = {};
-const users = {};
+const users = {}; // userID: {name, roomID, savedSocket}
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
 
@@ -67,7 +67,7 @@ io.use((socket, next) => {
     const session = sessions[sessionID];
     if (session) {
       socket.sessionID = sessionID;
-      socket.userID = session.userID;
+      if(session.userID) socket.userID = session.userID;
       session.timeOfLastConnection = Date.now();
 
       console.log('user ' + sessionID + ' reconnected');
@@ -83,28 +83,38 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   console.log('O a session ' + socket.sessionID + ' connected');
 
-  sessions[socket.sessionID] = {
-    timeOfLastConnection: Date.now(),
-    connected: true
-  };
+  // create new session
+  if(!sessions[socket.sessionID]) { 
+    sessions[socket.sessionID] = {
+      timeOfLastConnection: Date.now(),
+      connected: true
+    };
+  }
 
   // send IDs
   socket.emit("session", {
     sessionID: socket.sessionID
   });
 
-  if (socket.userID) {
-    const reconnectingPlayer = getGame().players.find((player) => player.id === socket.userID);
-    if (!reconnectingPlayer) {
-      //socket.emit('game already running');
-      error('spectator mode not implemented');
-      return; // add specktatormode
+  // find game on reconnection
+  for (const roomID in rooms) {
+    const room = rooms[roomID];
+    const reconnectingPlayer = room.game.players.find(player => player.id === socket.userID);
+    if (reconnectingPlayer) {
+      socket.join(roomID);
+      users[socket.userID] = {
+        name: reconnectingPlayer.name,
+        roomID: roomID,
+        savedSocket: socket
+      }
+      updatePlayersForOnePlayer(reconnectingPlayer);
+      updateOnePlayer(reconnectingPlayer);
+      sendLeaderboardToOne(reconnectingPlayer);
+      break;
     }
-    users[socket.userID].name = reconnectingPlayer.name;
-    updatePlayersForOnePlayer(reconnectingPlayer);
-    updateOnePlayer(getGame(), reconnectingPlayer);
-    sendLeaderboardToOne(reconnectingPlayer);
-  } else {
+  }
+
+  if (!users[socket.userID]) {
     // Returns a random integer from 0 to 9:
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
     //name suggestion
@@ -150,7 +160,7 @@ io.on('connection', (socket) => {
     users[socket.userID] = {
       name: recivedName,
       roomID: roomID, 
-      savedSocket: socket // needed? when rooms are a thing
+      savedSocket: socket
     };
 
     const addingResponse = rooms[roomID].addPlayer(socket, recivedName);
@@ -179,7 +189,7 @@ io.on('connection', (socket) => {
     const game = getGame();
     if (game.isRunning) { error('game already running'); return; }
     if (game.players.length < 2) return;
-    startGame(false, getGame());
+    startGame(false, game);
   });
   socket.on('starting debug game', () => {
     startGame(true, getGame());
@@ -318,9 +328,16 @@ io.on('connection', (socket) => {
 
 
   socket.on('leave game', () => {
+    const roomID = getRoomID();
     const game = getGame();
     if(!game.isRunning) { error('game not running (leave game)'); return; }
-    io.emit('game ended');
+
+    for(const player of game.players) {
+      delete users[player.id];
+    }
+    game.Stop();
+
+    io.to(roomID).emit('game ended');
   });
 
   socket.on('disconnect', (reason) => {
@@ -331,16 +348,23 @@ io.on('connection', (socket) => {
     }
     sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
-    if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended
+    if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended ::: rework compleatly
       game.Stop();
       toPlayingPlayers('game ended');
     }
+    socket.sessionID = null;
+    socket.userID = null;
   });
 
   socket.onAny((eventName, ...args) => {
-    //console.log("unknown event: " + eventName);
-    sessions[socket.sessionID].timeOfLastConnection = Date.now();
-    sessions[socket.sessionID].timeOfLastConnection.connected = true;
+    if(eventName === 'join room' || sessions[socket.sessionID].userID) {
+      // refresh session
+      sessions[socket.sessionID].timeOfLastConnection = Date.now();
+      sessions[socket.sessionID].timeOfLastConnection.connected = true;
+    } else {
+      socket.emit('not connected');
+      socket.disconnect();
+    }
   });
 
   // local helper functions because they need access to socket
@@ -452,6 +476,8 @@ io.on('connection', (socket) => {
 
   function updatePlayers() {
     //console.log('update players');
+    if (getRoomID() === undefined) return;
+    if (getGame() === undefined) return;
     io.to(getRoomID()).emit('update players', getPlayerNameAndID());
   }
   function updatePlayersForOnePlayer(player) {

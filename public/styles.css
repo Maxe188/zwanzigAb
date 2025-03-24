@@ -92,6 +92,12 @@ button:hover {
   -webkit-border-bottom-left-radius: 0;
   margin-left: 0;
 }
+.newGameButton {
+  background-color: rgb(117, 6, 114);
+}
+.joinGameButton {
+  background-color: rgb(77, 94, 3);
+}
 
 .ready {
   display: none;
