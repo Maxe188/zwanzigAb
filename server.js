@@ -62,7 +62,7 @@ const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', '
 // user authentification: sessionID(private, reconnection, validation), userID(public, for others)
 io.use((socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
-  if (sessionID) {
+  if (sessionID && sessionID !== 'undefined') {
     // find existing session
     const session = sessions[sessionID];
     if (session) {
@@ -108,8 +108,10 @@ io.on('connection', (socket) => {
         savedSocket: socket
       }
       updatePlayersForOnePlayer(reconnectingPlayer);
-      updateOnePlayer(reconnectingPlayer);
-      sendLeaderboardToOne(reconnectingPlayer);
+      if(room.game.isRunning) {
+        updateOnePlayer(reconnectingPlayer);
+        sendLeaderboardToOne(reconnectingPlayer);
+      }
       break;
     }
   }
