@@ -45,7 +45,7 @@ function expirationCheck() {
       if (session.userID) {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
         rooms[users[session.userID].roomID].removePlayer(users[session.userID].savedSocket);
-        if (rooms[users[session.userID]].game.isRunning) io.emit('game ended');
+        if (rooms[users[session.userID].roomID].game.isRunning) io.emit('game ended');
         delete users[session.userID];
       }
       delete sessions[sessionID];
@@ -62,7 +62,7 @@ const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', '
 // user authentification: sessionID(private, reconnection, validation), userID(public, for others)
 io.use((socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
-  if (sessionID) {
+  if (sessionID && sessionID !== 'undefined') {
     // find existing session
     const session = sessions[sessionID];
     if (session) {
@@ -108,8 +108,13 @@ io.on('connection', (socket) => {
         savedSocket: socket
       }
       updatePlayersForOnePlayer(reconnectingPlayer);
-      updateOnePlayer(reconnectingPlayer);
-      sendLeaderboardToOne(reconnectingPlayer);
+      if(room.game.isRunning) {
+        updateOnePlayer(reconnectingPlayer);
+        sendLeaderboardToOne(reconnectingPlayer);
+      } else {
+        console.log('send game not running to reconnected player');
+        socket.emit('reconnected on ready');
+      }
       break;
     }
   }
@@ -346,7 +351,7 @@ io.on('connection', (socket) => {
       delete users[socket.userID];
       updatePlayers();
     }
-    sessions[socket.sessionID].connected = false;
+    if(sessions[socket.sessionID]) sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended ::: rework compleatly
       game.Stop();
@@ -357,7 +362,7 @@ io.on('connection', (socket) => {
   });
 
   socket.onAny((eventName, ...args) => {
-    if(eventName === 'join room' || sessions[socket.sessionID].userID) {
+    if(sessions[socket.sessionID] && (eventName === 'join room' || sessions[socket.sessionID].userID)) {
       // refresh session
       sessions[socket.sessionID].timeOfLastConnection = Date.now();
       sessions[socket.sessionID].timeOfLastConnection.connected = true;
@@ -420,7 +425,7 @@ io.on('connection', (socket) => {
   }
   function updateOnePlayer(player) {
     const game = getGame();
-    console.log('*** game state ***');
+    console.log('*** game state for one player ***');
     console.log('Deck length: ' + game.deck.length);
     console.log('number of used cards: ' + game.used.length);
     console.log(player.toString() + ' stiche: ' + player.stiche);
