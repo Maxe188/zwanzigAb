@@ -61,6 +61,7 @@ button:hover {
   background-image: url('pictures/red_logo.png');
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
 }
 .nameH1 {
   color: whitesmoke;
@@ -94,9 +95,17 @@ button:hover {
 }
 .newGameButton {
   background-color: rgb(117, 6, 114);
+  margin: 8px;
+}
+.newGameButton:hover {
+  background-color: rgb(73, 5, 71);
 }
 .joinGameButton {
   background-color: rgb(77, 94, 3);
+  margin: 8px;
+}
+.joinGameButton:hover {
+  background-color: rgb(47, 57, 0);
 }
 
 .ready {
