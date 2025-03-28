@@ -110,7 +110,7 @@ button:hover {
 
 .ready {
   display: none;
-  width: 200px;
+  width: 300px;
 }
 #readyList { list-style-type: none; margin: 0; padding: 0; }
 #readyList > li { padding: 0.5rem 1rem; }

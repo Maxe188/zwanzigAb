@@ -29,10 +29,12 @@
       <input class="nameInput" type="text" id="username" name="username" placeholder="Name" value="" required autofocus>
       <button class="nameButton" type="submit">Start</button>
     </form>
-    <button class="newGameButton" type="button">Neuer Spieltisch</button>
-    <button class="joinGameButton" type="button">Tisch Beitreten</button>
+    <button class="newGameButton" id="newGameBtn" type="button">Neuer Spieltisch</button>
+    <button class="joinGameButton" id="joinGameBtn" type="button">Tisch Beitreten</button>
   </div>
   <div class="menu ready" id="readyDiv">
+    <h2>Warte auf Mitspieler</h2>
+    <h3>Spieler:</h3>
     <ul id="readyList">
       <!-- js puts players here -->
     </ul>
@@ -42,6 +44,7 @@
     <form class="startForm" id="formDebugStart">
       <button class="startDebugButton" type="submit">debug start</button>
     </form>
+    <h4>Raum ID: <span id="roomIDSpan"></span></h4>
   </div>
   <div class="game" id="gameDiv">
     <div class="table">
@@ -112,6 +115,7 @@
         </div>
       </div>
       <div class="leaderbord">
+        <h4>Raum ID: <span id="roomIDSpan"></span></h4>
         <table class="noBorder" id="leaderbordTable">
           <tr>
             <th>Name1</th>

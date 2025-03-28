@@ -13,6 +13,9 @@ const othersDiv = document.getElementById('others');
 const centerDiv = document.getElementById('center');
 const outButton = document.getElementById('outButton');
 const leaveButton = document.getElementById('leaveButton');
+const newGameBtn = document.getElementById('newGameBtn');
+const joinGameBtn = document.getElementById('joinGameBtn');
+const roomIDSpan = document.getElementById('roomIDSpan');
 const goText = document.createElement('h1');
 goText.textContent = 'Los gehts!!!';
 
@@ -55,6 +58,17 @@ document.getElementById('formName').addEventListener('submit', function (event) 
     socket.emit('join room', { recivedName: username, roomInfo: 'any'});
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
 });
+newGameBtn.onclick = () => {
+    username = usernameInput.value;
+    socket.emit('join room', { recivedName: username, roomInfo: 'create'});
+    console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
+};
+joinGameBtn.onclick = () => {
+    username = usernameInput.value;
+    const roomID = prompt('Raum ID eingeben:');
+    socket.emit('join room', { recivedName: username, roomInfo: roomID});
+    console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
+}
 socket.on('joined room response', (response) => {
     if(response === 'nameTaken') {
         alert('Name schon vergeben!');
@@ -72,7 +86,7 @@ socket.on('joined room response', (response) => {
 });
 // future: more join buttons
 
-socket.on('update players', (backendPlayers) => {
+socket.on('update players', ({ backendPlayers, roomID}) => {
     console.log(backendPlayers);
     players = backendPlayers;
     playerList.innerHTML = "";
@@ -82,6 +96,7 @@ socket.on('update players', (backendPlayers) => {
         item.textContent = player.name;
         playerList.appendChild(item);
     }
+    roomIDSpan.textContent = roomID;
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -299,6 +314,11 @@ socket.on('kicked', (reason) => {
 
 socket.on('game already running', () => { // needed?
     alert('Das Spiel läuft bereits!\nBitte warte bis es vorbei ist.');
+});
+
+socket.on('reconnected on ready', () => {
+    nameDiv.style.display = 'none';
+    readyDiv.style.display = 'block';
 });
 
 socket.on('error', (error) => {

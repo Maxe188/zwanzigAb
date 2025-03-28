@@ -109,10 +109,10 @@ io.on('connection', (socket) => {
       }
       updatePlayersForOnePlayer(reconnectingPlayer);
       if(room.game.isRunning) {
-        updateOnePlayer(reconnectingPlayer);
+        updateGameOnePlayer(reconnectingPlayer);
         sendLeaderboardToOne(reconnectingPlayer);
       } else {
-        console.log('send game not running to reconnected player');
+        console.log('send: game not running to reconnected player');
         socket.emit('reconnected on ready');
       }
       break;
@@ -423,7 +423,7 @@ io.on('connection', (socket) => {
     }
     */
   }
-  function updateOnePlayer(player) {
+  function updateGameOnePlayer(player) {
     const game = getGame();
     console.log('*** game state for one player ***');
     console.log('Deck length: ' + game.deck.length);
@@ -483,10 +483,10 @@ io.on('connection', (socket) => {
     //console.log('update players');
     if (getRoomID() === undefined) return;
     if (getGame() === undefined) return;
-    io.to(getRoomID()).emit('update players', getPlayerNameAndID());
+    io.to(getRoomID()).emit('update players', { backendPlayers: getPlayerNameAndID(), roomID: getRoomID() });
   }
   function updatePlayersForOnePlayer(player) {
-    getSocket(player.id).emit('update players', getPlayerNameAndID());
+    getSocket(player.id).emit('update players', { backendPlayers: getPlayerNameAndID(), roomID: getRoomID() });
   }
 
   function getPlayerNameAndID() {
