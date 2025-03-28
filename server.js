@@ -42,7 +42,7 @@ function expirationCheck() {
     const session = sessions[sessionID];
     if (rightNow - session.timeOfLastConnection > expirationTimeInSec) {
       console.log('kicked: ' + sessionID + ' user: ' + session.userID + ' because of inactivity');
-      if (session.userID) {
+      if (session.userID && users[session.userID]) {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
         rooms[users[session.userID].roomID].removePlayer(users[session.userID].savedSocket);
         if (rooms[users[session.userID].roomID].game.isRunning) io.emit('game ended');
@@ -314,6 +314,7 @@ io.on('connection', (socket) => {
             //toPlayingPlayers('game ended');
             for(const player of game.players) {
               delete users[player.id];
+              sessions[socket.sessionID].userID = null;
             }
             game.Stop();
           } else {
@@ -349,6 +350,7 @@ io.on('connection', (socket) => {
     if(socket.userID) {
       const game = getGame();
       delete users[socket.userID];
+      sessions[socket.sessionID].userID = null;
       updatePlayers();
     }
     if(sessions[socket.sessionID]) sessions[socket.sessionID].connected = false;
