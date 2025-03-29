@@ -16,6 +16,7 @@ const leaveButton = document.getElementById('leaveButton');
 const newGameBtn = document.getElementById('newGameBtn');
 const joinGameBtn = document.getElementById('joinGameBtn');
 const roomIDSpan = document.getElementById('roomIDSpan');
+const roomIDIngameSpan = document.getElementById('roomIDIngameSpan');
 const goText = document.createElement('h1');
 goText.textContent = 'Los gehts!!!';
 
@@ -97,6 +98,7 @@ socket.on('update players', ({ backendPlayers, roomID}) => {
         playerList.appendChild(item);
     }
     roomIDSpan.textContent = roomID;
+    roomIDIngameSpan.textContent = roomID;
 });
 document.getElementById('formStart').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -314,11 +316,6 @@ socket.on('kicked', (reason) => {
 
 socket.on('game already running', () => { // needed?
     alert('Das Spiel läuft bereits!\nBitte warte bis es vorbei ist.');
-});
-
-socket.on('reconnected on ready', () => {
-    nameDiv.style.display = 'none';
-    readyDiv.style.display = 'block';
 });
 
 socket.on('error', (error) => {

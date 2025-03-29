@@ -22,6 +22,16 @@ class Room {
     }
     removePlayer(socket) {
         socket.leave(this.id);
+        if(!socket.userID) return 'no userID';
+        let playerIndex = this.game.players.findIndex(player => player.id === socket.userID);
+        if(playerIndex === -1) return 'not in room ' + this.id;
+        this.game.players.splice(playerIndex, 1);
+        this.isFull = false;
+        if(this.game.players.length === 0) {
+            //this.closeRoom();
+            return 'removed last player ' + socket.userID + '. Room ' + this.id + ' closed';
+        }
+        return 'player ' + socket.userID + ' removed from room ' + this.id;
     }
 
     closeRoom() {

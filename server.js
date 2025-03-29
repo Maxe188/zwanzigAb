@@ -5,7 +5,7 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 const crypto = require("crypto"); // future: maybe uuid
 const randomId = () => crypto.randomBytes(8).toString("hex");
-const randomRoomId = () => crypto.randomBytes(3).toString("hex");
+const randomRoomId = () => crypto.randomBytes(2).toString("hex");
 
 // import local files
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
@@ -111,9 +111,6 @@ io.on('connection', (socket) => {
       if(room.game.isRunning) {
         updateGameOnePlayer(reconnectingPlayer);
         sendLeaderboardToOne(reconnectingPlayer);
-      } else {
-        console.log('send: game not running to reconnected player');
-        socket.emit('reconnected on ready');
       }
       break;
     }
@@ -134,7 +131,7 @@ io.on('connection', (socket) => {
     
     let roomID;
     if(roomInfo === 'create') {
-      roomID = randomRoomId();
+      roomID = createUniqueRoomID();
       rooms[roomID] = new Room(roomID);
     } else if(roomInfo === 'any') {
       let possibleRoomID;
@@ -147,7 +144,7 @@ io.on('connection', (socket) => {
       if (possibleRoomID) {
         roomID = possibleRoomID;
       } else {
-        roomID = randomRoomId();
+        roomID = createUniqueRoomID();
         rooms[roomID] = new Room(roomID);
       }
     } else {
@@ -156,6 +153,9 @@ io.on('connection', (socket) => {
         return;
       } else if(rooms[roomInfo].isFull) {
         socket.emit('joined room response', 'roomFull');
+        return;
+      } else if(rooms[roomInfo].game.isRunning) {
+        socket.emit('joined room response', 'gameRunning');
         return;
       }
       roomID = roomInfo;
@@ -348,9 +348,11 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', (reason) => {
     if(socket.userID) {
-      const game = getGame();
+      if(!getGame().isRunning) {
+        const room = rooms[getRoomID()];
+        console.log(room.removePlayer(socket));
+      }
       delete users[socket.userID];
-      sessions[socket.sessionID].userID = null;
       updatePlayers();
     }
     if(sessions[socket.sessionID]) sessions[socket.sessionID].connected = false;
@@ -535,6 +537,15 @@ function getSocket(recivingId) {
   return users[recivingId].savedSocket;
 }
 
+function createUniqueRoomID() {
+  let roomID = randomRoomId();
+  for (let trys = 0; rooms[roomID]; trys++) {
+    if(trys>100) throw new Error('could not create unique roomID after 100 tries');
+    roomID = randomRoomId();
+  }
+  return roomID;
+}
+
 
 // Dashboard
 app.get('/dash', (req, res) => {
@@ -542,7 +553,7 @@ app.get('/dash', (req, res) => {
   let dashboardHTML = '';
   dashboardHTML += '<title>Dashboard</title>';
   dashboardHTML += '<p>online users (clientsCount): ' + io.engine.clientsCount + ' online users (sockets.size): ' + io.of("/").sockets.size + '<p>';
-  dashboardHTML += '<p>currently running games: ' + Object.keys(rooms).length + '<p>';
+  dashboardHTML += '<p>room count: ' + Object.keys(rooms).length + '<p>';
   dashboardHTML += '<p>sessions: {<br>';
   for (const sessionID in sessions) {
     const session = sessions[sessionID];
@@ -556,13 +567,14 @@ app.get('/dash', (req, res) => {
     dashboardHTML += '&nbsp;&nbsp;' + userID + ' : ' + user.name + ' : ' + user.roomID + '<br/>';
   }
   dashboardHTML += '}<p>';
-  dashboardHTML += '<p>players of first room: {<br/>';
-  if(Object.keys(rooms).length === 0) {
-    dashboardHTML += '&nbsp;&nbsp;no rooms created yet <br/>';
-  } else {
-    for (const player of rooms[Object.keys(rooms)[0]].game.players) {
-      dashboardHTML += '&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
+  dashboardHTML += '<p>rooms: {<br/>';
+  for (const roomID in rooms) {
+    const room = rooms[roomID];
+    dashboardHTML += '&nbsp;&nbsp;<b>' + roomID + '</b> {<br/>';
+    for (const player of room.game.players) {
+      dashboardHTML += '&nbsp;&nbsp;&nbsp;&nbsp;' + player.id + ' : ' + player.name + '<br/>';
     }
+    dashboardHTML += '&nbsp;&nbsp;}<br/>';
   }
   dashboardHTML += '}<p>';
   res.send(dashboardHTML);

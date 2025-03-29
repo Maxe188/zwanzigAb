@@ -96,6 +96,7 @@ button:hover {
 .newGameButton {
   background-color: rgb(117, 6, 114);
   margin: 8px;
+  margin-bottom: 0;
 }
 .newGameButton:hover {
   background-color: rgb(73, 5, 71);
@@ -103,6 +104,7 @@ button:hover {
 .joinGameButton {
   background-color: rgb(77, 94, 3);
   margin: 8px;
+  margin-bottom: 0;
 }
 .joinGameButton:hover {
   background-color: rgb(47, 57, 0);
@@ -325,4 +327,12 @@ th {
 }
 .leaveButton:hover {
   background-color: rgb(87, 16, 16);
+}
+
+#roomIDHeadline {
+  margin: 0;
+  margin-top: 7px;
+}
+#roomIDIngameHeadline {
+  margin: 0;
 }
