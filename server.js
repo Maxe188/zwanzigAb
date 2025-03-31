@@ -44,8 +44,9 @@ function expirationCheck() {
       console.log('kicked: ' + sessionID + ' user: ' + session.userID + ' because of inactivity');
       if (session.userID && users[session.userID]) {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
-        rooms[users[session.userID].roomID].removePlayer(users[session.userID].savedSocket);
-        if (rooms[users[session.userID].roomID].game.isRunning) io.emit('game ended');
+        const room = rooms[users[session.userID].roomID];
+        room.removePlayer(users[session.userID].savedSocket);
+        if (room.game.isRunning) io.emit('game ended');
         delete users[session.userID];
       }
       delete sessions[sessionID];
@@ -504,6 +505,8 @@ io.on('connection', (socket) => {
   }
 
   function getGame() {
+    if(!socket.sessionID) { error('sessionID not found (get game)'); return; }
+    if(!sessions[socket.sessionID]) { error('session not found (get game)'); return; }
     const userID = sessions[socket.sessionID].userID;
     if(!userID) { error('userID in sessions not found (get game)'); return; }
     if(!users[userID]) { error('user not found (get game)'); return; }
@@ -512,6 +515,8 @@ io.on('connection', (socket) => {
     return rooms[users[userID].roomID].game;
   }
   function getRoomID() {
+    if(!socket.sessionID) { error('sessionID not found (get room)'); return; }
+    if(!sessions[socket.sessionID]) { error('session not found (get room)'); return; }
     const userID = sessions[socket.sessionID].userID;
     if(!userID) { error('userID in sessions not found (get room)'); return; }
     if(!users[userID]) { error('user not found (get room)'); return; }
