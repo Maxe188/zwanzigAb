@@ -68,7 +68,7 @@ io.use((socket, next) => {
     const session = sessions[sessionID];
     if (session) {
       socket.sessionID = sessionID;
-      if(session.userID) socket.userID = session.userID;
+      if (session.userID) socket.userID = session.userID;
       session.timeOfLastConnection = Date.now();
 
       console.log('user ' + sessionID + ' reconnected');
@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
   console.log('O a session ' + socket.sessionID + ' connected');
 
   // create new session
-  if(!sessions[socket.sessionID]) { 
+  if (!sessions[socket.sessionID]) {
     sessions[socket.sessionID] = {
       timeOfLastConnection: Date.now(),
       connected: true
@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
         savedSocket: socket
       }
       updatePlayersForOnePlayer(reconnectingPlayer);
-      if(room.game.isRunning) {
+      if (room.game.isRunning) {
         updateGameOnePlayer(reconnectingPlayer);
         sendLeaderboardToOne(reconnectingPlayer);
       }
@@ -125,16 +125,16 @@ io.on('connection', (socket) => {
   }
 
   socket.on('join room', ({ recivedName, roomInfo }) => { // roomInfo: any for any room, id for specific, create for new
-    if(!recivedName || Object.values(users).find(user => user.name === recivedName) != undefined) {
+    if (!recivedName || Object.values(users).find(user => user.name === recivedName) != undefined) {
       socket.emit('joined room response', 'nameTaken');
       return;
     }
-    
+
     let roomID;
-    if(roomInfo === 'create') {
+    if (roomInfo === 'create') {
       roomID = createUniqueRoomID();
       rooms[roomID] = new Room(roomID);
-    } else if(roomInfo === 'any') {
+    } else if (roomInfo === 'any') {
       let possibleRoomID;
       for (const testRoomID in rooms) {
         const room = rooms[testRoomID];
@@ -149,13 +149,13 @@ io.on('connection', (socket) => {
         rooms[roomID] = new Room(roomID);
       }
     } else {
-      if(!rooms[roomInfo]) {
+      if (!rooms[roomInfo]) {
         socket.emit('joined room response', 'roomNotFound');
         return;
-      } else if(rooms[roomInfo].isFull) {
+      } else if (rooms[roomInfo].isFull) {
         socket.emit('joined room response', 'roomFull');
         return;
-      } else if(rooms[roomInfo].game.isRunning) {
+      } else if (rooms[roomInfo].game.isRunning) {
         socket.emit('joined room response', 'gameRunning');
         return;
       }
@@ -165,12 +165,12 @@ io.on('connection', (socket) => {
     socket.userID = randomId();
     users[socket.userID] = {
       name: recivedName,
-      roomID: roomID, 
+      roomID: roomID,
       savedSocket: socket
     };
 
     const addingResponse = rooms[roomID].addPlayer(socket, recivedName);
-    if(addingResponse === 'room full') {
+    if (addingResponse === 'room full') {
       socket.emit('joined room response', addingResponse);
       return;
     }
@@ -179,10 +179,10 @@ io.on('connection', (socket) => {
     //socket.emit('game already running');
 
     sessions[socket.sessionID].userID = socket.userID;
-    
+
     updatePlayers();
     console.log('user ' + socket.userID + ' joined room: ' + roomID + ' and set name to: ' + recivedName);
-    
+
 
     console.log('all users: {');
     for (const id in users) {
@@ -244,7 +244,7 @@ io.on('connection', (socket) => {
   socket.on('start dealing two', () => {
     const game = getGame();
     if (!game.isRunning) { error('game not running (deal two)'); return; }
-    if (!(socket.userID === game.dealingPlayer.id))  { error('not dealing-player tried to deal two'); return; }
+    if (!(socket.userID === game.dealingPlayer.id)) { error('not dealing-player tried to deal two'); return; }
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
     game.dealTwo();
     updateGameStates();
@@ -281,7 +281,7 @@ io.on('connection', (socket) => {
   socket.on('play card', (cardIndex) => {
     const game = getGame();
     if (!game.isRunning) { error('game not running (play card)'); return; }
-    if (!(socket.userID === game.currentPlayer.id))  { error('not currentPlayer tried to play card'); return; }
+    if (!(socket.userID === game.currentPlayer.id)) { error('not currentPlayer tried to play card'); return; }
     let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
@@ -313,7 +313,7 @@ io.on('connection', (socket) => {
               player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
             });
             //toPlayingPlayers('game ended');
-            for(const player of game.players) {
+            for (const player of game.players) {
               delete users[player.id];
               sessions[socket.sessionID].userID = null;
             }
@@ -337,9 +337,9 @@ io.on('connection', (socket) => {
   socket.on('leave game', () => {
     const roomID = getRoomID();
     const game = getGame();
-    if(!game.isRunning) { error('game not running (leave game)'); return; }
+    if (!game.isRunning) { error('game not running (leave game)'); return; }
 
-    for(const player of game.players) {
+    for (const player of game.players) {
       delete users[player.id];
     }
     game.Stop();
@@ -348,15 +348,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', (reason) => {
-    if(socket.userID) {
-      if(!getGame().isRunning) {
+    if (socket.userID) {
+      if (!getGame().isRunning) {
         const room = rooms[getRoomID()];
         console.log(room.removePlayer(socket));
       }
       delete users[socket.userID];
       updatePlayers();
     }
-    if(sessions[socket.sessionID]) sessions[socket.sessionID].connected = false;
+    if (sessions[socket.sessionID]) sessions[socket.sessionID].connected = false;
     console.log('X a session ' + socket.sessionID + ' disconnected because of: ' + reason);
     if (false && Object.entries(game.players).findIndex(player => player.id === socket.userID) > -1 && game.isRunning) { // future: stop when session ended ::: rework compleatly
       game.Stop();
@@ -367,7 +367,7 @@ io.on('connection', (socket) => {
   });
 
   socket.onAny((eventName, ...args) => {
-    if(sessions[socket.sessionID] && (eventName === 'join room' || sessions[socket.sessionID].userID)) {
+    if (sessions[socket.sessionID] && (eventName === 'join room' || sessions[socket.sessionID].userID)) {
       // refresh session
       sessions[socket.sessionID].timeOfLastConnection = Date.now();
       sessions[socket.sessionID].timeOfLastConnection.connected = true;
@@ -505,22 +505,22 @@ io.on('connection', (socket) => {
   }
 
   function getGame() {
-    if(!socket.sessionID) { error('sessionID not found (get game)'); return; }
-    if(!sessions[socket.sessionID]) { error('session not found (get game)'); return; }
+    if (!socket.sessionID) { error('sessionID not found (get game)'); return; }
+    if (!sessions[socket.sessionID]) { error('session not found (get game)'); return; }
     const userID = sessions[socket.sessionID].userID;
-    if(!userID) { error('userID in sessions not found (get game)'); return; }
-    if(!users[userID]) { error('user not found (get game)'); return; }
-    if(!users[userID].roomID) { error('roomID in user not found (get game)'); return; }
-    if(!rooms[users[userID].roomID]) { error('room not found (get game)'); return; }
+    if (!userID) { error('userID in sessions not found (get game)'); return; }
+    if (!users[userID]) { error('user not found (get game)'); return; }
+    if (!users[userID].roomID) { error('roomID in user not found (get game)'); return; }
+    if (!rooms[users[userID].roomID]) { error('room not found (get game)'); return; }
     return rooms[users[userID].roomID].game;
   }
   function getRoomID() {
-    if(!socket.sessionID) { error('sessionID not found (get room)'); return; }
-    if(!sessions[socket.sessionID]) { error('session not found (get room)'); return; }
+    if (!socket.sessionID) { error('sessionID not found (get room)'); return; }
+    if (!sessions[socket.sessionID]) { error('session not found (get room)'); return; }
     const userID = sessions[socket.sessionID].userID;
-    if(!userID) { error('userID in sessions not found (get room)'); return; }
-    if(!users[userID]) { error('user not found (get room)'); return; }
-    if(!users[userID].roomID) { error('roomID in user not found (get room)'); return; }
+    if (!userID) { error('userID in sessions not found (get room)'); return; }
+    if (!users[userID]) { error('user not found (get room)'); return; }
+    if (!users[userID].roomID) { error('roomID in user not found (get room)'); return; }
     return users[userID].roomID;
   }
 
@@ -545,7 +545,7 @@ function getSocket(recivingId) {
 function createUniqueRoomID() {
   let roomID = randomRoomId();
   for (let trys = 0; rooms[roomID]; trys++) {
-    if(trys>100) throw new Error('could not create unique roomID after 100 tries');
+    if (trys > 100) throw new Error('could not create unique roomID after 100 tries');
     roomID = randomRoomId();
   }
   return roomID;

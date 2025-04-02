@@ -56,28 +56,28 @@ socket.on('name suggestion', (suggestedName) => {
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     username = usernameInput.value;
-    socket.emit('join room', { recivedName: username, roomInfo: 'any'});
+    socket.emit('join room', { recivedName: username, roomInfo: 'any' });
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
 });
 newGameBtn.onclick = () => {
     username = usernameInput.value;
-    socket.emit('join room', { recivedName: username, roomInfo: 'create'});
+    socket.emit('join room', { recivedName: username, roomInfo: 'create' });
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
 };
 joinGameBtn.onclick = () => {
     username = usernameInput.value;
     const roomID = prompt('Raum ID eingeben:');
-    socket.emit('join room', { recivedName: username, roomInfo: roomID});
+    socket.emit('join room', { recivedName: username, roomInfo: roomID });
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
 }
 socket.on('joined room response', (response) => {
-    if(response === 'nameTaken') {
+    if (response === 'nameTaken') {
         alert('Name schon vergeben!');
-    } else if(response === 'roomFull') {
+    } else if (response === 'roomFull') {
         alert('Raum ist voll!');
-    } else if(response === 'gameRunning') {
+    } else if (response === 'gameRunning') {
         alert('Spiel läuft bereits!');
-    } else if(response === 'roomNotFound') {
+    } else if (response === 'roomNotFound') {
         alert('Raum nicht gefunden!');
     } else {
         nameDiv.style.display = 'none';
@@ -87,7 +87,7 @@ socket.on('joined room response', (response) => {
 });
 // future: more join buttons
 
-socket.on('update players', ({ backendPlayers, roomID}) => {
+socket.on('update players', ({ backendPlayers, roomID }) => {
     console.log(backendPlayers);
     players = backendPlayers;
     playerList.innerHTML = "";
@@ -122,7 +122,7 @@ socket.on('start debug game', () => {
     gameDiv.style.display = 'block';
 });
 leaveButton.onclick = () => {
-    if(confirm('Spiel wirklich verlassen?\nEs wird für alle beendet!'))  socket.emit('leave game');
+    if (confirm('Spiel wirklich verlassen?\nEs wird für alle beendet!')) socket.emit('leave game');
 };
 
 socket.on('not connected', () => {
@@ -140,7 +140,7 @@ socket.on('game ended', () => {
     usernameInput.value = username;
     console.log('Dein Username ist immernoch: ' + username + '.');
 });
-function reset(){
+function reset() {
     nameDiv.style.display = 'block';
     readyDiv.style.display = 'none';
     gameDiv.style.display = 'none';
@@ -249,7 +249,7 @@ socket.on('trade', () => {
     }
     tradeing = true;
 
-    if(lastGameState.currentPlayerName === username || Object.keys(lastGameState.otherPlayers).length <= 2) outButton.style.display = 'none';
+    if (lastGameState.currentPlayerName === username || Object.keys(lastGameState.otherPlayers).length <= 2) outButton.style.display = 'none';
     else outButton.style.display = 'inline-block';
 
     document.getElementById('tradeMessage').style.display = 'flex';
@@ -261,13 +261,13 @@ document.getElementById('tradeButton').onclick = () => {
     socket.emit('enterTrade', selectedTradingCards);
 }
 outButton.onclick = () => {
-    for(const playerName in lastGameState.otherPlayers){
+    for (const playerName in lastGameState.otherPlayers) {
         if (lastGameState.otherPlayers[playerName].handCount === 0 && username != playerName && lastGameState.currentPlayerName != playerName) {
             alert('Du musst leider mitspielen!');
             return;
         }
     }
-    if(lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded || pair[0] === lastGameState.currentPlayerName)))){ // wenn du austeilender bist, und nicht alle vor dir getauscht haben(angenommen du hast getauscht), dann darfst du nicht raus gehen. Außnahme Trumpfspielen, weil er mitspielen muss
+    if (lastGameState.dealingPlayerName === username && !(Object.entries(lastGameState.otherPlayers).every((pair) => (pair[1] === 'you' || pair[1].traded || pair[0] === lastGameState.currentPlayerName)))) { // wenn du austeilender bist, und nicht alle vor dir getauscht haben(angenommen du hast getauscht), dann darfst du nicht raus gehen. Außnahme Trumpfspielen, weil er mitspielen muss
         alert('Es haben nicht alle getauscht!');
         return;
     }
@@ -302,7 +302,7 @@ function playAgain() {
     let lastUsername = username;
     reset();
     username = lastUsername;
-    socket.emit('join room', { recivedName: username, roomInfo: 'any'});
+    socket.emit('join room', { recivedName: username, roomInfo: 'any' });
     console.log('Dein Username ist immernoch: ' + username + '.');
     usernameInput.value = username;
     nameDiv.style.display = 'none';
@@ -335,18 +335,18 @@ socket.on('update gameState', (backendGameState) => {
     currentPlayerColor(backendGameState);
 });
 function createOwnHand(hand, gameState) {
-    if(gameState.currentPlayerName === username) {
+    if (gameState.currentPlayerName === username) {
         console.log('its your turn');
-        if(!(hand.classList.contains('currentPlayer')))hand.classList.add('currentPlayer');
+        if (!(hand.classList.contains('currentPlayer'))) hand.classList.add('currentPlayer');
     } else {
-        if(hand.classList.contains('currentPlayer')) hand.classList.remove('currentPlayer');
+        if (hand.classList.contains('currentPlayer')) hand.classList.remove('currentPlayer');
     }
 
     if (JSON.stringify(gameState.ownHand) === JSON.stringify(lastHand)) return; // cannot simply conpare(==) two arrays because array instances are never the same
 
     lastHand = gameState.ownHand;
     hand.innerHTML = "";
-    
+
     const numOfCards = gameState.ownHand.length;
     const degOfTilt = 8.5;
     for (let index = 0; index < numOfCards; index++) {
@@ -380,7 +380,7 @@ function createOtherPlayers(gameState) {
     for (let playerI = 0; playerI < numOfOtherPlayers; playerI++) {
         const playerName = Object.keys(gameState.otherPlayers)[playerI];
         const otherPlayer = gameState.otherPlayers[playerName];
-        if(gameState.otherPlayers[playerName] === 'you') {
+        if (gameState.otherPlayers[playerName] === 'you') {
             rotations[username] = 0;
             continue;
         }
@@ -393,7 +393,7 @@ function createOtherPlayers(gameState) {
         //console.log('rotation: ' + rotation+' because of: ('+degOfRotation+' * '+playerI+' * (-1)) + ('+degOfRotation+' * '+playerI+')');
         rotations[playerName] = rotation; // !!!
         playerDiv.style = 'transform: rotate(' + (rotation.toString()) + 'deg) translate(-300px) rotate(90deg) scale(0.8);';
-        if(gameState.currentPlayerName === playerName) {
+        if (gameState.currentPlayerName === playerName) {
             console.log('current player: ' + playerName);
             playerDiv.classList.add('currentPlayer');
         }
@@ -451,7 +451,7 @@ function createCenter(center, gameState) {
         center.appendChild(card);
     }
 }
-function setState(state, gameState){
+function setState(state, gameState) {
     // hide everything
     nameDiv.style.display = 'none';
     readyDiv.style.display = 'none';
@@ -461,25 +461,25 @@ function setState(state, gameState){
     document.getElementById('dealTwoMessage').style.display = 'none';
     document.getElementById('tradeMessage').style.display = 'none';
     // show what is needed and set needed variables
-    switch(state){
+    switch (state) {
         case 1:
             gameDiv.style.display = 'block';
-            if(gameState.dealingPlayerName != username) return;
+            if (gameState.dealingPlayerName != username) return;
             document.getElementById('dealTwoMessage').style.display = 'flex';
             break;
         case 2:
             gameDiv.style.display = 'block';
-            if(gameState.currentPlayerName != username) return;
+            if (gameState.currentPlayerName != username) return;
             console.log('currently coosing trumpf: ' + gameState.currentPlayerName + ' you: ' + username);
             choosingTrumpf = true;
             document.getElementById('trumpfMessage').style.display = 'flex';
             break;
         case 3:
             gameDiv.style.display = 'block';
-            if(gameState.youTraded) return;
+            if (gameState.youTraded) return;
             tradeing = true;
             document.getElementById('tradeMessage').style.display = 'flex';
-            if(gameState.currentPlayerName === username || Object.keys(gameState.otherPlayers).length === 2) outButton.style.display = 'none';
+            if (gameState.currentPlayerName === username || Object.keys(gameState.otherPlayers).length === 2) outButton.style.display = 'none';
             else outButton.style.display = 'inline-block';
             break;
         case 4:
@@ -489,7 +489,7 @@ function setState(state, gameState){
             break;
         case 5:
             gameDiv.style.display = 'block';
-            if(gameState.dealingPlayerName != username) return;
+            if (gameState.dealingPlayerName != username) return;
             document.getElementById('dealThreeMessage').style.display = 'flex';
             break;
         case 6:
@@ -500,10 +500,10 @@ function setState(state, gameState){
             break;
     }
 }
-function currentPlayerColor(gameState){
+function currentPlayerColor(gameState) {
     const firstRow = leaderbordTable.children[0].children;
     for (let nameIndex = 0; nameIndex < firstRow.length; nameIndex++) {
-        if(firstRow[nameIndex].textContent === gameState.currentPlayerName) firstRow[nameIndex].style.color = 'rgba(9, 57, 177, 0.82)';
+        if (firstRow[nameIndex].textContent === gameState.currentPlayerName) firstRow[nameIndex].style.color = 'rgba(9, 57, 177, 0.82)';
         else firstRow[nameIndex].style.color = 'rgb(0, 0, 0)';
     }
 }
@@ -513,7 +513,7 @@ function showTrumpf(trumpfColor) {
 }
 
 socket.onAny((eventName, ...args) => {
-  //console.log("unknown event: " + eventName);
+    //console.log("unknown event: " + eventName);
 });
 
 /* future chat feature
