@@ -95,12 +95,23 @@ class Game {
         this.state = STATES.DEAL_TWO;
         this.currentRound.trumpf = color;
     }
+    theFourthCard() {
+        const currentPlayerIndex = this.players.findIndex(player => player.id == this.currentPlayer.id);
+        const card = this.deck[this.deck.length - 1 - currentPlayerIndex];
+        let cardCopy = {
+            color: card.color,
+            number: card.number
+        };
+        console.log(cardCopy);
+        return cardCopy;
+    }
     dealTwo() {
         this.state = STATES.TRADE_CARDS;
-        this.players.forEach(player => {
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
             this.#dealCards(player, 2);
             player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
-        });
+        }
     }
 
     #dealCards(recivingPlayer, numberOfCards) {

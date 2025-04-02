@@ -14,7 +14,7 @@
 [ ] add specktatormode
 [ ] handle duplicate sessions
 [ ] more join buttons
-[ ] 
-[ ] 
+[ ] add winning screen
+[ ] add take fourth
 [ ] 
 [ ] 

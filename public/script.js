@@ -209,6 +209,12 @@ socket.on('choose trumpf', () => {
     choosingTrumpf = true;
     document.getElementById('trumpfMessage').style.display = 'flex';
 });
+document.getElementById('theFourthButton').onclick = () => {
+    choosingTrumpf = false;
+    document.getElementById('trumpfMessage').style.display = 'none';
+    socket.emit('set trumpf', 'theFouth');
+    console.log('chose theFouth card');
+}
 function cardClicked(element) {
     let clickedIndex = parseInt(element.classList[0]);
     if (choosingTrumpf) {

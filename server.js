@@ -233,7 +233,14 @@ io.on('connection', (socket) => {
     const game = getGame();
     if (!game.isRunning) { error('game not running (set trumpf)'); return; }
     if (!(socket.userID === game.trumpfPlayer.id)) { error('not trumpf-player tried to set trumpf'); return; }
-    let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
+    let trumpfColor;
+    if (cardIndex === 'theFouth') {
+      const fourthCard = game.theFourthCard();
+      trumpfColor = fourthCard.color;
+      game.center.push(fourthCard);
+    } else {
+      trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
+    }
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
     toPlayingPlayers('update trumpf', game.currentRound.trumpf);
