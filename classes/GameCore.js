@@ -16,6 +16,7 @@ class Game {
     #debugGame = false;
     #roundOver = false;
     #lastTurn = false;
+    
     dealingPlayerIndex = -1;
     dealingPlayer = null;
     trumpfPlayer = null;
