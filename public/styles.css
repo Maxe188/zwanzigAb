@@ -10,6 +10,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100vw;
+  position: fixed;
   margin: 0;
   overflow: hidden;
 }
@@ -133,7 +135,6 @@ button:hover {
   display: none;
   width: 100%;
   height: 100%;
-  margin: 10px;
 }
 
 .table {

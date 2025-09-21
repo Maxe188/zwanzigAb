@@ -1,6 +1,6 @@
 // import libraries
 const express = require('express');
-const { createServer, get } = require('node:http');
+const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
 const crypto = require("crypto"); // future: maybe uuid
