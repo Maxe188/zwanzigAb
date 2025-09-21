@@ -10,11 +10,12 @@
 [ ] show ownStiche
 [ ] bug identical usernames
 [ ] let the server check every action
+[X] fixing mobile overflow
 [ ] adding mobile view
 [ ] add specktatormode
 [ ] handle duplicate sessions
-[ ] more join buttons
+[X] more join buttons
 [ ] add winning screen
-[ ] add take fourth
+[X] add take fourth
 [ ] 
 [ ] 
