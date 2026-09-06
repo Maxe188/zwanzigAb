@@ -522,6 +522,19 @@ socket.onAny((eventName, ...args) => {
     //console.log("unknown event: " + eventName);
 });
 
+// preload all card images
+window.onload = function(){
+    for (let color = 1; color <= 4; color++) {
+        for (let number = 1; number <= 6; number++) {
+            const preloadLink = document.createElement("link");
+            preloadLink.href = FrontendCard.toImgUrl({number: number, color: color});
+            preloadLink.rel = "preload";
+            preloadLink.as = "image";
+            document.head.appendChild(preloadLink);
+        }
+    }
+}
+
 /* future chat feature
 const form = document.getElementById('form');
 const input = document.getElementById('input');
