@@ -55,29 +55,35 @@ function expirationCheck() {
 }
 
 // globals
-const rooms = {};
+const rooms = {}; // roomID: {Room -> game, maxPlayers, isFull}
 const users = {}; // userID: {name, roomID, savedSocket}
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
 
 // user authentification: sessionID(private, reconnection, validation), userID(public, for others)
 io.use((socket, next) => {
-  const sessionID = socket.handshake.auth.sessionID;
-  if (sessionID && sessionID !== 'undefined') {
-    // find existing session
-    const session = sessions[sessionID];
-    if (session) {
-      socket.sessionID = sessionID;
-      if (session.userID) socket.userID = session.userID;
-      session.timeOfLastConnection = Date.now();
+  const sessionIDCookie = socket.handshake.auth.sessionID;
 
-      console.log('user ' + sessionID + ' reconnected');
-
-      return next();
-    }
+  if (!sessionIDCookie || sessionIDCookie == 'undefined') {
+    // create new IDs
+    socket.sessionID = randomId();
+    return next();
   }
-  // create new IDs
-  socket.sessionID = randomId();
+
+  // find existing session
+  const session = sessions[sessionIDCookie];
+  if (!session) {
+    socket.sessionID = randomId();
+    return next();
+  }
+  
+  // restore session
+  socket.sessionID = sessionIDCookie;
+  if (session.userID) socket.userID = session.userID;
+  session.timeOfLastConnection = Date.now();
+
+  console.log('user ' + sessionIDCookie + ' reconnected');
+
   next();
 });
 
@@ -118,7 +124,7 @@ io.on('connection', (socket) => {
   }
 
   if (!users[socket.userID]) {
-    // Returns a random integer from 0 to 9:
+    // Returns a random integer from 0 to nameSuggestions.length
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
     //name suggestion
     socket.emit('name suggestion', nameSuggestions[randomIndex]);
@@ -373,12 +379,14 @@ io.on('connection', (socket) => {
     socket.userID = null;
   });
 
+  // refresh session on any activity
   socket.onAny((eventName, ...args) => {
     if (sessions[socket.sessionID] && (eventName === 'join room' || sessions[socket.sessionID].userID)) {
       // refresh session
       sessions[socket.sessionID].timeOfLastConnection = Date.now();
       sessions[socket.sessionID].timeOfLastConnection.connected = true;
     } else {
+      // let user know they are not connected and have to reconnect
       socket.emit('not connected');
       socket.disconnect();
     }

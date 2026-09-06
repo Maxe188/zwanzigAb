@@ -1,8 +1,6 @@
 const { Card, createDeck, FARBE, WERT } = require("./Card");
 const Round = require("./Round");
 
-// future: make things private with #
-
 /**
  * Represents a Game
  * @class Game
