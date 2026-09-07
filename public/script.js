@@ -523,7 +523,7 @@ socket.onAny((eventName, ...args) => {
 });
 
 // preload all card images
-window.onload = function(){
+document.body.onload = function(){
     for (let color = 1; color <= 4; color++) {
         for (let number = 1; number <= 6; number++) {
             const preloadLink = document.createElement("link");
