@@ -36,6 +36,8 @@ var selectedTradingCards = [];
 var lastHand;
 const rotations = {};
 
+preloadCardImages();
+
 // handle IDs
 const sessionID = sessionStorage.getItem("sessionID");
 if (sessionID) socket.auth = { sessionID };
@@ -523,7 +525,7 @@ socket.onAny((eventName, ...args) => {
 });
 
 // preload all card images
-document.body.onload = function(){
+function preloadCardImages() {
     for (let color = 1; color <= 4; color++) {
         for (let number = 1; number <= 6; number++) {
             const preloadLink = document.createElement("link");
