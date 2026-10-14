@@ -12,12 +12,23 @@ class Bot {
                 return Math.floor(Math.random() * 4) + 1; // random 1-4
                 break;
             case DIFFICULTYS.EASY:
+                colorCount = [0, 0, 0, 0];
+                for(const card of cards) {
+                    colorValues[card.color - 1] += 1;
+                }
+                const indexOfMax = this.#indexOfMax(colorValues);
+                return indexOfMax + 1; // returns index of most cards of a color in hand or first if equal
+                break;
+            case DIFFICULTYS.MEDIUM:
                 colorValues = [0, 0, 0, 0];
                 for(const card of cards) {
                     colorValues[card.color - 1] += card.value;
                 }
                 const indexOfMax = this.#indexOfMax(colorValues);
-                return indexOfMax; // returns color  // index??
+                return indexOfMax + 1; // returns index of max summed values of each color
+                break;
+            case DIFFICULTYS.HARD:
+                throw new Error('not implemented');
                 break;
             default:
                 console.log('error: invalid difficulty');
@@ -34,11 +45,12 @@ class Bot {
 
         switch (this.difficulty) {
             case DIFFICULTYS.RANDOM:
-                return hand.findIndex(Math.floor(Math.random() * possibleCards.length)); // random 0-hand.length
+                return hand.findIndex(possibleCards[Math.floor(Math.random() * possibleCards.length)]); // random 0-hand.length
                 break;
             case DIFFICULTYS.EASY:
-                // best card
-                return hand.findIndex(bestCard); // index??
+                // if current highest card on the table is beatable, play my lowest card that beats it, otherwise play my lowest card
+                
+                return hand.findIndex(bestCard);
                 break;
             default:
                 console.log('error: invalid difficulty');
@@ -78,8 +90,8 @@ class Bot {
 }
 
 const DIFFICULTYS = {
-    RANDOM: 0,
-    EASY: 1,
-    MEDIUM: 2,
-    HARD: 3,
+    RANDOM: 1,
+    EASY: 2,
+    MEDIUM: 3,
+    HARD: 4,
 };
