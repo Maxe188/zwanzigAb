@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
     updateOnePlayer(reconnectingPlayer);
     sendLeaderboardToOne(reconnectingPlayer);
   } else {
-    // Returns a random integer from 0 to 9:
+    // Returns a random integer for name list:
     let randomIndex = Math.floor(Math.random() * nameSuggestions.length);
     //name suggestion
     socket.emit('name suggestion', nameSuggestions[randomIndex]);

@@ -111,6 +111,20 @@ button:hover {
   color: black;
   background-color: rgba(1,1,1,0.1);
 }
+.botButton {
+  width: 40%;
+  margin: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  color: black;
+  background-color: rgba(102, 101, 101, 0.217);
+  height: 22px;
+  padding: 0;
+}
+.botButtonsLayout {
+  display: flex;
+  justify-content: space-evenly;
+}
 
 .game {
   display: none;

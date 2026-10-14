@@ -10,26 +10,22 @@ class Bot {
         switch (this.difficulty) {
             case DIFFICULTYS.RANDOM:
                 return Math.floor(Math.random() * 4) + 1; // random 1-4
-                break;
             case DIFFICULTYS.EASY:
-                colorCount = [0, 0, 0, 0];
+                let colorCount = [0, 0, 0, 0];
                 for(const card of cards) {
-                    colorValues[card.color - 1] += 1;
+                    colorCount[card.color - 1] += 1;
                 }
-                const indexOfMax = this.#indexOfMax(colorValues);
-                return indexOfMax + 1; // returns index of most cards of a color in hand or first if equal
-                break;
+                const indexOfMaxCount = this.#findIndexOfMax(colorCount);
+                return indexOfMaxCount + 1; // returns index of most cards of a color in hand or first if equal
             case DIFFICULTYS.MEDIUM:
-                colorValues = [0, 0, 0, 0];
+                let colorValues = [0, 0, 0, 0];
                 for(const card of cards) {
                     colorValues[card.color - 1] += card.value;
                 }
-                const indexOfMax = this.#indexOfMax(colorValues);
-                return indexOfMax + 1; // returns index of max summed values of each color
-                break;
+                const indexOfMaxValue = this.#findIndexOfMax(colorValues);
+                return indexOfMaxValue + 1; // returns index of max summed values of each color
             case DIFFICULTYS.HARD:
                 throw new Error('not implemented');
-                break;
             default:
                 console.log('error: invalid difficulty');
                 break;
@@ -94,7 +90,7 @@ class Bot {
         return highestIndex;
     }
 
-    #indexOfMax(arr) {
+    #findIndexOfMax(arr) {
         if (arr.length === 0) {
             return -1;
         }
