@@ -38,7 +38,7 @@ class Bot {
 
     chooseCard(center, hand, currentTurn, round) {
         // possible cards to play
-        var possibleCards = [];
+        var possibleCards = []; // highest to lowest ??
         for(const card of hand) {
             if(this.#isValidCard(hand, card, currentTurn, round)) possibleCards.push(card);
         }
@@ -50,12 +50,48 @@ class Bot {
             case DIFFICULTYS.EASY:
                 // if current highest card on the table is beatable, play my lowest card that beats it, otherwise play my lowest card
                 
-                return hand.findIndex(bestCard);
+                const highestInCenter = this.#highestCardValue(center, round);
+                let cardToPlay = null;
+
+                for (let i = 0; i < possibleCards.length; i++) {
+                    if(possibleCards[i].cardToNum(round) > highestInCenter) {
+                        cardToPlay = possibleCards[i];
+                    } else if (cardToPlay === null) {
+                        cardToPlay = possibleCards[possibleCards.length - 1];
+                        break;
+                    }
+                }
+
+                return hand.findIndex(cardToPlay);
                 break;
             default:
                 console.log('error: invalid difficulty');
                 break;
         }
+    }
+
+    #highestCardValue(cards, round) {
+        let highest = cards[0].cardToNum(round);
+        for(const card of cards) {
+            const cardAsNum = card.cardToNum(round);
+            if(cardAsNum > highest) {
+                highest = cardAsNum;
+            }
+        }
+        return highest;
+    }
+
+    #findHighestCard(cards, round) {
+        let highestIndex = 0;
+        let highest = cards[0].cardToNum(round);
+        for(let i = 1; i < cards; i++) {
+            const cardAsNum = cards[i].cardToNum(round);
+            if(cardAsNum > highest) {
+                highest = cardAsNum;
+                highestIndex = i;
+            }
+        }
+        return highestIndex;
     }
 
     #indexOfMax(arr) {
