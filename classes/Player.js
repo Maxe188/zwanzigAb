@@ -1,18 +1,14 @@
-const Bot = require("./Bot.js");
-
 module.exports = class Player {
     hand = [];
     score = 20;
     stiche = 0;
     traded = false;
     notParticipating = false;
-    isBot = false;
 
     constructor(id, name, isBot = false) {
         this.id = id;
         this.name = name;
         this.isBot = isBot;
-        if(isBot) this.masterMind = new Bot(name);
     }
 
     playCard(cardIndex) {
@@ -55,7 +51,7 @@ module.exports = class Player {
         // future: max 5 check if there are enouth and cap it if nessecery
         this.traded = true;
         cardIndices.sort(function(a, b){return a - b}); // important in the past, but now only for aesthetic purposes
-        console.log('player: ' + this.name + ' trades card: ' + cardIndices);
+        console.log(this.name + ' trades card: ' + cardIndices);
 
         let playedCards = [];
         for(let i = cardIndices.length - 1; i >= 0; i--){

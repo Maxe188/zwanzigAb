@@ -1,5 +1,6 @@
 const { Card, createDeck, FARBE, WERT } = require("./Card");
 const Round = require("./Round");
+const BotEngine = require("./BotEngine.js");
 
 // future: make things private with #
 
@@ -17,6 +18,7 @@ class Game {
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
+    botEngine = new BotEngine(); // BotEngine instance
 
     state = 0; // STATES at the end of file
 

@@ -144,17 +144,15 @@ io.on('connection', (socket) => {
     // future: check players >= 2    do not if debug
     game = new Game([], createDeck(), [], [], null);
     // future: adding players to game obj   move to GameCore!!
-    let i = 0;
     const usersWithNames = getUsersWithNames();
     for (const id in usersWithNames) {
       const user = usersWithNames[id];
-      game.players[i] = new Player(id, user.name);
-      i++;
+      game.players.push(new Player(id, user.name, user.isBot));
     }
 
     // send clients a start game event
     startAsDebug ? toPlayingPlayers('start debug game') : toPlayingPlayers('start game');
-    startAsDebug ? game.Start(true) : game.Start();
+    startAsDebug ? game.Start(true) : game.Start(false);
     console.log('game started');
 
     sendLeaderboard();
@@ -162,51 +160,117 @@ io.on('connection', (socket) => {
     // update clients to show new empty game and sand first action: deal three
     updateGameStates();
 
-    console.log('send deal three to the current player');
-    getSocket(game.dealingPlayer.id).emit('deal three');
+    startPlaying();
   }
+  function startPlaying() {
+    if(game.dealingPlayer.isBot) {
+      console.log(game.dealingPlayer.name + ' is dealing three');
+      startDealingThree();
+    } else {
+      console.log('send deal three to the current player');
+      getSocket(game.dealingPlayer.id).emit('deal three');
+    }
+  }
+  socket.on('add bot', () => {
+    if (game.isRunning) return;
+    const botName = 'bot' + Math.floor(Math.random() * 1000);
+    const botID = randomId();
+    users[botID] = {
+      name: botName,
+      savedSocket: null,
+      isBot: true
+    };
+    updatePlayers();
+    console.log('bot added: ' + botName);
+  });
+  socket.on('remove bot', () => {
+    if (game.isRunning) return;
+    const botIndex = game.players.findLastIndex(player => player.isBot);
+    if (botIndex > -1) {
+      const bot = game.players[botIndex];
+      game.players.splice(botIndex, 1);
+      delete users[bot.id];
+      updatePlayers();
+      console.log('bot removed: ' + bot.name);
+    }
+  });
+
   socket.on('start dealing three', () => {
     if (!game.isRunning) return;
     if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing three request');
+    startDealingThree();
+  });
+  function startDealingThree() {
     game.dealThree();
     updateGameStates();
 
-    console.log('send choose trumpf to next player');
-    getSocket(game.trumpfPlayer.id).emit('choose trumpf');
-  });
+    if(game.trumpfPlayer.isBot) {
+      console.log(game.trumpfPlayer.name + ' is choosing trumpf');
+      game.trumpfPlayerChooseTrumpf();
+      setTrumpf(game.botEngine.chooseTrumpf(game.trumpfPlayer.hand));
+    } else {
+      console.log('send choose trumpf to next player');
+      getSocket(game.trumpfPlayer.id).emit('choose trumpf');
+    }
+  }
   socket.on('set trumpf', (cardIndex) => {
     if (!game.isRunning) return;
     if (!(socket.userID === game.trumpfPlayer.id)) return;
+    setTrumpf(cardIndex);
+  });
+  function setTrumpf(cardIndex) {
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
     game.setTrumpf(trumpfColor);
     toPlayingPlayers('update trumpf', game.currentRound.trumpf);
 
-    console.log('send deal two to the current player');
-    getSocket(game.dealingPlayer.id).emit('deal two');
-  });
+    if(game.dealingPlayer.isBot) {
+      console.log(game.dealingPlayer.name + ' is dealing two');
+      startDealingTwo();
+    } else {
+      console.log('send deal two to the current player');
+      getSocket(game.dealingPlayer.id).emit('deal two');
+    }
+  }
+  
   socket.on('start dealing two', () => {
     if (!game.isRunning) return;
     if (!(socket.userID === game.dealingPlayer.id)) return;
     console.log('current player (' + game.dealingPlayer.name + ') answered dealing two request');
+    startDealingTwo();
+  });
+  function startDealingTwo() {
     game.dealTwo();
     updateGameStates();
 
+    // players
     toPlayingPlayers('trade');
-  });
+    // bots
+    game.players.filter(player => player.isBot).forEach(botPlayer => {
+      enterTrade(botPlayer, game.botEngine.chooseCardsToTrade(botPlayer.hand, game.currentRound.trumpf));
+    });
+  }
   socket.on('enterTrade', (indices) => {
     if (!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
-    game.playerTrades(tradingPlayer, indices);
+    if (!tradingPlayer) return;
+    enterTrade(tradingPlayer, indices);
+  });
+  function enterTrade(player, indices) {
+    game.playerTrades(player, indices);
 
     updateGameStates();
-    if (game.players.every((player) => player.traded == true)) {
-      console.log('lets gooo!!!!!');
-      game.state = STATES.PLAY;
-      toPlayingPlayers('lets go');
-    }
-  });
+    checkIfAllPlayersTraded();
+  }
+  function checkIfAllPlayersTraded() {
+    if (!(game.players.every((player) => player.traded == true))) return;
+    console.log('lets gooo!!!!!');
+    game.state = STATES.PLAY;
+    toPlayingPlayers('lets go');
+
+    //if(!(game.currentPlayer.isBot)) {
+  }
   socket.on('not participating', () => {
     if (!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
@@ -217,11 +281,8 @@ io.on('connection', (socket) => {
 
     updateGameStates();
     sendLeaderboard();
-    if (game.players.every((player) => player.traded == true)) {
-      console.log('lets gooo!!!!!');
-      game.state = STATES.PLAY;
-      toPlayingPlayers('lets go');
-    }
+
+    checkIfAllPlayersTraded();
   });
   socket.on('play card', (cardIndex) => {
     if (!game.isRunning) return;
@@ -229,7 +290,10 @@ io.on('connection', (socket) => {
     let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
-    let playingResponse = game.checkAndPlayCard(playingPlayer, cardIndex);
+    playCard(playingPlayer, cardIndex);
+  });
+  function playCard(player, cardIndex) {
+    let playingResponse = game.checkAndPlayCard(player, cardIndex);
     switch (playingResponse) {
       case 'played':
         updateGameStates();
@@ -254,7 +318,9 @@ io.on('connection', (socket) => {
           toPlayingPlayers('update trumpf', game.currentRound.trumpf);
           if (game.didSomeoneWin) {
             game.players.forEach(player => {
-              player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
+              if(!player.isBot) {
+                player.score <= 0 ? getSocket(player.id).emit('won') : getSocket(player.id).emit('lost');
+              }
             });
             //toPlayingPlayers('game ended');
             for(const player of game.players) {
@@ -262,8 +328,7 @@ io.on('connection', (socket) => {
             }
             game.Stop();
           } else {
-            console.log('send deal three to the current player');
-            getSocket(game.dealingPlayer.id).emit('deal three');
+            startPlaying();
           }
         }, 1500);
         break;
@@ -273,7 +338,7 @@ io.on('connection', (socket) => {
       default:
         console.log('error');
     }
-  });
+  }
   ///...
 
 
@@ -311,6 +376,7 @@ io.on('connection', (socket) => {
     });
 
     for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
+      if (game.players[playerIndex].isBot) continue;
       let gameState = {};
       gameState.yourName = game.players[playerIndex].name;
       gameState.ownHand = game.players[playerIndex].hand;
@@ -383,13 +449,17 @@ io.on('connection', (socket) => {
     console.log('*** game state end ***');
   }
 
+  function toPlayingPlayers(eventMessage) {
+    // can be reworked if players are in a room
+    game.players.filter(p => !p.isBot).forEach(player => {
+      getSocket(player.id).emit(eventMessage);
+    });
+  }
   function toPlayingPlayers(eventMessage, optionalData) {
-    // can be replaced if players are in a room
-    if (optionalData) {
-      game.players.forEach(player => getSocket(player.id).emit(eventMessage, optionalData));
-    } else {
-      game.players.forEach(player => getSocket(player.id).emit(eventMessage));
-    }
+    // can be reworked if players are in a room
+    game.players.filter(p => !p.isBot).forEach(player => {
+      getSocket(player.id).emit(eventMessage, optionalData);
+    });
   }
 
   // log leaderboard and send update event to all
@@ -418,7 +488,7 @@ io.on('connection', (socket) => {
     tempUsers = {};
     for (const id in users) {
       const user = users[id];
-      if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name };
+      if (user.hasOwnProperty('name')) tempUsers[id] = { name: user.name, isBot: user.isBot ? true : false };
     }
     return tempUsers;
   }

@@ -58,6 +58,15 @@ document.getElementById('formName').addEventListener('submit', function (event) 
     readyDiv.style.display = 'block';
 });
 
+function addBot() {
+    socket.emit('add bot');
+    console.log('bot added');
+}
+function removeBot() {
+    socket.emit('remove bot');
+    console.log('bot removed');
+}
+
 socket.on('update players', (backendPlayers) => {
     console.log(backendPlayers);
     players = backendPlayers;
