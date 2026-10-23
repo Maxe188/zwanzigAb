@@ -1,4 +1,6 @@
-module.exports = class BotEngine {
+const { FARBE } = require('./Card.js');
+
+class BotEngine {
     difficulty = DIFFICULTYS.EASY;
     constructor(difficulty = DIFFICULTYS.EASY) {
         this.difficulty = difficulty;
@@ -16,12 +18,15 @@ module.exports = class BotEngine {
                 const indexOfMaxCount = this.#findIndexOfMax(colorCount);
                 return indexOfMaxCount + 1; // returns index of most cards of a color in hand or first if equal
             case DIFFICULTYS.MEDIUM:
+                /*
                 let colorValues = [0, 0, 0, 0];
                 for(const card of cards) {
                     colorValues[card.color - 1] += card.value;
                 }
                 const indexOfMaxValue = this.#findIndexOfMax(colorValues);
                 return indexOfMaxValue + 1; // returns index of max summed values of each color
+                */
+                throw new Error('not implemented');
             case DIFFICULTYS.HARD:
                 throw new Error('not implemented');
             default:
@@ -63,21 +68,28 @@ module.exports = class BotEngine {
         }
     }
 
-    chooseCard(center, hand, currentTurn, round) {
+    chooseCard(center, hand, round) {
         // possible cards to play
-        var possibleCards = []; // highest to lowest ??
+        var possibleCards = []; // highest to lowest
         for(const card of hand) {
-            if(this.#isValidCard(hand, card, currentTurn, round)) possibleCards.push(card);
+            if(this.#isValidCard(hand, card, round)) possibleCards.push(card);
         }
+        console.log('possibleCards: ' + possibleCards.toString() + ' round: ' + round.farbeZumAngeben + ' trumpf: ' + round.trumpf);
 
         switch (this.difficulty) {
             case DIFFICULTYS.RANDOM:
-                return hand.findIndex(possibleCards[Math.floor(Math.random() * possibleCards.length)]); // random 0-hand.length
+                return hand.findIndex(card => card === possibleCards[Math.floor(Math.random() * possibleCards.length)]); // random out of possible cards
                 break;
             case DIFFICULTYS.EASY:
                 // if current highest card on the table is beatable, play my lowest card that beats it, otherwise play my lowest card
                 
-                const highestInCenter = this.#highestCardValue(center, round);
+                if(center.length === 0) {
+                    // if no card has been played yet, play random card
+                    let handIndex = Math.floor(Math.random() * hand.length);
+                    return handIndex;
+                }
+                
+                const highestInCenter = center.length > 0 ? this.#highestCardValue(center, round) : 0;
                 let cardToPlay = null;
 
                 for (let i = 0; i < possibleCards.length; i++) {
@@ -89,7 +101,7 @@ module.exports = class BotEngine {
                     }
                 }
 
-                return hand.findIndex(cardToPlay);
+                return hand.findIndex(card => card === cardToPlay);
                 break;
             case DIFFICULTYS.MEDIUM:
                 throw new Error('not implemented');
@@ -142,15 +154,13 @@ module.exports = class BotEngine {
     
         return maxIndex;
     }
-    #isValidCard(hand, testingCard, currentTurn, round) {
+    #isValidCard(hand, testingCard, round) {
         // check if card is legal to play
-        if(turn === 0) return true;
+        if(round.farbeZumAngeben === FARBE.UNDEFINIERT) return true; // if no color has been played yet, any card is valid
         if(hand.some(card => card.color === round.farbeZumAngeben)){
             return (testingCard.color === round.farbeZumAngeben);
-        } else { // check if player has to otherwise play trumpf
-            if(hand.some(card => card.color === round.trumpf)){
-                return (testingCard.color === round.trumpf);
-            }
+        } else if (hand.some(card => card.color === round.trumpf)){ // check if player has to otherwise play trumpf
+            return (testingCard.color === round.trumpf);
         }
         return true;
     }
@@ -161,4 +171,9 @@ const DIFFICULTYS = {
     EASY: 2,
     MEDIUM: 3,
     HARD: 4,
+};
+
+module.exports = {
+    BotEngine,
+    DIFFICULTYS 
 };

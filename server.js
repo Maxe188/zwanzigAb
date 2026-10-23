@@ -10,7 +10,6 @@ const randomId = () => crypto.randomBytes(8).toString("hex");
 const { Card, createDeck, FARBE, WERT } = require('./classes/Card.js');
 const { Game, STATES } = require('./classes/GameCore.js');
 const Player = require('./classes/Player.js');
-const Round = require('./classes/Round.js');
 
 // create server
 const app = express();
@@ -207,7 +206,6 @@ io.on('connection', (socket) => {
 
     if(game.trumpfPlayer.isBot) {
       console.log(game.trumpfPlayer.name + ' is choosing trumpf');
-      game.trumpfPlayerChooseTrumpf();
       setTrumpf(game.botEngine.chooseTrumpf(game.trumpfPlayer.hand));
     } else {
       console.log('send choose trumpf to next player');
@@ -217,12 +215,12 @@ io.on('connection', (socket) => {
   socket.on('set trumpf', (cardIndex) => {
     if (!game.isRunning) return;
     if (!(socket.userID === game.trumpfPlayer.id)) return;
-    setTrumpf(cardIndex);
-  });
-  function setTrumpf(cardIndex) {
     let trumpfColor = game.trumpfPlayer.hand[cardIndex].color;
+    setTrumpf(trumpfColor);
+  });
+  function setTrumpf(trumpfColor) {
     console.log('current player (' + game.trumpfPlayer.name + ') set trumpf to: ' + Object.keys(FARBE)[trumpfColor - 1]);
-    game.setTrumpf(trumpfColor);
+    game.setTrumpfColor(trumpfColor);
     toPlayingPlayers('update trumpf', game.currentRound.trumpf);
 
     if(game.dealingPlayer.isBot) {
@@ -263,14 +261,6 @@ io.on('connection', (socket) => {
     updateGameStates();
     checkIfAllPlayersTraded();
   }
-  function checkIfAllPlayersTraded() {
-    if (!(game.players.every((player) => player.traded == true))) return;
-    console.log('lets gooo!!!!!');
-    game.state = STATES.PLAY;
-    toPlayingPlayers('lets go');
-
-    //if(!(game.currentPlayer.isBot)) {
-  }
   socket.on('not participating', () => {
     if (!game.isRunning) return;
     let tradingPlayer = game.players.find((player) => player.id === socket.userID);
@@ -284,9 +274,24 @@ io.on('connection', (socket) => {
 
     checkIfAllPlayersTraded();
   });
+  function checkIfAllPlayersTraded() {
+    if (!(game.players.every((player) => player.traded == true))) return;
+    console.log('lets gooo!!!!!');
+    game.state = STATES.PLAY;
+    toPlayingPlayers('lets go');
+
+    if(!(game.currentPlayer.isBot)) return;
+    botPlayCard();
+  }
+  function botPlayCard() {
+    let cardToPlay = game.botEngine.chooseCard(game.center, game.currentPlayer.hand, game.currentRound);
+    console.log(game.currentPlayer.name + ' is playing card: ' + game.currentPlayer.hand[cardToPlay].toString());
+    playCard(game.currentPlayer, cardToPlay);
+  }
+
   socket.on('play card', (cardIndex) => {
     if (!game.isRunning) return;
-    if (!(socket.userID === game.currentPlayer.id)) return;
+    if (!(socket.userID === game.currentPlayer.id)) return; // future: only check if player is in game.players
     let playingPlayer = game.players.find((player) => player.id === socket.userID);
     console.log('player (' + playingPlayer + ') clicked card: ' + playingPlayer.hand[cardIndex].toString());
 
@@ -300,7 +305,11 @@ io.on('connection', (socket) => {
         setTimeout(() => {
           game.triggerLastTurn(); // needed??
           updateGameStates();
-          toPlayingPlayers('update trumpf', game.currentRound.trumpf);
+          toPlayingPlayers('update trumpf', game.currentRound.trumpf); // needed??
+
+          if(game.currentPlayer.isBot && game.state == STATES.PLAY) {
+            botPlayCard();
+          }
         }, 1500);
         break;
       case 'not your turn':
@@ -327,6 +336,7 @@ io.on('connection', (socket) => {
               delete users[player.id];
             }
             game.Stop();
+            console.log('game ended');
           } else {
             startPlaying();
           }
