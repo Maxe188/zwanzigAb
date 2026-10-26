@@ -1,5 +1,6 @@
 const { Card, createDeck, FARBE, WERT } = require("./Card");
 const Round = require("./Round");
+const { BotEngine } = require("./BotEngine.js");
 
 // future: make things private with #
 
@@ -26,6 +27,7 @@ class Game {
     currentPlayer = null; //current player obj in players
     leaderboard = {}; // leaderboard: row == round  column == data
     round = 1; // game round
+    botEngine = new BotEngine(); // BotEngine instance
 
     state = 0; // STATES at the end of file
 
@@ -92,7 +94,7 @@ class Game {
             this.#dealCards(player, 3);
         });
     }
-    setTrumpf(color) {
+    setTrumpfColor(color) {
         this.state = STATES.DEAL_TWO;
         this.currentRound.trumpf = color;
     }
@@ -188,6 +190,7 @@ class Game {
                 }
 
                 this.turn = 0;
+                this.currentRound.farbeZumAngeben = FARBE.UNDEFINIERT;
             }
             if(this.currentPlayer.notParticipating || !(this.#roundOver)) this.#updateCurrentPlayer();
         } while(this.currentPlayer.notParticipating);
@@ -266,10 +269,8 @@ class Game {
         if(this.turn === 0) return true;
         if(this.currentPlayer.hand.some(card => card.color === this.currentRound.farbeZumAngeben)){
             return (testingCard.color === this.currentRound.farbeZumAngeben);
-        } else { // check if player has to otherwise play trumpf
-            if(this.currentPlayer.hand.some(card => card.color === this.currentRound.trumpf)){
-                return (testingCard.color === this.currentRound.trumpf);
-            }
+        } else if(this.currentPlayer.hand.some(card => card.color === this.currentRound.trumpf)) { // check if player has to otherwise play trumpf
+            return (testingCard.color === this.currentRound.trumpf);
         }
         return true;
     }

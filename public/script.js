@@ -87,6 +87,15 @@ socket.on('joined room response', (response) => {
         console.log('joined room: ' + response); // future: show room name
     }
 });
+
+function addBot() {
+    socket.emit('add bot');
+    console.log('bot added');
+}
+function removeBot() {
+    socket.emit('remove bot');
+    console.log('bot removed');
+}
 // future: more join buttons
 
 socket.on('update players', ({ backendPlayers, roomID }) => {
@@ -205,7 +214,7 @@ document.getElementById('dealThreeButton').onclick = () => {
 socket.on('choose trumpf', () => {
     console.log('choose trumpf');
     if (debugGame) {
-        socket.emit('set trumpf', Math.floor(Math.random() * 3));
+        socket.emit('set trumpf', Math.floor(Math.random() * 3)); // random 0-2
         return;
     }
     choosingTrumpf = true;

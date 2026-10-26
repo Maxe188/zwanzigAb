@@ -5,9 +5,10 @@ module.exports = class Player {
     traded = false;
     notParticipating = false;
 
-    constructor(id, name) {
+    constructor(id, name, isBot = false) {
         this.id = id;
         this.name = name;
+        this.isBot = isBot;
     }
 
     playCard(cardIndex) {
@@ -39,7 +40,7 @@ module.exports = class Player {
     }
 
     /**
-     * plays cards and gets new ones
+     * replaces the cards at the given indices with new cards from the deck
      * @param {number[]} cardIndices list of cards indices that should be traded
      * @param {Card[]} deck currently used deck to get new cards from
      * @param {Card[]} used where to put used cards
@@ -50,7 +51,7 @@ module.exports = class Player {
         // future: max 5 check if there are enouth and cap it if nessecery
         this.traded = true;
         cardIndices.sort(function(a, b){return a - b}); // important in the past, but now only for aesthetic purposes
-        console.log('player: ' + this.name + ' trades card: ' + cardIndices);
+        console.log(this.name + ' trades card: ' + cardIndices);
 
         let playedCards = [];
         for(let i = cardIndices.length - 1; i >= 0; i--){
