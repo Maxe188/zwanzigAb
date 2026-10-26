@@ -53,14 +53,15 @@ module.exports = class Player {
         cardIndices.sort(function(a, b){return a - b}); // important in the past, but now only for aesthetic purposes
         console.log(this.name + ' trades card: ' + cardIndices);
 
-        let playedCards = [];
+        let recivedCards = [];
         for(let i = cardIndices.length - 1; i >= 0; i--){
-            let playedCard = this.replaceCard(deck.pop(), cardIndices[i]);
+            const newCard = deck.pop();
+            let playedCard = this.replaceCard(newCard, cardIndices[i]);
 
-            playedCards.push(playedCard);
+            recivedCards.push(newCard);
             used.push(playedCard);
         }
-        return playedCards;
+        return recivedCards;
     }
     doNotParticipate(used){
         if(this.traded) return;

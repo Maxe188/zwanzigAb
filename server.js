@@ -170,7 +170,7 @@ io.on('connection', (socket) => {
     };
 
     const addingResponse = rooms[roomID].addPlayer(socket, recivedName);
-    if (addingResponse === 'room full') {
+    if (addingResponse === 'roomFull') {
       socket.emit('joined room response', addingResponse);
       return;
     }
@@ -225,36 +225,51 @@ io.on('connection', (socket) => {
   function startPlaying(game) {
     if(game.dealingPlayer.isBot) {
       console.log(game.dealingPlayer.name + ' is dealing three');
-      startDealingThree();
+      startDealingThree(game);
     } else {
       console.log('send deal three to the current player');
       getSocket(game.dealingPlayer.id).emit('deal three');
     }
   }
   socket.on('add bot', () => {
-    //const game = getGame();
+    const game = getGame();
     if (game.isRunning) return;
     const botName = 'bot' + Math.floor(Math.random() * 1000);
     const botID = randomId();
+    const roomID = getRoomID();
     users[botID] = {
       name: botName,
+      roomID: roomID,
       savedSocket: null,
       isBot: true
     };
+
+    const addingResponse = rooms[roomID].addBot(botID, botName);
+    if (addingResponse === 'roomFull') {
+      socket.emit('joined room response', addingResponse);
+      return;
+    }
+
     updatePlayers();
-    console.log('bot added: ' + botName);
+    console.log('added: ' + botName + ' to room: ' + roomID);
+
+    console.log('all users: {');
+    for (const id in users) {
+      const user = users[id];
+      console.log('  ' + id + ' : ' + user.name);
+    }
+    console.log('}');
   });
   socket.on('remove bot', () => {
-    //const game = getGame();
+    const game = getGame();
     if (game.isRunning) return;
-    const botIndex = game.players.findLastIndex(player => player.isBot);
-    if (botIndex > -1) {
-      const bot = game.players[botIndex];
-      game.players.splice(botIndex, 1);
-      delete users[bot.id];
+    const botRemoveInfo = rooms[getRoomID()].removeBot();
+
+    if(botRemoveInfo.removed) {
       updatePlayers();
-      console.log('bot removed: ' + bot.name);
+      delete users[botRemoveInfo.botID];
     }
+    console.log(botRemoveInfo.message);
   });
 
   socket.on('start dealing three', () => {
@@ -270,7 +285,7 @@ io.on('connection', (socket) => {
 
     if(game.trumpfPlayer.isBot) {
       console.log(game.trumpfPlayer.name + ' is choosing trumpf');
-      setTrumpf(game.botEngine.chooseTrumpf(game.trumpfPlayer.hand));
+      setTrumpf(game.botEngine.chooseTrumpf(game.trumpfPlayer.hand), game);
     } else {
       console.log('send choose trumpf to next player');
       getSocket(game.trumpfPlayer.id).emit('choose trumpf');
@@ -297,7 +312,7 @@ io.on('connection', (socket) => {
 
     if(game.dealingPlayer.isBot) {
       console.log(game.dealingPlayer.name + ' is dealing two');
-      startDealingTwo();
+      startDealingTwo(game);
     } else {
       console.log('send deal two to the current player');
       getSocket(game.dealingPlayer.id).emit('deal two');
@@ -330,10 +345,11 @@ io.on('connection', (socket) => {
     enterTrade(tradingPlayer, indices, game);
   });
   function enterTrade(player, indices, game) {
-    game.playerTrades(player, indices);
+    const recivedCards = game.playerTrades(player, indices);
+    console.log('player: ' + player.name + ' recived cards: ' + recivedCards.toString());
 
     updateGameStates();
-    checkIfAllPlayersTraded();
+    checkIfAllPlayersTraded(game);
   }
   socket.on('not participating', () => {
     const game = getGame();
@@ -381,7 +397,7 @@ io.on('connection', (socket) => {
           toPlayingPlayers('update trumpf', game.currentRound.trumpf); // needed??
 
           if(game.currentPlayer.isBot && game.state == STATES.PLAY) {
-            botPlayCard();
+            botPlayCard(game);
           }
         }, 1500);
         break;
@@ -412,7 +428,7 @@ io.on('connection', (socket) => {
             game.Stop();
             console.log('game ended');
           } else {
-            startPlaying();
+            startPlaying(game);
           }
         }, 1500);
         break;

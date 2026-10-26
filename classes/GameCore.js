@@ -122,8 +122,9 @@ class Game {
     }
 
     playerTrades(player, indices){
-        player.trade(indices, this.deck, this.used);
+        const recivedCards = player.trade(indices, this.deck, this.used);
         player.hand.sort((b, a) => a.cardToNum(this.currentRound) - b.cardToNum(this.currentRound));
+        return recivedCards;
     }
     playerDoNotParticipate(player){
         if(player === this.trumpfPlayer) return false;

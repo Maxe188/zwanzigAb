@@ -20,6 +20,13 @@ class Room {
 
         if(this.game.players.length >= this.maxPlayers) this.isFull = true;
     }
+    addBot(userID, name) {
+        if(this.isFull) return 'room full';
+        
+        this.game.players.push(new Player(userID, name, true));
+
+        if(this.game.players.length >= this.maxPlayers) this.isFull = true;
+    }
     removePlayer(socket) {
         socket.leave(this.id);
         if(!socket.userID) return 'no userID';
@@ -27,11 +34,24 @@ class Room {
         if(playerIndex === -1) return 'not in room ' + this.id;
         this.game.players.splice(playerIndex, 1);
         this.isFull = false;
-        if(this.game.players.length === 0) {
+        if(this.game.players.length === 0) { // close when only bots
             //this.closeRoom();
             return 'removed last player ' + socket.userID + '. Room ' + this.id + ' closed';
         }
         return 'player ' + socket.userID + ' removed from room ' + this.id;
+    }
+    removeBot(){
+        const botIndex = this.game.players.findLastIndex(player => player.isBot);
+        if(botIndex === -1) return { removed: false,
+            message: 'no bot in room ' + this.id,
+        };
+        const bot = this.game.players[botIndex];
+        this.game.players.splice(botIndex, 1);
+        this.isFull = false;
+        return { removed: true,
+            message: 'bot ' + bot.name + ' removed from room ' + this.id,
+            botID: bot.id
+        };
     }
 
     closeRoom() {
