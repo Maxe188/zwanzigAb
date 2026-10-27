@@ -202,14 +202,6 @@ io.on('connection', (socket) => {
   });
   function startGame(startAsDebug, game) {
     game.deck = createDeck();
-    // future: adding players to game obj   move to GameCore!!
-    /*
-    const usersWithNames = getUsersWithNames();
-    for (const id in usersWithNames) {
-      const user = usersWithNames[id];
-      game.players.push(new Player(id, user.name, user.isBot));
-    }
-*/
     // send clients a start game event
     startAsDebug ? toPlayingPlayers('start debug game') : toPlayingPlayers('start game');
     startAsDebug ? game.Start(true) : game.Start(false);
