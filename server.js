@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 });
 
 const sessions = {}; // sessionID: {userID, timeOfLastConnection, connected}
-const expirationTimeInSec = 900 * 1000; // 900sec. = 15min.
+const expirationTimeInSec = 900 * 1000; // 900sec. * 1000ms = 15min.
 // loop to check expired sessions
 const intervalSession = setInterval(expirationCheck, 1000); //every second
 // clearInterval(intervalSession);
@@ -46,7 +46,7 @@ function expirationCheck() {
         getSocket(session.userID).emit('kicked', 'Inaktivität');
         const room = rooms[users[session.userID].roomID];
         room.removePlayer(users[session.userID].savedSocket);
-        if (room.game.isRunning) io.emit('game ended');
+        if (room.game.isRunning) io.to(room.id).emit('game ended');
         delete users[session.userID];
       }
       delete sessions[sessionID];
@@ -56,7 +56,7 @@ function expirationCheck() {
 
 // globals
 const rooms = {};
-const users = {}; // userID: {name, roomID, savedSocket}
+const users = {}; // userID: {name, roomID, savedSocket, isBot}
 const nameSuggestions = ['Mattis', 'Peter', 'Thomas', 'Diter', 'Alex', 'Tine', 'Ute', 'Chistine', 'Hildegard', 'Kirsti', 'Nina', 'Mareike', 'Dennis', 'Gustav', 'Luka', 'Sara', 'Eberhard', 'Gerold', 'Gerlinde', 'Bregitte'];
 
 
@@ -600,7 +600,7 @@ io.on('connection', (socket) => {
     io.to(getRoomID()).emit('update players', { backendPlayers: getPlayerNameAndID(), roomID: getRoomID() });
   }
   function updatePlayersForOnePlayer(player) {
-    getSocket(player.id).emit('update players', getUsersWithNames());
+    getSocket(player.id).emit('update players', getPlayerNameAndID());
   }
 
   function getPlayerNameAndID() {
