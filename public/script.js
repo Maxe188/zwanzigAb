@@ -319,7 +319,7 @@ function playAgain() {
     let lastUsername = username;
     reset();
     username = lastUsername;
-    socket.emit('join room', { recivedName: username, roomInfo: 'any' });
+    socket.emit('join room', { recivedName: username, roomInfo: 'any' }); // future: join same room when playAgain
     console.log('Dein Username ist immernoch: ' + username + '.');
     usernameInput.value = username;
     nameDiv.style.display = 'none';
@@ -482,7 +482,7 @@ function setState(state, gameState) {
         case 1:
             gameDiv.style.display = 'block';
             if (gameState.dealingPlayerName != username) return;
-            document.getElementById('dealTwoMessage').style.display = 'flex';
+            //document.getElementById('dealTwoMessage').style.display = 'flex';
             break;
         case 2:
             gameDiv.style.display = 'block';
@@ -507,7 +507,7 @@ function setState(state, gameState) {
         case 5:
             gameDiv.style.display = 'block';
             if (gameState.dealingPlayerName != username) return;
-            document.getElementById('dealThreeMessage').style.display = 'flex';
+            //document.getElementById('dealThreeMessage').style.display = 'flex';
             break;
         case 6:
             readyDiv.style.display = 'block';

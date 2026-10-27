@@ -13,7 +13,7 @@ class Room {
     }
 
     addPlayer(socket, name) {
-        if(this.isFull) return 'room full';
+        if(this.isFull) return 'roomFull';
         socket.join(this.id);
         
         this.game.players.push(new Player(socket.userID, name));
@@ -21,7 +21,7 @@ class Room {
         if(this.game.players.length >= this.maxPlayers) this.isFull = true;
     }
     addBot(userID, name) {
-        if(this.isFull) return 'room full';
+        if(this.isFull) return 'roomFull';
         
         this.game.players.push(new Player(userID, name, true));
 
