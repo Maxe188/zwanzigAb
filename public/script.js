@@ -50,14 +50,21 @@ socket.on("session", ({ sessionID }) => {
     sessionStorage.setItem("sessionID", sessionID); // future? may be changed to local storage to only be able to play one game
 });
 
+const lastUsername = localStorage.getItem("lastUsername");
+if(lastUsername) {
+    usernameInput.value = lastUsername;
+    usernameInput.focus();
+}
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
-    usernameInput.value = suggestedName;
+    if(usernameInput.value == "") usernameInput.value = suggestedName;
 });
 
 document.getElementById('formName').addEventListener('submit', function (event) {
     event.preventDefault();
     username = usernameInput.value;
+    // store last used username in browser
+    localStorage.setItem("lastUsername", username);
     socket.emit('join room', { recivedName: username, roomInfo: 'any' });
     console.log('Dein Username ist: ' + username + '. Hallo ' + username + '!');
 });

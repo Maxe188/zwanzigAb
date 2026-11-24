@@ -449,7 +449,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', (reason) => {
     if (socket.userID) {
-      if (!getGame().isRunning) {
+      const game = getGame();
+      if (game && !game.isRunning) {
         const room = rooms[getRoomID()];
         console.log(room.removePlayer(socket));
       }
