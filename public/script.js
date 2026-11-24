@@ -53,11 +53,13 @@ socket.on("session", ({ sessionID }) => {
 const lastUsername = localStorage.getItem("lastUsername");
 if(lastUsername) {
     usernameInput.value = lastUsername;
-    usernameInput.focus();
 }
 socket.on('name suggestion', (suggestedName) => {
     console.log('name suggestion: ' + suggestedName);
-    if(usernameInput.value == "") usernameInput.value = suggestedName;
+    if(usernameInput.value == "") {
+        usernameInput.value = suggestedName;
+        usernameInput.focus();
+    }
 });
 
 document.getElementById('formName').addEventListener('submit', function (event) {
